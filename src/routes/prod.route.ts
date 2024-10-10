@@ -1,6 +1,11 @@
 import { Router } from "express";
-import { findAll, findOne } from "../controllers/prod.controler";
+import { findAll, findOne, add, update, remove } from "../controllers/prod.controler";
 
 export const prodRouter = Router()
+
 prodRouter.get('/', findAll)
-prodRouter.get('/:nombre', findOne)
+prodRouter.get('/:id', findOne)
+prodRouter.post('/', add)
+prodRouter.put('/:id', update)
+prodRouter.delete('/:id', remove)
+

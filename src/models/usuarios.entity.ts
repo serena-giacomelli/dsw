@@ -1,4 +1,4 @@
-import { ObjectId } from "mongodb";
+
 import {Pedido} from "../models/pedido.entity";
 
 export class Usuario {
@@ -8,7 +8,9 @@ export class Usuario {
     public dni:string, 
     public fechaNacimiento:string, 
     public mail:string,
-    public _id?: ObjectId,
+    public id:number,
     public pedidos?: Pedido[] //ojo aca
 )   {}
 }
+
+//mirar los videos de mikro para ver como hacerlo con sql

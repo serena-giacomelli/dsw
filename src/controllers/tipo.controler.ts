@@ -1,67 +1,66 @@
-// Middleware para sanitizar la entrada de los tipo pruducto
-//import {Request, Response, NextFunction} from "express"
-//import { TipoProductoRepository } from "../repositories/tipoProd.repository";
-/*import { TipoProducto } from "../models/tipo.entity";*/
+import {Request, Response, NextFunction} from "express"
+import { TipoProductoRepository } from "../repositories/tipoProd.repository.js";
+import { TipoProducto } from "../models/tipo.entity.js";
 
-//const repository = new TipoProductoRepository()
+const repository = new TipoProductoRepository()
 
-// OBTENER TODOS LOS TIPOS PRODUCTO
-/*async function findAll(req:Request, res:Response){
-  const tipoP = await
-  repository.findAll(); 
+async function findAll(req:Request, res:Response){
+  const tipoP = await repository.findAll(); 
   res.json (tipoP);
-}*/
+}
 
-// OBTENER UN TIPO PRODUCTO
-/*async function findOne(req:Request, res:Response) {
+async function findOne(req:Request, res:Response) {
   try {
     const { id } = req.params;
-    const tipo = await repository.findOne({ id }); 
-    if (tipo) {
-        res.json(tipo);
+    const tipoP = await repository.findOne({ id }); 
+    if (tipoP) {
+        res.json(tipoP);
     } else {
         res.status(404).json({ message: 'Tipo  producto no encontrado' });
 
     }
 } catch (error) {
     res.status(500).json({ message: 'Error al obtener el tipo producto', error });
+  }
 }
 
-  };
-export (findAll, findOne)*/
-  
-// AGREGAR UN TIPO PRODUCTO
-/*
-async function add(req:Request, res:Response){
-    const input = req.body.sanitizedInput;
-    const newTipo = new TipoProducto(
-      input.nombre, 
-      input.descripcion
-    );
-    const tipo = await repository.add(newTipo);
-    return res.status(201).json({ message: 'tipo producto created', data: tipo });
-};
+async function add(req: Request, res: Response) {
+  try {
+      const tipoP = new TipoProducto(
+          req.body.nombre,
+          req.body.descripcion,
+          req.body.id
+      );
+      const result = await repository.add(tipoP);
+      res.json(result);
+  } catch (error) {
+      res.status(500).json({ message: 'Error al agregar el tipo de producto', error });
+  }}
 
-// MODIFICAR UN TIPO PRODUCTO
-async function update(req:Request, res:Response){
-  const tipo = await repository.update(req.params.id, req.body.sanitizedInput);
-  if (!tipo) {
-    return res.status(404).send({ message: 'Tipo Producto not found' });
+async function update(req: Request, res: Response) {
+  try {
+      const { id } = req.params;
+      const tipoP = new TipoProducto(
+        req.body.nombre,
+        req.body.descripcion,
+        req.body.id
+      );
+      const result = await repository.update({ id }, tipoP);
+      res.json(result);
+  }   catch (error) {
+      res.status(500).json({ message: 'Error al actualizar el tipo de producto', error });
+  }  
+}
+
+async function remove(req: Request, res: Response) {
+  try {
+      const { id } = req.params;
+      const result = await repository.remove({ id });
+      res.json(result);
+  } catch (error) {
+      res.status(500).json({ message: 'Error al eliminar el tipo de producto', error });
   }
-  return res.status(200).json({ message: 'Tipo Producto updated', data: tipo});
-};
+}
 
-  // BORRAR UN TIPO PRODUCTO
-  
-async function delet(req:Request, res:Response){
-    const id = req.params.id
-    const tipo = await repository.delet({id});  
-    if (!tipo) {
-      return res.status(404).send({ message: 'tipo producto not found' });
-    } else{
-      return res.status(200).json({ message: 'tipo producto deleted' });
-    }
-};
 
-export {sanitizeTipoInput, findAll, findOne, add, update, delet}
-*/
+export {findAll, findOne, add, update, remove}
