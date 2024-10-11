@@ -5,6 +5,7 @@ import cors from 'cors';
 import {usuarioRouter} from './src/routes/usuario.route.js';
 import {prodRouter} from './src/routes/prod.route.js';
 import {tipoRouter} from './src/routes/tipo.route.js';
+import { empresaRouter } from './src/routes/empresa.route.js';
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use('/api/usuario', usuarioRouter);
 app.use('/api/producto', prodRouter);
 app.use('/api/tipoP', tipoRouter);
+app.use('/api/empresa', empresaRouter);
 
 const PORT = process.env.PORT || 3000;
 
