@@ -5,7 +5,7 @@ import cors from 'cors';
 import {usuarioRouter} from './src/routes/usuario.route.js';
 import {prodRouter} from './src/routes/prod.route.js';
 import {tipoRouter} from './src/routes/tipo.route.js';
-import { empresaRouter } from './src/routes/empresa.route.js';
+import {empresaRouter} from './src/routes/empresa.route.js';
 
 const app = express();
 

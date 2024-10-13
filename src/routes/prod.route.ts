@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { findAll, findOne, add, update, remove } from "../controllers/prod.controler";
+import { findAll, findOne, add, update, remove } from "../controllers/prod.controler.js";
 
 export const prodRouter = Router()
 
