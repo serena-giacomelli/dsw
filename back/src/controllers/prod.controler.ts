@@ -65,5 +65,21 @@ async function remove(req: Request, res: Response) {
   }
 }
 
+async function findByStock(req:Request, res:Response){
+  try {const cantidad = parseInt(req.params.cantidad);
+    if (isNaN(cantidad)) {
+        return res.status(400).json({ message: 'Cantidad no válida debe ser un numero entero' });
+    }
+    const productos = await repository.findByStock(cantidad); 
+  
+  if (productos && productos.length > 0) {
+      res.json(productos);
+  } else {
+      res.status(404).json({ message: 'No hay productos con stock mayor a :' + cantidad });
+  }
+}catch (error) {
+  res.status(500).json({ message: 'Error al obtener los productos', error });
+}
+}
 
-export {findAll, findOne, add, update, remove}
+export {findAll, findOne, add, update, remove, findByStock}
