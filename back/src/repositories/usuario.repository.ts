@@ -1,7 +1,7 @@
 import { Repository } from "../shared/repository.js";
 import { Usuario } from "../models/usuarios.entity.js";
 import { pool } from "../shared/db/conn.js";
-import { ResultSetHeader, RowDataPacket } from "mysql2";
+import { ResultSetHeader, RowDataPacket, setMaxParserCache } from "mysql2";
 
 export class UsuarioRepository implements Repository<Usuario>{
 
@@ -56,3 +56,5 @@ export class UsuarioRepository implements Repository<Usuario>{
         }
 
 }}
+
+    
