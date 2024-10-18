@@ -4,11 +4,13 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
     entry: './src/index.tsx',
     output: {
-        path: path.resolve(__dirname, 'dist'),
-        filename: 'bundle.js'
+        path: path.resolve(__dirname, './dist'),
     },
     resolve: {
         extensions: ['.js', '.jsx', '.ts', '.tsx']
+    },
+    performance: {
+        hints: false,
     },
     module: {
         rules: [
@@ -21,6 +23,27 @@ module.exports = {
                 test: /\.css$/,
                 use: ['style-loader', 'css-loader']
             },
+            {
+                test: /\.(png|jpe?g|gif)$/i,
+                use: [
+                    {
+                        loader: 'file-loader',
+                        options: {
+                            name: '[path][name].[ext]',
+                        },
+                    },
+                ],
+            },
+            {
+                test: /\.mp4$/,
+                use: {
+                    loader: 'file-loader',
+                    options: {
+                        name: '[name].[hash].[ext]',
+                        outputPath: 'videos/',
+                    },
+                },
+            }
         ]
     },
     plugins: [
@@ -33,6 +56,15 @@ module.exports = {
             directory: path.join(__dirname, 'public'),
         },
         compress: true,
-        port: 9000
+        historyApiFallback: true,
+        port: 9000,
+        proxy: [
+            {
+                context: ['/api'],
+                target: 'http://localhost:3000',
+                changeOrigin: true,
+                pathRewrite: { '^/api': '/api' },
+            },
+        ],
     }
 };

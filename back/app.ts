@@ -10,7 +10,7 @@ import { empresaRouter } from './src/routes/empresa.route.js';
 const app = express();
 
 app.use(cors({
-    origin: 'http://localhost:8080/'
+    origin: 'http://localhost:9000/'
 }));
 
 app.use(express.json());
