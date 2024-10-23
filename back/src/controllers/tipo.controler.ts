@@ -1,4 +1,4 @@
-import {Request, Response, NextFunction} from "express"
+import {Request, Response} from "express"
 import { TipoProductoRepository } from "../repositories/tipoProd.repository.js";
 import { TipoProducto } from "../models/tipo.entity.js";
 

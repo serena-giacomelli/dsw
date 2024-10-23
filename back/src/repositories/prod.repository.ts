@@ -54,8 +54,17 @@ export class ProductoRepository implements Repository<Producto>{
         const affectedRows = (result as any).affectedRows;
         if (affectedRows === 0) {
             throw new Error('No se pudo eliminar el producto');
+        }}
+    
+
+        public async findByStock(cantidad:number): Promise<Producto [] | undefined> {
+            const [productos] = await pool.query('SELECT * FROM producto WHERE cantidad >= ?', [cantidad]);
+            return productos as Producto [];
         }
 
-}
+
+
+
 
 }
+    

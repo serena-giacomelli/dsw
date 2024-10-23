@@ -1,4 +1,4 @@
-import {Request, Response, NextFunction} from 'express'
+import {Request, Response} from 'express'
 import { EmpresaRepository} from '../repositories/empresa.repository.js'
 import { Empresa } from '../models/empresa.entity.js'
 
