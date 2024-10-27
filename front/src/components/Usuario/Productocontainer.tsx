@@ -8,7 +8,7 @@ interface Producto {
     cantidad: number;
 }
 
-const ItemListContainer = () => {
+const Productocontainer = () => {
     const [productos, setProductos] = useState<Producto[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
 
@@ -47,4 +47,4 @@ const ItemListContainer = () => {
     );
 };
 
-export default ItemListContainer;
+export default Productocontainer;
