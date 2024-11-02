@@ -82,4 +82,21 @@ async function findByStock(req:Request, res:Response){
 }
 }
 
-export {findAll, findOne, add, update, remove, findByStock}
+async function findByTipoProducto(req: Request, res: Response) {
+  try { const codtipoProducto = parseInt(req.params.codtipoProducto); 
+      if (isNaN(codtipoProducto)) { 
+          return res.status(400).json({ message: 'ID de tipo de producto no válido' });
+      }
+      const productos = await repository.findByTipoProducto(codtipoProducto);
+
+      if (productos && productos.length > 0) {
+          res.json(productos);
+      } else {
+          res.status(404).json({ message: `No hay productos para el tipo de producto con ID: ${codtipoProducto}` });
+      }
+  } catch (error) {
+      res.status(500).json({ message: 'Error al obtener los productos por tipo de producto', error });
+  }
+}
+
+export {findAll, findOne, add, update, remove, findByStock, findByTipoProducto}
