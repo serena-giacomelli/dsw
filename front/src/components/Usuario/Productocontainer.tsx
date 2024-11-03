@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import '../../styles/productContainer.css';
 
 interface ProductoType {
-    codigo: number;
+    id: number;
     nombre: string;
     descripcion: string;
     cantidad: number;
@@ -13,7 +13,7 @@ const ProductListContainer: React.FC = () => {
     const [productos, setProductos] = useState<ProductoType[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [newProduct, setNewProduct] = useState<ProductoType>({ codigo: 0, nombre: "", descripcion: "", cantidad: 0, id_tipo_producto: 0 });
+    const [newProduct, setNewProduct] = useState<ProductoType>({ id: 0, nombre: "", descripcion: "", cantidad: 0, id_tipo_producto: 0 });
     const [editingProduct, setEditingProduct] = useState<ProductoType | null>(null);
 
     const fetchProductos = async () => {
@@ -45,16 +45,16 @@ const ProductListContainer: React.FC = () => {
             if (!response.ok) throw new Error("Error al crear el producto");
             const data: ProductoType = await response.json();
             setProductos([...productos, data]);
-            setNewProduct({ codigo: 0, nombre: "", descripcion: "", cantidad: 0, id_tipo_producto: 0 });
+            setNewProduct({ id: 0, nombre: "", descripcion: "", cantidad: 0, id_tipo_producto: 0 });
         } catch (error: any) {
             setError(error.message);
         }
     };
 
-    const updateProducto = async (codigo: number) => {
+    const updateProducto = async (id: number) => {
         if (!editingProduct) return;
         try {
-            const response = await fetch(`/api/producto/${codigo}`, {
+            const response = await fetch(`/api/producto/${id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(editingProduct),
@@ -67,15 +67,15 @@ const ProductListContainer: React.FC = () => {
         }
     };
 
-    const deleteProducto = async (codigo: number | undefined) => {
-        if (codigo === undefined) {
+    const deleteProducto = async (id: number | undefined) => {
+        if (id === undefined) {
             console.error("El código del producto es indefinido.");
             return;
         }
         try {
-            const response = await fetch(`/api/producto/${codigo}`, { method: "DELETE" });
+            const response = await fetch(`/api/producto/${id}`, { method: "DELETE" });
             if (!response.ok) throw new Error("Error al eliminar el producto");
-            setProductos(productos.filter((producto) => producto.codigo !== codigo));
+            setProductos(productos.filter((producto) => producto.id !== id));
         } catch (error: any) {
             setError(error.message);
         }
@@ -87,7 +87,7 @@ const ProductListContainer: React.FC = () => {
     }, []);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, field: keyof ProductoType) => {
-        const value = field === "cantidad" || field === "codigo" || field === "id_tipo_producto" ? Number(e.target.value) : e.target.value;
+        const value = field === "cantidad" || field === "id" || field === "id_tipo_producto" ? Number(e.target.value) : e.target.value;
         if (editingProduct) {
             setEditingProduct({ ...editingProduct, [field]: value });
         } else {
@@ -105,11 +105,11 @@ const ProductListContainer: React.FC = () => {
             ) : (
                 <ul>
                     {productos.map((producto) => (
-                        <li key={producto.codigo}>
+                        <li key={producto.id}>
                             
                             <strong>{producto.nombre}</strong> - {producto.descripcion} - Cantidad: {producto.cantidad} - Tipo Producto ID: {producto.id_tipo_producto}
                             <button onClick={() => setEditingProduct(producto)}>Editar</button>
-                            <button onClick={() => deleteProducto(producto.codigo)}>Eliminar</button>
+                            <button onClick={() => deleteProducto(producto.id)}>Eliminar</button>
                         </li>
                     ))}
                 </ul>
@@ -140,7 +140,7 @@ const ProductListContainer: React.FC = () => {
                 value={editingProduct ? editingProduct.id_tipo_producto : newProduct.id_tipo_producto}
                 onChange={(e) => handleInputChange(e, "id_tipo_producto")}
             />
-            <button onClick={editingProduct ? () => updateProducto(editingProduct.codigo) : createProducto}>
+            <button onClick={editingProduct ? () => updateProducto(editingProduct.id) : createProducto}>
                 {editingProduct ? "Actualizar" : "Agregar"}
             </button>
         </div>

@@ -2,7 +2,7 @@ import React from "react";
 
 
 interface Producto {
-    codigo: number;
+    id: number;
     nombre: string;
     descripcion: string;
     cantidad: number;
@@ -10,7 +10,7 @@ interface Producto {
     onDelete: () => void; // Función para manejar la eliminación
 }
 
-const Producto: React.FC<Producto> = ({ codigo, nombre, descripcion, cantidad, onEdit, onDelete }) => {
+const Producto: React.FC<Producto> = ({ id, nombre, descripcion, cantidad, onEdit, onDelete }) => {
     return (
         <li>
             <strong>{nombre}</strong>: {descripcion} - Cantidad: {cantidad}

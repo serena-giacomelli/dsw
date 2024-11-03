@@ -13,7 +13,7 @@ export class ProductoRepository implements Repository<Producto>{
 
     public async findOne(item: {id:string}): Promise<Producto | undefined>{
         const id = Number.parseInt(item.id)
-        const [productos] = await pool.query<RowDataPacket[]>('SELECT * FROM producto where codigo = ?',
+        const [productos] = await pool.query<RowDataPacket[]>('SELECT * FROM producto where id = ?',
             [id])
         if(productos.length == 0){
             return undefined
