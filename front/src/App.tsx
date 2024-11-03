@@ -1,20 +1,21 @@
 import React from 'react';
-import { Usuario } from './components/Usuario/Usuario';
-import Text from './components/Usuario/Text'; 
-import ItemListContainer from './components/Usuario/Productocontainer';
 import Usuariocontainer from './components/Usuario/Usuariocontainer';
-
+import Productocontainer from './components/Usuario/Productocontainer';
+import TipoProductocontainer from './components/Usuario/tipoProductocontainer'; 
 
 const App: React.FC = () => {
     const nombre = "MUEBLERÍA LUSECHI";
     
-    // Datos del usuario que se van a pasar al componente Usuario
     return (
         <div>
-            <ItemListContainer/>
-            <Usuariocontainer/>
+            <h1>{nombre}</h1>
+            <Productocontainer />
+            <Usuariocontainer />
+            <TipoProductocontainer />
         </div>
     );
 };
 
 export default App;
+
+
