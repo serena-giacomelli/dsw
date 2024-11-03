@@ -1,7 +1,7 @@
 import React from 'react';
 import Usuariocontainer from './components/Usuario/Usuariocontainer';
-import Productocontainer from './components/Usuario/Productocontainer';
-import TipoProductocontainer from './components/Usuario/tipoProductocontainer';
+import Productocontainer from './components/Producto/Productocontainer';
+import TipoProductocontainer from './components/TipoProducto/TipoProductocontainer';
 import { Route, Routes, useLocation } from "react-router-dom";
 
 const App: React.FC = () => {

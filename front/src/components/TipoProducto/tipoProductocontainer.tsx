@@ -15,7 +15,7 @@ const ProductoListContainer = () => {
 
     const fetchTiposProducto = async () => {
         try {
-            const response = await fetch("/api/tipoProducto");
+            const response = await fetch("/api/tipoP");
             const data = await response.json();
             setTiposProducto(data);
         } catch (error) {
