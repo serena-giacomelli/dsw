@@ -71,5 +71,4 @@ async function remove(req: Request, res: Response) {
     }
 }
 
-
 export { findAll, findOne, add, update, remove }

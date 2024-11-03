@@ -57,14 +57,20 @@ export class ProductoRepository implements Repository<Producto>{
         }}
     
 
-        public async findByStock(cantidad:number): Promise<Producto [] | undefined> {
+     public async findByStock(cantidad:number): Promise<Producto [] | undefined> {
             const [productos] = await pool.query('SELECT * FROM producto WHERE cantidad >= ?', [cantidad]);
             return productos as Producto [];
         }
 
 
-
-
-
-}
+        public async findByTipoProducto(codtipoProducto: number): Promise<Producto[] | undefined> {
+            const [productos] = await pool.query(`SELECT p.* 
+                FROM producto p
+                INNER JOIN tipoproducto tp ON p.id_tipo_producto = tp.id
+                WHERE tp.id = ?
+                ORDER BY tp.nombre` , [codtipoProducto]);
+            return productos as Producto[];
+        }
+        
+    }
     
