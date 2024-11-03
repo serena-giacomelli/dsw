@@ -1,10 +1,14 @@
+// index.tsx o main.tsx
 import React from 'react';
-import ReactDOM from 'react-dom/client';
+import ReactDOM from 'react-dom';
 import App from './App';
+import { BrowserRouter } from 'react-router-dom';
 
-// Especificamos que 'root' puede ser un elemento HTML o null
-const rootElement = document.getElementById('root') as HTMLElement;
+ReactDOM.render(
+    <BrowserRouter>
+        <App />
+    </BrowserRouter>,
+    document.getElementById('root')
+);
 
-const root = ReactDOM.createRoot(rootElement);
-root.render(<App />);
 

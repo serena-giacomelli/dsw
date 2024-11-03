@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from "react";
-import './ProductListContainer.css';
-
+import '../../styles/productContainer.css';
 
 interface ProductoType {
     codigo: number;
     nombre: string;
     descripcion: string;
     cantidad: number;
+    id_tipo_producto: number; // Nuevo campo para el tipo de producto
 }
 
 const ProductListContainer: React.FC = () => {
     const [productos, setProductos] = useState<ProductoType[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [newProduct, setNewProduct] = useState<ProductoType>({ codigo: 0, nombre: "", descripcion: "", cantidad: 0 });
+    const [newProduct, setNewProduct] = useState<ProductoType>({ codigo: 0, nombre: "", descripcion: "", cantidad: 0, id_tipo_producto: 0 });
     const [editingProduct, setEditingProduct] = useState<ProductoType | null>(null);
 
     const fetchProductos = async () => {
@@ -32,7 +32,7 @@ const ProductListContainer: React.FC = () => {
     };
 
     const createProducto = async () => {
-        if (!newProduct.nombre || !newProduct.descripcion || newProduct.cantidad <= 0) {
+        if (!newProduct.nombre || !newProduct.descripcion || newProduct.cantidad <= 0 || newProduct.id_tipo_producto <= 0) {
             alert("Por favor, completa todos los campos del nuevo producto.");
             return;
         }
@@ -45,7 +45,7 @@ const ProductListContainer: React.FC = () => {
             if (!response.ok) throw new Error("Error al crear el producto");
             const data: ProductoType = await response.json();
             setProductos([...productos, data]);
-            setNewProduct({ codigo: 0, nombre: "", descripcion: "", cantidad: 0 });
+            setNewProduct({ codigo: 0, nombre: "", descripcion: "", cantidad: 0, id_tipo_producto: 0 });
         } catch (error: any) {
             setError(error.message);
         }
@@ -67,7 +67,11 @@ const ProductListContainer: React.FC = () => {
         }
     };
 
-    const deleteProducto = async (codigo: number) => {
+    const deleteProducto = async (codigo: number | undefined) => {
+        if (codigo === undefined) {
+            console.error("El código del producto es indefinido.");
+            return;
+        }
         try {
             const response = await fetch(`/api/producto/${codigo}`, { method: "DELETE" });
             if (!response.ok) throw new Error("Error al eliminar el producto");
@@ -76,22 +80,23 @@ const ProductListContainer: React.FC = () => {
             setError(error.message);
         }
     };
+    
 
     useEffect(() => {
         fetchProductos();
     }, []);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, field: keyof ProductoType) => {
-        const value = field === "cantidad" || field === "codigo" ? Number(e.target.value) : e.target.value;
+        const value = field === "cantidad" || field === "codigo" || field === "id_tipo_producto" ? Number(e.target.value) : e.target.value;
         if (editingProduct) {
             setEditingProduct({ ...editingProduct, [field]: value });
         } else {
             setNewProduct({ ...newProduct, [field]: value });
         }
     };
-
+    console.log(productos,"este es el producto")
     return (
-        <div>
+        <div className="product-list-container">
             <h1>Lista de Productos</h1>
             {loading ? (
                 <p>Cargando productos...</p>
@@ -101,7 +106,8 @@ const ProductListContainer: React.FC = () => {
                 <ul>
                     {productos.map((producto) => (
                         <li key={producto.codigo}>
-                            <strong>{producto.nombre}</strong> - {producto.descripcion} - Cantidad: {producto.cantidad}
+                            
+                            <strong>{producto.nombre}</strong> - {producto.descripcion} - Cantidad: {producto.cantidad} - Tipo Producto ID: {producto.id_tipo_producto}
                             <button onClick={() => setEditingProduct(producto)}>Editar</button>
                             <button onClick={() => deleteProducto(producto.codigo)}>Eliminar</button>
                         </li>
@@ -127,6 +133,12 @@ const ProductListContainer: React.FC = () => {
                 placeholder="Cantidad"
                 value={editingProduct ? editingProduct.cantidad : newProduct.cantidad}
                 onChange={(e) => handleInputChange(e, "cantidad")}
+            />
+            <input
+                type="number"
+                placeholder="ID Tipo Producto"
+                value={editingProduct ? editingProduct.id_tipo_producto : newProduct.id_tipo_producto}
+                onChange={(e) => handleInputChange(e, "id_tipo_producto")}
             />
             <button onClick={editingProduct ? () => updateProducto(editingProduct.codigo) : createProducto}>
                 {editingProduct ? "Actualizar" : "Agregar"}

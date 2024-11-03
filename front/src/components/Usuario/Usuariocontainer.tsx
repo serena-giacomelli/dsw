@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import "../../styles/usuarioContainer.css"
 
 interface Usuario {
     id: string;
@@ -79,7 +80,8 @@ const UserListContainer = () => {
     }, []);
 
     return (
-        <div>
+
+        <div className="user-container">
             <h1>Lista de Usuarios</h1>
             {loading ? (
                 <p>Cargando usuarios...</p>

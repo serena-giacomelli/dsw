@@ -100,12 +100,15 @@ const ProductoListContainer = () => {
                 value={editingTipoProducto ? editingTipoProducto.nombre : newTipoProducto.nombre}
                 onChange={(e) => editingTipoProducto ? setEditingTipoProducto({ ...editingTipoProducto, nombre: e.target.value }) : setNewTipoProducto({ ...newTipoProducto, nombre: e.target.value })}
             />
+    
             <input
                 type="text"
                 placeholder="Descripción"
                 value={editingTipoProducto ? editingTipoProducto.descripcion : newTipoProducto.descripcion}
                 onChange={(e) => editingTipoProducto ? setEditingTipoProducto({ ...editingTipoProducto, descripcion: e.target.value }) : setNewTipoProducto({ ...newTipoProducto, descripcion: e.target.value })}
             />
+             
+            
             <button onClick={editingTipoProducto ? () => updateTipoProducto(editingTipoProducto.id) : createTipoProducto}>
                 {editingTipoProducto ? "Actualizar" : "Agregar"}
             </button>
