@@ -63,7 +63,7 @@ const ProductoListContainer = () => {
 
     const deleteTipoProducto = async (id: number) => {
         try {
-            await fetch(`/api/tipoProducto/${id}`, {
+            await fetch(`/api/tipoP/${id}`, {
                 method: "DELETE",
             });
             setTiposProducto(tiposProducto.filter((tipo) => tipo.id !== id));

@@ -48,14 +48,27 @@ export class ProductoRepository implements Repository<Producto>{
         }
     }	
 
-    public async remove(item: { id: string}): Promise<void> {
+    public async remove(item: { id: string }): Promise<void> {
         const id = Number.parseInt(item.id);
-        const [result] = (await pool.query('DELETE FROM producto WHERE id = ?', [id])) as RowDataPacket[];
-        const affectedRows = (result as any).affectedRows;
-        if (affectedRows === 0) {
-            throw new Error('No se pudo eliminar el producto');
-        }}
     
+            // Primero elimina en `lineapedido`
+            const [result1] = await pool.query(
+                'DELETE FROM lineapedido WHERE id_producto = ?;',
+                [id]
+            );
+    
+            // Luego elimina en `producto`
+            const [result2] = await pool.query(
+                'DELETE FROM producto WHERE id = ?;',
+                [id]
+            );
+    
+            // Verificar si alguna fila fue afectada en la primera y segunda consulta
+            const affectedRows = (result1 as any).affectedRows + (result2 as any).affectedRows;
+            if (affectedRows === 0) {
+                throw new Error('No se pudo eliminar el producto');
+            }
+        }
 
      public async findByStock(cantidad:number): Promise<Producto [] | undefined> {
             const [productos] = await pool.query('SELECT * FROM producto WHERE cantidad >= ?', [cantidad]);

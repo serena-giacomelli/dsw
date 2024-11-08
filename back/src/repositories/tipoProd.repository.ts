@@ -47,12 +47,30 @@ export class TipoProductoRepository implements Repository <TipoProducto>{
         }
     }	
 
-    public async remove(item: { id: string}): Promise<void> {
+    public async remove(item: { id: string }): Promise<void> {
         const id = Number.parseInt(item.id);
-        const [result] = (await pool.query('DELETE FROM tipoproducto WHERE id = ?', [id])) as RowDataPacket[];
-        const affectedRows = (result as any).affectedRows;
-        if (affectedRows === 0) {
-            throw new Error('No se pudo eliminar el tipo de producto');
-        }
-
-    }}
+            // Primero elimina las entradas en `lineapedido`
+            const [result1] = await pool.query(
+                'DELETE FROM lineapedido WHERE id_producto IN (SELECT id FROM producto WHERE id_tipo_producto = ?);',
+                [id]
+            );
+    
+            // Luego elimina las entradas en `producto`
+            const [result2] = await pool.query(
+                'DELETE FROM producto WHERE id_tipo_producto = ?;',
+                [id]
+            );
+    
+            // Finalmente elimina el tipo de producto en `tipoproducto`
+            const [result3] = await pool.query(
+                'DELETE FROM tipoproducto WHERE id = ?;',
+                [id]
+            );
+    
+            const affectedRows = (result1 as any).affectedRows + (result2 as any).affectedRows + (result3 as any).affectedRows;
+    
+            if (affectedRows === 0) {
+                throw new Error('No se pudo eliminar el tipo de producto');
+            }
+    }
+    }
