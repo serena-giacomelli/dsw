@@ -20,11 +20,11 @@ VALUES
 ('Muebles exteriores', 'Muebles para uso en jardines y patios.');
 
 -- Productos
-INSERT INTO Producto (nombre, descripcion, cantidad, id_tipo_producto)
+INSERT INTO Producto (nombre, descripcion, cantidad, id_tipo_producto,precio)
 VALUES 
-('Escritorio Moderno', 'Escritorio de madera para oficina', 10, 1),
-('Sofá de cuero', 'Sofá de cuero para sala de estar', 5, 2),
-('Mesa de jardín', 'Mesa para exteriores, resistente al agua', 12, 3);
+('Escritorio Moderno', 'Escritorio de madera para oficina', 10, 1,100),
+('Sofá de cuero', 'Sofá de cuero para sala de estar', 5, 2,200),
+('Mesa de jardín', 'Mesa para exteriores, resistente al agua', 12, 3,300);
 
 -- Empresas
 INSERT INTO Empresa (nombre_emp, razon_social, cuil, sitio_web)
@@ -99,11 +99,11 @@ VALUES
 ('Muebles de dormitorio', 'Muebles como camas, mesas de luz, roperos.');
 
 -- Nuevos Productos
-INSERT INTO Producto (nombre, descripcion, cantidad, id_tipo_producto)
+INSERT INTO Producto (nombre, descripcion, cantidad, id_tipo_producto,precio)
 VALUES 
-('Alacena de madera', 'Alacena de madera para cocina', 8, 4),
-('Cama matrimonial', 'Cama matrimonial con somier incluido', 6, 5),
-('Mesa de luz', 'Mesa de luz con dos cajones', 15, 5);
+('Alacena de madera', 'Alacena de madera para cocina', 8, 4,100),
+('Cama matrimonial', 'Cama matrimonial con somier incluido', 6, 5,200),
+('Mesa de luz', 'Mesa de luz con dos cajones', 15, 5,300);
 
 -- Nuevas Empresas
 INSERT INTO Empresa (nombre_emp, razon_social, cuil, sitio_web)
@@ -174,12 +174,12 @@ VALUES
 ('Muebles de sala', 'Muebles como mesas de centro, estanterías, y sillones.');
 
 -- Más Productos
-INSERT INTO Producto (nombre, descripcion, cantidad, id_tipo_producto)
+INSERT INTO Producto (nombre, descripcion, cantidad, id_tipo_producto,precio)
 VALUES 
-('Cama infantil', 'Cama para niños con baranda de seguridad', 7, 6),
-('Escritorio infantil', 'Escritorio para niños con cajoneras', 10, 6),
-('Mesa de centro', 'Mesa de centro de madera para sala de estar', 12, 7),
-('Estantería modular', 'Estantería modular para sala de estar', 6, 7);
+('Cama infantil', 'Cama para niños con baranda de seguridad', 7, 6,100),
+('Escritorio infantil', 'Escritorio para niños con cajoneras', 10, 6,200),
+('Mesa de centro', 'Mesa de centro de madera para sala de estar', 12, 7,300),
+('Estantería modular', 'Estantería modular para sala de estar', 6, 7,400);
 
 -- Más Empresas
 INSERT INTO Empresa (nombre_emp, razon_social, cuil, sitio_web)
@@ -242,12 +242,12 @@ VALUES
 ('Muebles de almacenamiento', 'Muebles diseñados para el almacenamiento, como baúles y estanterías.');
 
 -- Nuevos Productos
-INSERT INTO Producto (nombre, descripcion, cantidad, id_tipo_producto)
+INSERT INTO Producto (nombre, descripcion, cantidad, id_tipo_producto,precio)
 VALUES 
-('Vanidad de baño', 'Vanidad de baño con lavabo incluido', 10, 6),
-('Estantería de almacenamiento', 'Estantería alta para almacenamiento', 15, 7),
-('Baúl decorativo', 'Baúl decorativo de madera para almacenamiento', 8, 7),
-('Mueble de baño moderno', 'Mueble de baño contemporáneo con espejo', 5, 6);
+('Vanidad de baño', 'Vanidad de baño con lavabo incluido', 10, 6,100),
+('Estantería de almacenamiento', 'Estantería alta para almacenamiento', 15, 7,200),
+('Baúl decorativo', 'Baúl decorativo de madera para almacenamiento', 8, 7,300),
+('Mueble de baño moderno', 'Mueble de baño contemporáneo con espejo', 5, 6,400);
 
 -- Nuevos Pedidos
 INSERT INTO Pedido (fecha_pedido, total, tipo_entrega, estado, id_usuario, id_transportista)
