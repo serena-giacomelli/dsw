@@ -1,4 +1,8 @@
 -- Crear las tablas sin dependencias primero
+CREATE USER IF NOT EXISTS 'lasLindas'@'%' IDENTIFIED BY 'Resentidas3';
+GRANT ALL PRIVILEGES ON *.* TO 'lasLindas'@'%' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+
 drop schema if exists muebles;
 create schema muebles;
 use muebles;
@@ -30,6 +34,7 @@ CREATE TABLE Producto (
     descripcion TEXT,
     cantidad INT,
     precio double,
+    precio_oferta double,
     id_tipo_producto INT,
     FOREIGN KEY (id_tipo_producto) REFERENCES TipoProducto(id)
 );
