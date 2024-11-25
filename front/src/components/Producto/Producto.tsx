@@ -6,8 +6,8 @@ interface Producto {
     nombre: string;
     descripcion: string;
     cantidad: number;
-    onEdit: () => void; // Función para manejar la edición
-    onDelete: () => void; // Función para manejar la eliminación
+    onEdit: () => void; 
+    onDelete: () => void; 
 }
 
 const Producto: React.FC<Producto> = ({ id, nombre, descripcion, cantidad, onEdit, onDelete }) => {

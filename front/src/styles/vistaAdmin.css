@@ -6,7 +6,7 @@ body{
 }
 
 .vista-admin {
-    background-color: #f9f5ec; /* Beige claro */
+    background-color: #f9f5ec; 
     color: #333;
     font-family: 'Arial', sans-serif;
     padding: 20px;
@@ -17,7 +17,7 @@ body{
     text-align: center;
     font-size: 2.5em;
     margin-bottom: 20px;
-    color: #6a5d4d; /* Beige más oscuro */
+    color: #6a5d4d; 
 }
 
 .contenedores {
@@ -28,8 +28,8 @@ body{
 
 .contenedor {
     flex: 1;
-    background-color: #fff; /* Blanco */
-    border: 1px solid #d3d3d3; /* Gris claro */
+    background-color: #fff; 
+    border: 1px solid #d3d3d3;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     padding: 15px;
@@ -37,9 +37,9 @@ body{
 
 .contenedor h2 {
     font-size: 1.8em;
-    color: #8b7b5b; /* Beige más claro */
+    color: #8b7b5b;
     margin-bottom: 15px;
-    border-bottom: 2px solid #e5d7c1; /* Beige suave */
+    border-bottom: 2px solid #e5d7c1; 
     padding-bottom: 10px;
 }
 

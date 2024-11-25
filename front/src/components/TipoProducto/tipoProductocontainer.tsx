@@ -36,7 +36,7 @@ const ProductoListContainer = () => {
             });
             const data = await response.json();
             setTiposProducto([...tiposProducto, data]);
-            setNewTipoProducto({ id: 0, nombre: "", descripcion: "" }); // Reset form
+            setNewTipoProducto({ id: 0, nombre: "", descripcion: "" }); 
         } catch (error) {
             console.error("Error al crear el tipo de producto:", error);
         }
@@ -53,8 +53,8 @@ const ProductoListContainer = () => {
                 body: JSON.stringify(editingTipoProducto),
             });
             if (response.ok) {
-                fetchTiposProducto(); // Refresh type product list
-                setEditingTipoProducto(null); // Reset editing state
+                fetchTiposProducto(); 
+                setEditingTipoProducto(null); 
             }
         } catch (error) {
             console.error("Error al actualizar el tipo de producto:", error);

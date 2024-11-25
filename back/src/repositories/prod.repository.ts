@@ -63,19 +63,17 @@ export class ProductoRepository implements Repository<Producto> {
     public async remove(item: { id: string }): Promise<void> {
         const id = Number.parseInt(item.id);
 
-        // Primero elimina en `lineapedido`
         const [result1] = await pool.query(
             'DELETE FROM lineapedido WHERE id_producto = ?;',
             [id]
         );
 
-        // Luego elimina en `producto`
         const [result2] = await pool.query(
             'DELETE FROM producto WHERE id = ?;',
             [id]
         );
 
-        // Verificar si alguna fila fue afectada en la primera y segunda consulta
+
         const affectedRows = (result1 as any).affectedRows + (result2 as any).affectedRows;
         if (affectedRows === 0) {
             throw new Error('No se pudo eliminar el producto');
@@ -96,6 +94,8 @@ export class ProductoRepository implements Repository<Producto> {
             ORDER BY tp.nombre` , [codtipoProducto]);
         return productos as Producto[];
     }
+
+    
     public async removeOferta(item: { id: string }): Promise<void> {
         const id = Number.parseInt(item.id);
         const [result] = await pool.query(

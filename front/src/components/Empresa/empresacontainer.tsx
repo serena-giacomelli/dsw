@@ -37,7 +37,7 @@ const empresaContainer = () =>{
             });
             const data = await response.json();
             setEmpresa([...empresa, data]);
-            setNewEmpresa({id: 0, nombre: "", razonSocial: "", cuil: "", sitioWeb: "" }); // Reset form
+            setNewEmpresa({id: 0, nombre: "", razonSocial: "", cuil: "", sitioWeb: "" }); 
         } catch (error) {
             console.error("Error al cargar la empresa:", error);
         }
@@ -54,8 +54,8 @@ const empresaContainer = () =>{
                 body: JSON.stringify(editingEmpresa),
             });
             if (response.ok) {
-                fetchEmpresa(); // Refresh empresas list
-                setEditingEmpresa(null); // Reset editing state
+                fetchEmpresa(); 
+                setEditingEmpresa(null); 
             }
         } catch (error) {
             console.error("Error al actualizar los datos de la empresa:", error);

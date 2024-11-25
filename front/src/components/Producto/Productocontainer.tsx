@@ -75,13 +75,13 @@ const ProductListContainer: React.FC = () => {
         const producto = productos.find(p => p.id === id);
         if (!producto) return;
 
-        const descuentoAplicado = descuento[id] || 0; // Obtén el descuento ingresado o 0 si no se ingresó nada
+        const descuentoAplicado = descuento[id] || 0; 
         if (descuentoAplicado <= 0 || descuentoAplicado > 100) {
             alert("Por favor, ingresa un porcentaje de descuento válido (entre 1 y 100).");
             return;
         }
 
-        const nuevoPrecio = producto.precio * (1 - descuentoAplicado / 100); // Calcula el nuevo precio
+        const nuevoPrecio = producto.precio * (1 - descuentoAplicado / 100); 
         const productoConOferta = { ...producto, precio_oferta: nuevoPrecio };
 
         try {
@@ -193,9 +193,9 @@ const ProductListContainer: React.FC = () => {
                 </div>
                 <button
                     onClick={() => {
-                        fetchProductos(); // Vuelve a cargar todos los productos
-                        setCantidadFiltro(""); // Restablece el filtro de cantidad
-                        setTipoProductoFiltro(""); // Restablece el filtro de tipo
+                        fetchProductos(); 
+                        setCantidadFiltro(""); 
+                        setTipoProductoFiltro(""); 
                     }}
                 >
                     Mostrar todos los productos

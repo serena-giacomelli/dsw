@@ -35,7 +35,7 @@ const transportistaListContainer = () => {
             });
             const data = await response.json();
             setTransportista([...transportista, data]);
-            setNewTransport({ nombre: "", contacto: "", id: 0 }); // Reset form
+            setNewTransport({ nombre: "", contacto: "", id: 0 }); 
         } catch (error) {
             console.error("Error al cargar el transportista:", error);
         }
@@ -52,8 +52,8 @@ const transportistaListContainer = () => {
                 body: JSON.stringify(editingTransport),
             });
             if (response.ok) {
-                fetchTransport(); // Refresh transpostist list
-                setEditingTransport(null); // Reset editing state
+                fetchTransport(); 
+                setEditingTransport(null); 
             }
         } catch (error) {
             console.error("Error al actualizar los datos del transportista:", error);

@@ -39,7 +39,7 @@ const UserListContainer = () => {
             });
             const data = await response.json();
             setUsuarios([...usuarios, data]);
-            setNewUser({ id: "", nombre: "", apellido: "", dni: "", fechaNacimiento: "", mail: "" }); // Reset form
+            setNewUser({ id: "", nombre: "", apellido: "", dni: "", fechaNacimiento: "", mail: "" }); 
         } catch (error) {
             console.error("Error al crear el usuario:", error);
         }
@@ -56,8 +56,8 @@ const UserListContainer = () => {
                 body: JSON.stringify(editingUser),
             });
             if (response.ok) {
-                fetchUsuarios(); // Refresh user list
-                setEditingUser(null); // Reset editing state
+                fetchUsuarios(); 
+                setEditingUser(null); 
             }
         } catch (error) {
             console.error("Error al actualizar el usuario:", error);
