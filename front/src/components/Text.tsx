@@ -1,4 +1,4 @@
-import React from "react";  // Import React
+import React from "react";
 import { useState } from "react";
 import TextH2 from "./TextH2";
 

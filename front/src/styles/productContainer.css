@@ -38,8 +38,8 @@ li {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    min-height: 120px; /* Altura mínima para uniformidad */
-    transition: transform 0.2s; /* Suaviza los cambios al hover */
+    min-height: 120px; 
+    transition: transform 0.2s;
 }
 
 li:hover {
@@ -62,9 +62,9 @@ li div {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 15px; /* Aumenta el espacio entre los botones */
+    gap: 15px;
     margin-top: 10px;
-    justify-content: flex-start; /* Alinea los botones al inicio */
+    justify-content: flex-start;
 }
 
 button {
@@ -76,8 +76,8 @@ button {
     cursor: pointer;
     transition: background-color 0.3s, transform 0.2s;
     font-size: 0.9rem;
-    width: 120px; /* Ancho fijo */
-    margin: 2px; /* Resetea margen previo */
+    width: 120px;
+    margin: 2px; 
 }
 
 button:hover {
@@ -89,8 +89,8 @@ input {
     border: 1px solid #d3d3d3;
     border-radius: 5px;
     padding: 8px;
-    width: 100%; /* Usa todo el espacio disponible */
-    max-width: 400px; /* Ancho máximo para evitar variaciones */
+    width: 100%;
+    max-width: 400px; 
     font-size: 0.9rem;
     text-align: center;
     margin-bottom: 10px;
@@ -99,7 +99,7 @@ input {
 .precio-descuento {
     font-weight: bold;
     color: green;
-    margin-left: 8px; /* Ajusta este margen según tus necesidades */
+    margin-left: 8px;
 }
 
 .filters {
@@ -111,7 +111,7 @@ input {
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     text-align: center;
-    min-height: 150px; /* Mantiene la altura mínima constante */
+    min-height: 150px;
 }
 
 .filters h3 {
@@ -139,9 +139,9 @@ input {
     margin-bottom: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    display: flex; /* Flex para el layout */
+    display: flex;
     flex-direction: column;
-    align-items: flex-start; /* Alinea el contenido a la izquierda */
+    align-items: flex-start; 
 }
 
 .new-product-form h2 {
@@ -149,26 +149,26 @@ input {
     color: #6a5d4d;
     margin-bottom: 20px;
     text-align: center;
-    width: 100%; /* Centra horizontalmente */
+    width: 100%;
 }
 
 .new-product-form .form-group {
-    display: flex; /* Usa flex para alinear los elementos */
+    display: flex;
     align-items: center;
     margin-bottom: 15px;
-    width: 100%; /* Asegura que se ajuste al contenedor */
+    width: 100%;
 }
 
 .new-product-form label {
     font-size: 0.9rem;
     color: #6a5d4d;
-    margin-right: 15px; /* Espacio entre el label y el input */
-    width: 120px; /* Ancho fijo para alinear las etiquetas */
-    text-align: right; /* Alinea el texto a la derecha */
+    margin-right: 15px;
+    width: 120px;
+    text-align: right;
 }
 
 .new-product-form input {
-    flex-grow: 1; /* Deja que los inputs usen el espacio restante */
+    flex-grow: 1;
     border: 1px solid #d3d3d3;
     border-radius: 5px;
     padding: 8px;

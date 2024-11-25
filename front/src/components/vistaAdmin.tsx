@@ -1,4 +1,4 @@
-// VistaAdmin.tsx
+
 import React from "react";
 import UsuarioContainer from "./Usuario/Usuariocontainer.tsx";
 import ProductListContainer from "./Producto/Productocontainer.tsx";

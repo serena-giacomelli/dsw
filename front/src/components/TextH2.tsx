@@ -1,4 +1,4 @@
-import React, { useState } from "react"; // Import React
+import React, { useState } from "react";
 
 const TextH2: React.FC = () => {
     const [text, setText]=useState("");
