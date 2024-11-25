@@ -33,7 +33,6 @@ CREATE TABLE Producto (
     descripcion TEXT,
     cantidad INT,
     precio double,
-    precio_oferta double,
     id_tipo_producto INT,
     FOREIGN KEY (id_tipo_producto) REFERENCES TipoProducto(id)
 );

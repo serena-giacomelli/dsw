@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import '../../styles/productContainer.css';
+import { useLocation } from "react-router-dom";
 
 interface ProductoType {
     id: number;
@@ -19,6 +20,9 @@ const ProductListContainer: React.FC = () => {
     const [editingProduct, setEditingProduct] = useState<ProductoType | null>(null);
     const [cantidadFiltro, setCantidadFiltro] = useState<number | "">("");
     const [tipoProductoFiltro, setTipoProductoFiltro] = useState<number | "">("");
+    const [descuento, setDescuento] = useState<{ [id: number]: number }>({});
+    const location = useLocation();
+        
 
     const fetchProductos = async () => {
         setLoading(true);
@@ -71,8 +75,13 @@ const ProductListContainer: React.FC = () => {
         const producto = productos.find(p => p.id === id);
         if (!producto) return;
 
-        const nuevoPrecio = producto.precio * 0.7; // Baja el precio en un 30%
-        // Actualiza el producto con el nuevo precio
+        const descuentoAplicado = descuento[id] || 0; // Obtén el descuento ingresado o 0 si no se ingresó nada
+        if (descuentoAplicado <= 0 || descuentoAplicado > 100) {
+            alert("Por favor, ingresa un porcentaje de descuento válido (entre 1 y 100).");
+            return;
+        }
+
+        const nuevoPrecio = producto.precio * (1 - descuentoAplicado / 100); // Calcula el nuevo precio
         const productoConOferta = { ...producto, precio_oferta: nuevoPrecio };
 
         try {
@@ -82,8 +91,6 @@ const ProductListContainer: React.FC = () => {
                 body: JSON.stringify(productoConOferta),
             });
             if (!response.ok) throw new Error("Error al poner el producto en oferta");
-
-            // Después de actualizar el precio, actualiza la lista de productos
             fetchProductos();
         } catch (error: any) {
             setError(error.message);
@@ -92,16 +99,13 @@ const ProductListContainer: React.FC = () => {
 
     const handleDeleteOferta = async (id: number) => {
         try {
-            // Llamada para actualizar el producto y quitar el precio_oferta
             const response = await fetch(`/api/producto/${id}/eliminar-oferta`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ precio_oferta: null }), // Enviar el valor null para eliminar el precio_oferta
+                body: JSON.stringify({ precio_oferta: null }),
             });
 
             if (!response.ok) throw new Error("Error al sacar el producto de oferta");
-
-            // Después de eliminar el precio_oferta, actualiza la lista de productos
             fetchProductos();
         } catch (error: any) {
             setError(error.message);
@@ -118,7 +122,6 @@ const ProductListContainer: React.FC = () => {
             return;
         }
         try {
-            // Llamada para crear el producto
             const response = await fetch("/api/producto", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -127,19 +130,12 @@ const ProductListContainer: React.FC = () => {
 
             if (!response.ok) throw new Error("Error al crear el producto");
 
-            // Obtener la respuesta con el ID del producto creado (se asume que devuelves solo el ID)
-            const insertId: number = await response.json();
-
-            // Después de crear el producto, actualiza la lista de productos
             fetchProductos();
-
-            // Resetear el formulario del nuevo producto
             setNewProduct({ id: 0, nombre: "", descripcion: "", cantidad: 0, id_tipo_producto: 0, precio: 0, precio_oferta: 0 });
         } catch (error: any) {
             setError(error.message);
         }
     };
-
 
     const updateProducto = async (id: number) => {
         if (!editingProduct) return;
@@ -165,19 +161,16 @@ const ProductListContainer: React.FC = () => {
         try {
             const response = await fetch(`/api/producto/${id}`, { method: "DELETE" });
             if (!response.ok) throw new Error("Error al eliminar el producto");
-            // Aquí, eliminamos el producto localmente después de borrarlo en el servidor
             setProductos(prevProductos => prevProductos.filter(producto => producto.id !== id));
         } catch (error: any) {
             setError(error.message);
         }
     };
 
-
     return (
         <div className="product-list-container">
             <h1>Lista de Productos</h1>
-
-            {/* Filtros */}
+    
             <div className="filters">
                 <h3>Filtrar productos</h3>
                 <div>
@@ -198,44 +191,147 @@ const ProductListContainer: React.FC = () => {
                     />
                     <button onClick={fetchProductosPorTipo}>Buscar por tipo de producto</button>
                 </div>
+                <button
+                    onClick={() => {
+                        fetchProductos(); // Vuelve a cargar todos los productos
+                        setCantidadFiltro(""); // Restablece el filtro de cantidad
+                        setTipoProductoFiltro(""); // Restablece el filtro de tipo
+                    }}
+                >
+                    Mostrar todos los productos
+                </button>
             </div>
-            {loading ? <p>Cargando productos...</p> : error ? <p className="error">{error}</p> : (
+    
+            {loading ? (
+                <p>Cargando productos...</p>
+            ) : error ? (
+                <p className="error">{error}</p>
+            ) : (
                 <ul>
-                    {productos.map(producto => (
+                    {productos.map((producto) => (
                         <li key={producto.id}>
                             <h3>{producto.nombre}</h3>
                             <p>{producto.descripcion}</p>
                             <p>Cantidad: {producto.cantidad}</p>
                             <p>
-                                Precio: ${producto.precio_oferta ? (
+                                Precio:
+                                {producto.precio_oferta > 0 ? (
                                     <>
-                                        <span style={{ textDecoration: 'line-through' }}>${producto.precio}</span>
-                                        ${producto.precio_oferta}
+                                        <span style={{ textDecoration: "line-through", marginRight: "8px" }}>
+                                            ${producto.precio}
+                                        </span>
+                                        <span className="precio-descuento">${producto.precio_oferta}</span>
                                     </>
                                 ) : (
-                                    producto.precio
+                                    `$${producto.precio}`
                                 )}
                             </p>
+                            <div>
+                                <input
+                                    type="number"
+                                    placeholder="% descuento"
+                                    value={descuento[producto.id] || ""}
+                                    onChange={(e) =>
+                                        setDescuento({ ...descuento, [producto.id]: Number(e.target.value) })
+                                    }
+                                    style={{ width: "120px", marginRight: "8px" }}
+                                />
+                                <button onClick={() => handleOferta(producto.id)}>Poner en oferta</button>
+                            </div>
+                            {producto.precio_oferta > 0 && (
+                                <button onClick={() => handleDeleteOferta(producto.id)}>
+                                    Sacar de oferta
+                                </button>
+                            )}
                             <button onClick={() => setEditingProduct(producto)}>Editar</button>
                             <button onClick={() => deleteProducto(producto.id)}>Eliminar</button>
-                            <button onClick={() => handleOferta(producto.id)}>Poner en oferta</button>
-                            {producto.precio_oferta && (
-                                <button onClick={() => handleDeleteOferta(producto.id)}>Sacar de oferta</button>
-                            )}
                         </li>
                     ))}
                 </ul>
 
+                
             )}
-            <div className="new-product-form">
-                <h2>Agregar Nuevo Producto</h2>
-                <input type="text" placeholder="Nombre" value={newProduct.nombre} onChange={e => setNewProduct({ ...newProduct, nombre: e.target.value })} />
-                <input type="text" placeholder="Descripción" value={newProduct.descripcion} onChange={e => setNewProduct({ ...newProduct, descripcion: e.target.value })} />
-                <input type="number" placeholder="Cantidad" value={newProduct.cantidad} onChange={e => setNewProduct({ ...newProduct, cantidad: Number(e.target.value) })} />
-                <input type="number" placeholder="Tipo de Producto" value={newProduct.id_tipo_producto} onChange={e => setNewProduct({ ...newProduct, id_tipo_producto: Number(e.target.value) })} />
-                <input type="number" placeholder="Precio" value={newProduct.precio} onChange={e => setNewProduct({ ...newProduct, precio: Number(e.target.value) })} />
-                <button onClick={createProducto}>Agregar Producto</button>
-            </div>
+    
+        <div className="new-product-form">
+                    <h2>{editingProduct ? "Editar Producto" : "Agregar Nuevo Producto"}</h2>
+                    <div className="form-group">
+                        <label htmlFor="nombre">Nombre</label>
+                        <input
+                            id="nombre"
+                            type="text"
+                            placeholder="Nombre"
+                            value={editingProduct ? editingProduct.nombre : newProduct.nombre}
+                            onChange={(e) =>
+                                editingProduct
+                                    ? setEditingProduct({ ...editingProduct, nombre: e.target.value })
+                                    : setNewProduct({ ...newProduct, nombre: e.target.value })
+                            }
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="descripcion">Descripción</label>
+                        <input
+                            id="descripcion"
+                            type="text"
+                            placeholder="Descripción"
+                            value={editingProduct ? editingProduct.descripcion : newProduct.descripcion}
+                            onChange={(e) =>
+                                editingProduct
+                                    ? setEditingProduct({ ...editingProduct, descripcion: e.target.value })
+                                    : setNewProduct({ ...newProduct, descripcion: e.target.value })
+                            }
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="tipo">Tipo de producto</label>
+                        <input
+                            id="tipo"
+                            type="number"
+                            placeholder="Tipo de producto"
+                            value={editingProduct ? editingProduct.id_tipo_producto : newProduct.id_tipo_producto}
+                            onChange={(e) =>
+                                editingProduct
+                                    ? setEditingProduct({ ...editingProduct, id_tipo_producto: Number(e.target.value) })
+                                    : setNewProduct({ ...newProduct, id_tipo_producto: Number(e.target.value) })
+                            }
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="precio">Precio</label>
+                        <input
+                            id="precio"
+                            type="number"
+                            placeholder="Precio"
+                            value={editingProduct ? editingProduct.precio : newProduct.precio}
+                            onChange={(e) =>
+                                editingProduct
+                                    ? setEditingProduct({ ...editingProduct, precio: Number(e.target.value) })
+                                    : setNewProduct({ ...newProduct, precio: Number(e.target.value) })
+                            }
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="cantidad">Cantidad</label>
+                        <input
+                            id="cantidad"
+                            type="number"
+                            placeholder="Cantidad"
+                            value={editingProduct ? editingProduct.cantidad : newProduct.cantidad}
+                            onChange={(e) =>
+                                editingProduct
+                                    ? setEditingProduct({ ...editingProduct, cantidad: Number(e.target.value) })
+                                    : setNewProduct({ ...newProduct, cantidad: Number(e.target.value) })
+                            }
+                        />
+                    </div>
+                    <button
+                        onClick={
+                            editingProduct ? () => updateProducto(editingProduct.id) : createProducto
+                        }
+                    >
+                        {editingProduct ? "Guardar cambios" : "Crear producto"}
+                    </button>
+                </div>
         </div>
     );
 };

@@ -1,12 +1,20 @@
-/* styles/ProductListContainer.css */
-/* styles/index.css o en cada archivo CSS */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
-body{
+
+body {
     font-family: 'Roboto', sans-serif;
+    background-color: #f7f6f3;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    min-height: 100vh;
+    box-sizing: border-box;
 }
 
 h1 {
-    font-size: 2em;
+    font-size: 2rem;
     color: #6a5d4d;
     margin-bottom: 20px;
     text-align: center;
@@ -15,17 +23,48 @@ h1 {
 ul {
     list-style: none;
     padding: 0;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
 }
 
 li {
-    background-color: #fefefe;
+    background-color: #ffffff;
     border: 1px solid #e5d7c1;
-    border-radius: 5px;
-    padding: 15px;
-    margin-bottom: 10px;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    align-items: flex-start;
+    min-height: 120px; /* Altura mínima para uniformidad */
+    transition: transform 0.2s; /* Suaviza los cambios al hover */
+}
+
+li:hover {
+    transform: translateY(-3px);
+}
+
+li h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #6a5d4d;
+}
+
+li p {
+    margin: 8px 0;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+li div {
+    display: flex;
+    flex-wrap: wrap;
     align-items: center;
+    gap: 15px; /* Aumenta el espacio entre los botones */
+    margin-top: 10px;
+    justify-content: flex-start; /* Alinea los botones al inicio */
 }
 
 button {
@@ -33,19 +72,137 @@ button {
     color: white;
     border: none;
     border-radius: 5px;
-    padding: 8px 12px;
+    padding: 8px 10px ;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, transform 0.2s;
+    font-size: 0.9rem;
+    width: 120px; /* Ancho fijo */
+    margin: 2px; /* Resetea margen previo */
 }
 
 button:hover {
     background-color: #8b7b5b;
+    transform: translateY(-2px);
 }
 
 input {
     border: 1px solid #d3d3d3;
     border-radius: 5px;
-    padding: 10px;
-    width: calc(100% - 22px);
+    padding: 8px;
+    width: 100%; /* Usa todo el espacio disponible */
+    max-width: 400px; /* Ancho máximo para evitar variaciones */
+    font-size: 0.9rem;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.precio-descuento {
+    font-weight: bold;
+    color: green;
+    margin-left: 8px; /* Ajusta este margen según tus necesidades */
+}
+
+.filters {
+    width: 100%;
+    max-width: 800px;
+    background-color: #ffffff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    min-height: 150px; /* Mantiene la altura mínima constante */
+}
+
+.filters h3 {
     margin-bottom: 15px;
+    color: #6a5d4d;
+    font-size: 1.2rem;
+}
+
+.filters div {
+    margin-bottom: 15px;
+}
+
+.filters label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+    color: #6a5d4d;
+}
+
+.new-product-form {
+    width: 700px;
+    max-width: 800px;
+    background-color: #ffffff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex; /* Flex para el layout */
+    flex-direction: column;
+    align-items: flex-start; /* Alinea el contenido a la izquierda */
+}
+
+.new-product-form h2 {
+    font-size: 1.5rem;
+    color: #6a5d4d;
+    margin-bottom: 20px;
+    text-align: center;
+    width: 100%; /* Centra horizontalmente */
+}
+
+.new-product-form .form-group {
+    display: flex; /* Usa flex para alinear los elementos */
+    align-items: center;
+    margin-bottom: 15px;
+    width: 100%; /* Asegura que se ajuste al contenedor */
+}
+
+.new-product-form label {
+    font-size: 0.9rem;
+    color: #6a5d4d;
+    margin-right: 15px; /* Espacio entre el label y el input */
+    width: 120px; /* Ancho fijo para alinear las etiquetas */
+    text-align: right; /* Alinea el texto a la derecha */
+}
+
+.new-product-form input {
+    flex-grow: 1; /* Deja que los inputs usen el espacio restante */
+    border: 1px solid #d3d3d3;
+    border-radius: 5px;
+    padding: 8px;
+    font-size: 0.9rem;
+    width: 100%; 
+}
+
+.new-product-form button {
+    display: block;
+    width: 100%;
+    max-width: 200px;
+    margin: 20px auto 0;
+    background-color: #6a5d4d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+.new-product-form button:hover {
+    background-color: #8b7b5b;
+}
+
+
+.product-list-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    text-align: center;
 }
