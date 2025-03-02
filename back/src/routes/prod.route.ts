@@ -4,7 +4,7 @@ import { findAll, findOne, add, update, remove, findByStock, findByTipoProducto,
 export const prodRouter = Router()
 
 prodRouter.get('/cantidad/:cantidad', findByStock)
-prodRouter.get('/categoria/:codtipoProducto', findByTipoProducto);
+prodRouter.get('/categoria/:tipo', findByTipoProducto);
 prodRouter.put('/:id/eliminar-oferta', removeOferta);
 prodRouter.get('/', findAll)
 prodRouter.get('/:id', findOne)

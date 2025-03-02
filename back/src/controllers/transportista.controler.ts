@@ -1,63 +1,57 @@
 import {Request, Response} from 'express'
-import { TransportistaRepository} from '../repositories/transportista.repository.js'
+import { orm } from '../shared/db/orm.js';
 import { Transportista } from '../models/transportista.entity.js'
 
-const repository = new TransportistaRepository()
+const em  = orm.em
 
 async function findAll(req: Request, res: Response) {
-    const transportistas = await repository.findAll(); 
-    res.json(transportistas); 
-}
+    try {
+        const transportistas = await em.find(Transportista, {})
+        res.status(200).json({ message: 'found all transportistas', data: transportistas })
+    } catch (error:any) {
+        res.status(500).json({ message: error.message })
+}}
 
 
 async function findOne(req: Request, res: Response) {
     try {
-        const { id } = req.params;
-        const transportista = await repository.findOne({ id }); 
-        if (transportista) {
-            res.json(transportista);
-        } else {
-            res.status(404).json({ message: 'transportista no encontrado' });
-        }
-    } catch (error) {
-        res.status(500).json({ message: 'Error al obtener el transportista', error });
+        const id = Number.parseInt(req.params.id);
+        const transportista = await em.findOneOrFail(Transportista, { id }) 
+        res.status(200).json({ message: 'found one transportista', data: transportista })
+    } catch (error:any) {
+        res.status(500).json({ message: error.message })
     }}
 
 async function add(req: Request, res: Response) {
     try {
-        const transportista = new Transportista(
-            req.body.nombre,
-            req.body.contacto,
-            req.body.id
-        );
-        const result = await repository.add(transportista);
-        res.json(result);
-    } catch (error) {
-        res.status(500).json({ message: 'Error al agregar el trnsportista', error });
+        const transportista = em.create(Transportista, req.body)
+        await em.flush()
+        res.status(201).json({ message: 'transportista created', data: transportista })
+    } 
+    catch (error:any) {
+        res.status(500).json({ message: error.message })
     }}
 
  async function update(req: Request, res: Response) {
     try {
-        const { id } = req.params;
-        const transportista = new Transportista(
-            req.body.nombre,
-            req.body.contacto,
-            req.body.id
-        );
-        const result = await repository.update({ id }, transportista);
-        res.json(result);
-    }   catch (error) {
-        res.status(500).json({ message: 'Error al actualizar el transportista', error });
+        const id = Number.parseInt(req.params.id)
+        const transportista = em.getReference(Transportista, id)
+        em.assign(transportista, req.body)
+        await em.flush()
+        res.status(200).json({ message: 'transportista updated', data: transportista })
+    }   catch (error:any) {
+        res.status(500).json({ message: error.message })
     }  
 }
 
 async function remove(req: Request, res: Response) {
     try {
-        const { id } = req.params;
-        const result = await repository.remove({ id });
-        res.json(result);
-    } catch (error) {
-        res.status(500).json({ message: 'Error al eliminar el transportista', error });
+        const id = Number.parseInt(req.params.id);
+        const transportista = em.getReference(Transportista, id)
+        await em.removeAndFlush(transportista)
+        res.status(200).send({ message: 'transportista removed' })
+    } catch (error:any) {
+        res.status(500).json({ message: error.message })
     }
 }
 

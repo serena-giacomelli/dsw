@@ -1,13 +1,13 @@
 import {Request, Response} from 'express'
 import { orm } from '../shared/db/orm.js';
-import { Pedido } from '../models/pedido.entity.js';
+import { Sucursal } from '../models/sucursal.entity.js';
 
 const em  = orm.em
 
 async function findAll(req: Request, res: Response) {
     try {
-        const pedidos = await em.find(Pedido, {})
-        res.status(200).json({ message: 'found all pedidos', data: pedidos })
+        const sucursales = await em.find(Sucursal, {})
+        res.status(200).json({ message: 'found all sucursales', data: sucursales })
     } catch (error:any) {
         res.status(500).json({ message: error.message })
 }}
@@ -16,17 +16,17 @@ async function findAll(req: Request, res: Response) {
 async function findOne(req: Request, res: Response) {
     try {
         const id = Number.parseInt(req.params.id);
-        const pedido = await em.findOneOrFail(Pedido, { id }) 
-        res.status(200).json({ message: 'found one pedido', data: pedido })
+        const sucursal = await em.findOneOrFail(Sucursal, { id }) 
+        res.status(200).json({ message: 'found one sucursal', data: sucursal })
     } catch (error:any) {
         res.status(500).json({ message: error.message })
     }}
 
 async function add(req: Request, res: Response) {
     try {
-        const pedido = em.create(Pedido, req.body)
+        const sucursal = em.create(Sucursal, req.body)
         await em.flush()
-        res.status(201).json({ message: 'pedido created', data: pedido })
+        res.status(201).json({ message: 'sucursal created', data: sucursal })
     } 
     catch (error:any) {
         res.status(500).json({ message: error.message })
@@ -35,10 +35,10 @@ async function add(req: Request, res: Response) {
  async function update(req: Request, res: Response) {
     try {
         const id = Number.parseInt(req.params.id)
-        const pedido = em.getReference(Pedido, id)
-        em.assign(pedido, req.body)
+        const sucursal = em.getReference(Sucursal, id)
+        em.assign(sucursal, req.body)
         await em.flush()
-        res.status(200).json({ message: 'pedido updated', data: pedido })
+        res.status(200).json({ message: 'sucursal updated', data: sucursal })
     }   catch (error:any) {
         res.status(500).json({ message: error.message })
     }  
@@ -47,9 +47,9 @@ async function add(req: Request, res: Response) {
 async function remove(req: Request, res: Response) {
     try {
         const id = Number.parseInt(req.params.id);
-        const pedido = em.getReference(Pedido, id)
-        await em.removeAndFlush(pedido)
-        res.status(200).send({ message: 'pedido removed' })
+        const sucursal = em.getReference(Sucursal, id)
+        await em.removeAndFlush(sucursal)
+        res.status(200).send({ message: 'sucursal removed' })
     } catch (error:any) {
         res.status(500).json({ message: error.message })
     }

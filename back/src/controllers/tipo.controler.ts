@@ -1,66 +1,60 @@
-import {Request, Response} from "express"
-import { TipoProductoRepository } from "../repositories/tipoProd.repository.js";
-import { TipoProducto } from "../models/tipo.entity.js";
+import {Request, Response} from 'express'
+import { orm } from '../shared/db/orm.js';
+import { Tipo } from '../models/tipo.entity.js';
 
-const repository = new TipoProductoRepository()
+const em  = orm.em
 
-async function findAll(req:Request, res:Response){
-  const tipoP = await repository.findAll(); 
-  res.json (tipoP);
-}
+async function findAll(req: Request, res: Response) {
+    try {
+        const tipos = await em.find(Tipo, {})
+        res.status(200).json({ message: 'found all transportistas', data: tipos })
+    } catch (error:any) {
+        res.status(500).json({ message: error.message })
+}}
 
-async function findOne(req:Request, res:Response) {
-  try {
-    const { id } = req.params;
-    const tipoP = await repository.findOne({ id }); 
-    if (tipoP) {
-        res.json(tipoP);
-    } else {
-        res.status(404).json({ message: 'Tipo  producto no encontrado' });
 
-    }
-} catch (error) {
-    res.status(500).json({ message: 'Error al obtener el tipo producto', error });
-  }
-}
+async function findOne(req: Request, res: Response) {
+    try {
+        const id = Number.parseInt(req.params.id);
+        const tipo = await em.findOneOrFail(Tipo, { id }) 
+        res.status(200).json({ message: 'found one tipo', data: tipo })
+    } catch (error:any) {
+        res.status(500).json({ message: error.message })
+    }}
 
 async function add(req: Request, res: Response) {
-  try {
-      const tipoP = new TipoProducto(
-          req.body.nombre,
-          req.body.descripcion,
-          req.body.id
-      );
-      const result = await repository.add(tipoP);
-      res.json(result);
-  } catch (error) {
-      res.status(500).json({ message: 'Error al agregar el tipo de producto', error });
-  }}
+    try {
+        const tipo = em.create(Tipo, req.body)
+        await em.flush()
+        res.status(201).json({ message: 'tipo created', data: tipo })
+    } 
+    catch (error:any) {
+        res.status(500).json({ message: error.message })
+    }}
 
-async function update(req: Request, res: Response) {
-  try {
-      const { id } = req.params;
-      const tipoP = new TipoProducto(
-        req.body.nombre,
-        req.body.descripcion,
-        req.body.id
-      );
-      const result = await repository.update({ id }, tipoP);
-      res.json(result);
-  }   catch (error) {
-      res.status(500).json({ message: 'Error al actualizar el tipo de producto', error });
-  }  
+ async function update(req: Request, res: Response) {
+    try {
+        const id = Number.parseInt(req.params.id)
+        const tipo = em.getReference(Tipo, id)
+        em.assign(tipo, req.body)
+        await em.flush()
+        res.status(200).json({ message: 'tipo updated', data: tipo })
+    }   catch (error:any) {
+        res.status(500).json({ message: error.message })
+    }  
 }
 
 async function remove(req: Request, res: Response) {
-  try {
-      const { id } = req.params;
-      const result = await repository.remove({ id });
-      res.json(result);
-  } catch (error) {
-      res.status(500).json({ message: 'Error al eliminar el tipo de producto', error });
-  }
+    try {
+        const id = Number.parseInt(req.params.id);
+        const tipo = em.getReference(Tipo, id)
+        await em.removeAndFlush(tipo)
+        res.status(200).send({ message: 'tipo removed' })
+    } catch (error:any) {
+        res.status(500).json({ message: error.message })
+    }
 }
 
 
 export {findAll, findOne, add, update, remove}
+

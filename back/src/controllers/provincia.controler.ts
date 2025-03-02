@@ -1,13 +1,13 @@
 import {Request, Response} from 'express'
 import { orm } from '../shared/db/orm.js';
-import { Pedido } from '../models/pedido.entity.js';
+import { Provincia } from '../models/provincia.entity.js';
 
 const em  = orm.em
 
 async function findAll(req: Request, res: Response) {
     try {
-        const pedidos = await em.find(Pedido, {})
-        res.status(200).json({ message: 'found all pedidos', data: pedidos })
+        const provincias = await em.find(Provincia, {})
+        res.status(200).json({ message: 'found all provincias', data: provincias })
     } catch (error:any) {
         res.status(500).json({ message: error.message })
 }}
@@ -16,17 +16,17 @@ async function findAll(req: Request, res: Response) {
 async function findOne(req: Request, res: Response) {
     try {
         const id = Number.parseInt(req.params.id);
-        const pedido = await em.findOneOrFail(Pedido, { id }) 
-        res.status(200).json({ message: 'found one pedido', data: pedido })
+        const provincia = await em.findOneOrFail(Provincia, { id }) 
+        res.status(200).json({ message: 'found one provincia', data: provincia })
     } catch (error:any) {
         res.status(500).json({ message: error.message })
     }}
 
 async function add(req: Request, res: Response) {
     try {
-        const pedido = em.create(Pedido, req.body)
+        const provincia = em.create(Provincia, req.body)
         await em.flush()
-        res.status(201).json({ message: 'pedido created', data: pedido })
+        res.status(201).json({ message: 'provincia created', data: provincia })
     } 
     catch (error:any) {
         res.status(500).json({ message: error.message })
@@ -35,10 +35,10 @@ async function add(req: Request, res: Response) {
  async function update(req: Request, res: Response) {
     try {
         const id = Number.parseInt(req.params.id)
-        const pedido = em.getReference(Pedido, id)
-        em.assign(pedido, req.body)
+        const provincia = em.getReference(Provincia, id)
+        em.assign(provincia, req.body)
         await em.flush()
-        res.status(200).json({ message: 'pedido updated', data: pedido })
+        res.status(200).json({ message: 'provincia updated', data: provincia })
     }   catch (error:any) {
         res.status(500).json({ message: error.message })
     }  
@@ -47,9 +47,9 @@ async function add(req: Request, res: Response) {
 async function remove(req: Request, res: Response) {
     try {
         const id = Number.parseInt(req.params.id);
-        const pedido = em.getReference(Pedido, id)
-        await em.removeAndFlush(pedido)
-        res.status(200).send({ message: 'pedido removed' })
+        const provincia = em.getReference(Provincia, id)
+        await em.removeAndFlush(provincia)
+        res.status(200).send({ message: 'provincia removed' })
     } catch (error:any) {
         res.status(500).json({ message: error.message })
     }

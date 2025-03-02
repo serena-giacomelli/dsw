@@ -1,67 +1,57 @@
 import {Request, Response} from 'express'
-import { EmpresaRepository} from '../repositories/empresa.repository.js'
-import { Empresa } from '../models/empresa.entity.js'
+import { orm } from '../shared/db/orm.js';
+import { Empresa } from '../models/empresa.entity.js';
 
-const repository = new EmpresaRepository()
+const em  = orm.em
 
 async function findAll(req: Request, res: Response) {
-    const empresas = await repository.findAll(); 
-    res.json(empresas); 
-}
+    try {
+        const empresas = await em.find(Empresa, {})
+        res.status(200).json({ message: 'found all empresas', data: empresas })
+    } catch (error:any) {
+        res.status(500).json({ message: error.message })
+}}
 
 
 async function findOne(req: Request, res: Response) {
     try {
-        const { id } = req.params;
-        const empresa = await repository.findOne({ id }); 
-        if (empresa) {
-            res.json(empresa);
-        } else {
-            res.status(404).json({ message: 'empresa no encontrada' });
-        }
-    } catch (error) {
-        res.status(500).json({ message: 'Error al obtener la empresa', error });
+        const id = Number.parseInt(req.params.id);
+        const empresa = await em.findOneOrFail(Empresa, { id }) 
+        res.status(200).json({ message: 'found one empresa', data: empresa })
+    } catch (error:any) {
+        res.status(500).json({ message: error.message })
     }}
 
 async function add(req: Request, res: Response) {
     try {
-        const empresa = new Empresa(
-            req.body.nombre,
-            req.body.cuil,
-            req.body.razonSocial,
-            req.body.id,
-            req.body.sitioWeb
-        );
-        const result = await repository.add(empresa);
-        res.json(result);
-    } catch (error) {
-        res.status(500).json({ message: 'Error al agregar la empresa', error });
+        const empresa = em.create(Empresa, req.body)
+        await em.flush()
+        res.status(201).json({ message: 'empresa created', data: empresa })
+    } 
+    catch (error:any) {
+        res.status(500).json({ message: error.message })
     }}
 
  async function update(req: Request, res: Response) {
     try {
-        const { id } = req.params;
-        const empresa = new Empresa(
-            req.body.nombre,
-            req.body.cuil,
-            req.body.razonSocial,
-            req.body.id,
-            req.body.sitioWeb
-        );
-        const result = await repository.update({ id }, empresa);
-        res.json(result);
-    }   catch (error) {
-        res.status(500).json({ message: 'Error al actualizar la empresa ', error });
+        const id = Number.parseInt(req.params.id)
+        const empresa = em.getReference(Empresa, id)
+        em.assign(empresa, req.body)
+        await em.flush()
+        res.status(200).json({ message: 'empresa updated', data: empresa })
+    }   catch (error:any) {
+        res.status(500).json({ message: error.message })
     }  
 }
 
 async function remove(req: Request, res: Response) {
     try {
-        const { id } = req.params;
-        const result = await repository.remove({ id });
-        res.json(result);
-    } catch (error) {
-        res.status(500).json({ message: 'Error al eliminar la empresa', error });
+        const id = Number.parseInt(req.params.id);
+        const empresa = em.getReference(Empresa, id)
+        await em.removeAndFlush(empresa)
+        res.status(200).send({ message: 'empresa removed' })
+    } catch (error:any) {
+        res.status(500).json({ message: error.message })
     }
 }
 
