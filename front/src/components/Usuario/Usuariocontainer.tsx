@@ -20,7 +20,7 @@ const UserListContainer = () => {
         try {
             const response = await fetch("/api/usuario");
             const data = await response.json();
-            setUsuarios(data);
+            setUsuarios(data.data);
         } catch (error) {
             console.error("Error al traer los usuarios:", error);
         } finally {
@@ -30,6 +30,7 @@ const UserListContainer = () => {
 
     const createUsuario = async () => {
         try {
+            newUser.id = "0";
             const response = await fetch("/api/usuario", {
                 method: "POST",
                 headers: {
@@ -38,7 +39,8 @@ const UserListContainer = () => {
                 body: JSON.stringify(newUser),
             });
             const data = await response.json();
-            setUsuarios([...usuarios, data]);
+            console.log(data.data);
+            setUsuarios([...usuarios, data.data]);
             setNewUser({ id: "", nombre: "", apellido: "", dni: "", fechaNacimiento: "", mail: "" }); 
         } catch (error) {
             console.error("Error al crear el usuario:", error);

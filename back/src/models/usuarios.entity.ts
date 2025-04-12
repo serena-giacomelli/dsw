@@ -15,11 +15,17 @@ export class Usuario extends BaseEntity {
     @Property({nullable:false})
     dni!: string
 
+    @Property({nullable:false})
+    tipoUsuario!: string
+
     @Property({nullable:false}) 
     fechaNacimiento!: string
 
     @Property({nullable:false}) 
     mail!: string
+
+    @Property({nullable:false, hidden: true})
+    password!: string
 
     @ManyToMany(() => Pedido, pedido => pedido.usuarios, {cascade:[Cascade.ALL], owner: true}) //en una relacion muchos a muchos, uno de los lados debe ser owner, osea que tiene que tener la FK})
     pedidos = new Collection<Pedido>(this)

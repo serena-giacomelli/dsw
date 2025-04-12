@@ -7,7 +7,7 @@ const em  = orm.em
 async function findAll(req: Request, res: Response) {
     try {
         const tipos = await em.find(Tipo, {})
-        res.status(200).json({ message: 'found all transportistas', data: tipos })
+        res.status(200).json({ message: 'found all tipos', data: tipos })
     } catch (error:any) {
         res.status(500).json({ message: error.message })
 }}

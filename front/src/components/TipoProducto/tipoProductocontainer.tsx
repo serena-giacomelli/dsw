@@ -17,7 +17,7 @@ const ProductoListContainer = () => {
         try {
             const response = await fetch("/api/tipoP");
             const data = await response.json();
-            setTiposProducto(data);
+            setTiposProducto(data.data);
         } catch (error) {
             console.error("Error al traer los tipos de producto:", error);
         } finally {
@@ -27,7 +27,7 @@ const ProductoListContainer = () => {
 
     const createTipoProducto = async () => {
         try {
-            const response = await fetch("/api/tipoProducto", {
+            const response = await fetch("/api/tipoP", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -45,7 +45,7 @@ const ProductoListContainer = () => {
     const updateTipoProducto = async (id: number) => {
         try {
             if (!editingTipoProducto) return;
-            const response = await fetch(`/api/tipoProducto/${id}`, {
+            const response = await fetch(`/api/tipoP/${id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",

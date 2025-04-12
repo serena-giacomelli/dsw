@@ -7,7 +7,7 @@ interface ProductoType {
     nombre: string;
     descripcion: string;
     cantidad: number;
-    id_tipo_producto: number;
+    tipo: number;
     precio: number;
     precio_oferta: number;
 }
@@ -16,7 +16,7 @@ const ProductListContainer: React.FC = () => {
     const [productos, setProductos] = useState<ProductoType[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [newProduct, setNewProduct] = useState<ProductoType>({ id: 0, nombre: "", descripcion: "", cantidad: 0, id_tipo_producto: 0, precio: 0, precio_oferta: 0 });
+    const [newProduct, setNewProduct] = useState<ProductoType>({ id: 0, nombre: "", descripcion: "", cantidad: 0, tipo: 0, precio: 0, precio_oferta: 0 });
     const [editingProduct, setEditingProduct] = useState<ProductoType | null>(null);
     const [cantidadFiltro, setCantidadFiltro] = useState<number | "">("");
     const [tipoProductoFiltro, setTipoProductoFiltro] = useState<number | "">("");
@@ -30,8 +30,8 @@ const ProductListContainer: React.FC = () => {
         try {
             const response = await fetch("/api/producto");
             if (!response.ok) throw new Error("Error al cargar productos");
-            const data: ProductoType[] = await response.json();
-            setProductos(data);
+            const data = await response.json();
+            setProductos(data.data);
         } catch (error: any) {
             setError(error.message);
         } finally {
@@ -46,8 +46,8 @@ const ProductListContainer: React.FC = () => {
         try {
             const response = await fetch(`/api/producto/cantidad/${cantidadFiltro}`);
             if (!response.ok) throw new Error("No se encontraron productos con el stock especificado");
-            const data: ProductoType[] = await response.json();
-            setProductos(data);
+            const data = await response.json();
+            setProductos(data.data);
         } catch (error: any) {
             setError(error.message);
         } finally {
@@ -62,8 +62,8 @@ const ProductListContainer: React.FC = () => {
         try {
             const response = await fetch(`/api/producto/categoria/${tipoProductoFiltro}`);
             if (!response.ok) throw new Error("No se encontraron productos para el tipo de producto especificado");
-            const data: ProductoType[] = await response.json();
-            setProductos(data);
+            const data = await response.json();
+            setProductos(data.data);
         } catch (error: any) {
             setError(error.message);
         } finally {
@@ -117,7 +117,7 @@ const ProductListContainer: React.FC = () => {
     }, []);
 
     const createProducto = async () => {
-        if (!newProduct.nombre || !newProduct.descripcion || newProduct.cantidad <= 0 || newProduct.id_tipo_producto <= 0 || newProduct.precio <= 0) {
+        if (!newProduct.nombre || !newProduct.descripcion || newProduct.cantidad <= 0 || newProduct.tipo <= 0 || newProduct.precio <= 0) {
             alert("Por favor, completa todos los campos del nuevo producto.");
             return;
         }
@@ -128,14 +128,21 @@ const ProductListContainer: React.FC = () => {
                 body: JSON.stringify(newProduct),
             });
 
-            if (!response.ok) throw new Error("Error al crear el producto");
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || "Error al crear el producto");
+            }
 
             fetchProductos();
-            setNewProduct({ id: 0, nombre: "", descripcion: "", cantidad: 0, id_tipo_producto: 0, precio: 0, precio_oferta: 0 });
+            setNewProduct({ id: 0, nombre: "", descripcion: "", cantidad: 0, tipo: 0, precio: 0, precio_oferta: 0 });
         } catch (error: any) {
             setError(error.message);
         }
     };
+
+    useEffect(() => {
+        fetchProductos();
+    }, [location]);
 
     const updateProducto = async (id: number) => {
         if (!editingProduct) return;
@@ -288,11 +295,11 @@ const ProductListContainer: React.FC = () => {
                             id="tipo"
                             type="number"
                             placeholder="Tipo de producto"
-                            value={editingProduct ? editingProduct.id_tipo_producto : newProduct.id_tipo_producto}
+                            value={editingProduct ? editingProduct.tipo : newProduct.tipo}
                             onChange={(e) =>
                                 editingProduct
-                                    ? setEditingProduct({ ...editingProduct, id_tipo_producto: Number(e.target.value) })
-                                    : setNewProduct({ ...newProduct, id_tipo_producto: Number(e.target.value) })
+                                    ? setEditingProduct({ ...editingProduct, tipo: Number(e.target.value) })
+                                    : setNewProduct({ ...newProduct, tipo: Number(e.target.value) })
                             }
                         />
                     </div>

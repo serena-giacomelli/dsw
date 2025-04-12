@@ -1,5 +1,7 @@
 import {Request, Response} from 'express';
 import { orm } from '../shared/db/orm.js';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import { Usuario } from '../models/usuarios.entity.js';
 
 const em =  orm.em
@@ -25,15 +27,30 @@ async function findOne(req: Request, res: Response) {
         res.status(500).json({ message: error.message });
     }}
 
-async function add(req: Request, res: Response) {
-    try {
-       const usuario = em.create(Usuario, req.body)
-       await em.flush()
-       res.status(201).json({message: 'usuario created', data: usuario})
-    }   
-    catch (error:any) {
-        res.status(500).json({message: error.message})
-}}
+    async function add(req: Request, res: Response) {
+        try {
+          const { password, ...data } = req.body;
+      
+          if (!password) {
+            return res.status(400).json({ message: 'La contraseña es obligatoria' });
+          }
+      
+          const saltRounds = 10;
+          const hashedPassword = await bcrypt.hash(password, saltRounds);
+      
+      
+          const usuario = em.create(Usuario, {
+            ...data,
+            password: hashedPassword
+          });
+      
+          await em.flush();
+      
+          res.status(201).json({ message: 'Usuario creado', data: usuario });
+        } catch (error: any) {
+          res.status(500).json({ message: error.message });
+        }
+      }
 
  
 async function update(req: Request, res: Response) {
@@ -58,5 +75,33 @@ async function remove(req: Request, res: Response) {
         res.status(500).json({message: error.message})
 }}
 
+async function login(req: Request, res: Response) {
+    try {
+      const { mail, password } = req.body;
+      const usuario = await em.findOneOrFail(Usuario, { mail });
+  
+      if (usuario) {
+        const isMatch = await bcrypt.compare(password, usuario.password);
+  
+        if (isMatch) {
+          const token = jwt.sign(
+            { id: usuario.id, mail: usuario.mail },
+            'secreto_del_token',
+            { expiresIn: '1h' }
+          );
+          res
+            .status(200)
+            .json({ message: 'Usuario logueado', data: { usuario, token } });
+        } else {
+          res.status(401).json({ message: 'Contraseña incorrecta' });
+        }
+      } else {
+        res.status(404).json({ message: 'Usuario no encontrado' });
+      }
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  }
 
-export {findAll, findOne, add, update, remove}
+
+export {findAll, findOne, add, update, remove, login}

@@ -18,7 +18,7 @@ const empresaContainer = () =>{
         try {
             const response = await fetch("/api/empresa");
             const data = await response.json();
-            setEmpresa(data);
+            setEmpresa(data.data);
         } catch (error) {
             console.error("Error al traer las empresas:", error);
         } finally {
@@ -46,7 +46,7 @@ const empresaContainer = () =>{
     const updateEmpresa = async (id: number) => {
         try {
             if (!editingEmpresa) return;
-            const response = await fetch(`//api/empresa/${id}`, {
+            const response = await fetch(`/api/empresa/${id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",

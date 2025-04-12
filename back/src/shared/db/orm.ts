@@ -6,9 +6,9 @@ import { SqlHighlighter } from "@mikro-orm/sql-highlighter";
 export const orm = await MikroORM.init({
     entities: ['dist/**/*.entity.js'],
     entitiesTs: ['src/**/*.entity.ts'],
-    dbName: 'muebles',
+    dbName: 'bw4m9nc4ehmejlliterw',
     driver: MySqlDriver,
-    clientUrl: 'mysql://lasLindas:Resentidas3@localhost:3306/muebles',
+    clientUrl: 'mysql://uk7dzpxwohpdjgbf:biIal1uaz4YlFl735Isy@bw4m9nc4ehmejlliterw-mysql.services.clever-cloud.com',
     highlighter: new SqlHighlighter(),
     debug: true,
     schemaGenerator: {
