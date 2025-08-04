@@ -3,6 +3,11 @@ body{
     font-family: 'Roboto', sans-serif;
 }
 
+.user-list-container {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
 h1 {
     font-size: 2em;
     color: #6a5d4d;
@@ -26,7 +31,7 @@ li {
     align-items: center;
 }
 
-button {
+button:not(.custom-styled) {
     background-color: #6a5d4d;
     color: white;
     border: none;
@@ -36,8 +41,8 @@ button {
     transition: background-color 0.3s;
 }
 
-button:hover {
-    background-color: #8b7b5b;
+button:not(.custom-styled):hover {
+    background-color: #6a5d4d;
 }
 
 input {
@@ -47,3 +52,4 @@ input {
     width: calc(100% - 22px);
     margin-bottom: 15px;
 }
+

@@ -1,0 +1,35 @@
+.carrito-container {
+  padding: 2rem;
+}
+
+.carrito-lista {
+  list-style: none;
+  padding: 0;
+}
+
+.carrito-item {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 1rem;
+}
+
+.carrito-item img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+}
+
+.carrito-item h3 {
+  margin: 0;
+}
+
+.carrito-total {
+  margin-top: 2rem;
+}
+
+.carrito-total button {
+  margin-right: 1rem;
+  padding: 0.5rem 1rem;
+}

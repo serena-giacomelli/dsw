@@ -1,0 +1,70 @@
+.tipoproducto-list-container {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.modal h3 {
+  margin-bottom: 1rem;
+}
+
+.modal button {
+  margin: 0 0.5rem;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 0 20px;
+  margin-top: 20px;
+  margin-bottom: 50px;
+}
+
+.tipo-producto-card {
+  border: 1px solid #ccc;
+    padding: 16px;
+    border-radius: 0px;
+    background: #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.acciones {
+  display: flex;
+  justify-content: space-between;
+}
+
+.acciones button {
+  background-color: #6a5d4d;
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.acciones button:hover {
+  background-color: #6a5d4d;
+}

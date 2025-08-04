@@ -4,6 +4,8 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { Usuario } from '../models/usuarios.entity.js';
 
+const JWT_SECRET = process.env.JWT_SECRET || 'tu-secret-key';
+
 const em =  orm.em
 
 
@@ -85,9 +87,9 @@ async function login(req: Request, res: Response) {
   
         if (isMatch) {
           const token = jwt.sign(
-            { id: usuario.id, mail: usuario.mail },
-            'secreto_del_token',
-            { expiresIn: '1h' }
+            { id: usuario.id, mail: usuario.mail, tipoUsuario: usuario.tipoUsuario },
+            JWT_SECRET,
+            { expiresIn: '24h' } // Extendido a 24 horas
           );
           res
             .status(200)
@@ -102,6 +104,7 @@ async function login(req: Request, res: Response) {
       res.status(500).json({ message: error.message });
     }
   }
+
 
 
 export {findAll, findOne, add, update, remove, login}

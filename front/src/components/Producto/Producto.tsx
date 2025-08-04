@@ -1,22 +1,26 @@
 import React from "react";
 
-
 interface Producto {
     id: number;
     nombre: string;
     descripcion: string;
+    precio: number;
     cantidad: number;
+    imagen: string;
     onEdit: () => void; 
     onDelete: () => void; 
 }
 
-const Producto: React.FC<Producto> = ({ id, nombre, descripcion, cantidad, onEdit, onDelete }) => {
+const Producto: React.FC<Producto> = ({ id, nombre, descripcion, cantidad, precio, onEdit, onDelete }) => {
     return (
-        <li>
-            <strong>{nombre}</strong>: {descripcion} - Cantidad: {cantidad}
-            <button onClick={onEdit}>Editar</button>
-            <button onClick={onDelete}>Eliminar</button>
-        </li>
+        <div className="producto-card">
+            <h3>{nombre}</h3>
+                <p>{descripcion}</p>
+                <p>Cantidad: {cantidad}</p>
+                <p>Precio: ${precio}</p>
+                <button onClick={onEdit}>Editar</button>
+                <button onClick={onDelete}>Eliminar</button>
+        </div>
     );
 };
 

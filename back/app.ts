@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import 'dotenv/config';
 import cors from 'cors';
 import express from 'express';
 
@@ -15,13 +16,14 @@ import { provinciaRouter } from './src/routes/provincia.route.js';
 import { localidadRouter } from './src/routes/localidad.route.js';
 import { lineaPedRouter } from './src/routes/lineaPed.route.js';
 
-
 import { orm, syncSchema } from './src/shared/db/orm.js';
 import { RequestContext } from '@mikro-orm/core';
 
 const app = express();
 app.use(cors({
-    origin: 'http://localhost:9000/'}));
+    origin: 'http://localhost:9000',
+    credentials: true
+}));
 
 //luego de los middlewares base de express
 app.use((req, res, next) => {
@@ -47,7 +49,7 @@ const PORT = process.env.PORT || 3000;
 
 console.log(`Iniciando el servidor en el puerto ${PORT}`);
 await syncSchema();
-app.listen(PORT, () => {
+app.listen(3000, () => {
     const url = `http://localhost:${PORT}`;
     console.log(`Puedes abrir el servidor en: ${url}`);
 });

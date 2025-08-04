@@ -1,7 +1,6 @@
 import React from "react";
-import Carousel from "./carousel";
-import Banner from "./banner.tsx";
-import FloatingButton from "./floatingButton";
+import Carousel from "./carousel.tsx";
+import FloatingButton from "./floatingButton.tsx";
 
 const Home: React.FC = () => {
   return (

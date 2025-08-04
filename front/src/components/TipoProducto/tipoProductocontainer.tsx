@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import TipoProducto from "./TipoProducto";
+import { useLocation } from "react-router-dom";
+import "../../styles/tipoProducto.css";
+import Modal from "../Modal.tsx";
 
 interface TipoProducto {
     id: number;
@@ -7,11 +10,15 @@ interface TipoProducto {
     descripcion: string;
 }
 
-const ProductoListContainer = () => {
+const TipoProductocontainer = () => {
     const [tiposProducto, setTiposProducto] = useState<TipoProducto[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [newTipoProducto, setNewTipoProducto] = useState<TipoProducto>({ id: 0, nombre: "", descripcion: "" });
     const [editingTipoProducto, setEditingTipoProducto] = useState<TipoProducto | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [tipoProductoAEliminar, setTipoProductoAEliminar] = useState<TipoProducto | null>(null);
+    
+    const location = useLocation();
 
     const fetchTiposProducto = async () => {
         try {
@@ -77,43 +84,94 @@ const ProductoListContainer = () => {
     }, []);
 
     return (
-        <div>
-            <h1>Lista de Tipos de Producto</h1>
+        <div className="tipoproducto-list-container">
+            <button onClick={() => {
+                setEditingTipoProducto(null);
+                setIsModalOpen(true);
+            }}>
+                Agregar Tipo de Producto
+            </button>
+
             {loading ? (
                 <p>Cargando tipos de producto...</p>
-            ) : (
-                <ul>
+                ) : (
+                
+                <div className="grid-container">
                     {tiposProducto.map((tipo) => (
-                        <li key={tipo.id}>
-                            <strong>{tipo.nombre}</strong> - Descripción: {tipo.descripcion}
-                            <button onClick={() => setEditingTipoProducto(tipo)}>Editar</button>
-                            <button onClick={() => deleteTipoProducto(tipo.id)}>Eliminar</button>
-                        </li>
+                        <TipoProducto
+                            key={tipo.id}
+                            tipo={tipo}
+                            onEdit={(id) => {
+                                const tipoAEditar = tiposProducto.find(t => t.id === id);
+                                if (tipoAEditar) setEditingTipoProducto(tipoAEditar);
+                                setIsModalOpen(true);
+                            
+                            }}
+                            onDelete={(id) => {
+                                const tipoAEliminar = tiposProducto.find(t => t.id === id);
+                                if (tipoAEliminar) {
+                                    setTipoProductoAEliminar(tipoAEliminar);
+                                }
+                            }}
+                        />
                     ))}
-                </ul>
+                </div>
             )}
+            
 
+            {/* Modal Agregar / Editar */}
+            <Modal isOpen={isModalOpen} onClose={() => {
+                setIsModalOpen(false);
+                setEditingTipoProducto(null);
+            }}>
             <h2>{editingTipoProducto ? "Editar Tipo de Producto" : "Agregar Tipo de Producto"}</h2>
             <input
                 type="text"
                 placeholder="Nombre"
                 value={editingTipoProducto ? editingTipoProducto.nombre : newTipoProducto.nombre}
-                onChange={(e) => editingTipoProducto ? setEditingTipoProducto({ ...editingTipoProducto, nombre: e.target.value }) : setNewTipoProducto({ ...newTipoProducto, nombre: e.target.value })}
+                onChange={(e) => editingTipoProducto
+                     ? setEditingTipoProducto({ ...editingTipoProducto, nombre: e.target.value })
+                      : setNewTipoProducto({ ...newTipoProducto, nombre: e.target.value })}
             />
     
             <input
                 type="text"
                 placeholder="Descripción"
                 value={editingTipoProducto ? editingTipoProducto.descripcion : newTipoProducto.descripcion}
-                onChange={(e) => editingTipoProducto ? setEditingTipoProducto({ ...editingTipoProducto, descripcion: e.target.value }) : setNewTipoProducto({ ...newTipoProducto, descripcion: e.target.value })}
+                onChange={(e) => editingTipoProducto 
+                    ? setEditingTipoProducto({ ...editingTipoProducto, descripcion: e.target.value }) 
+                    : setNewTipoProducto({ ...newTipoProducto, descripcion: e.target.value })}
             />
              
-            
-            <button onClick={editingTipoProducto ? () => updateTipoProducto(editingTipoProducto.id) : createTipoProducto}>
+            <button onClick={() => {
+                        if (editingTipoProducto) {
+                            updateTipoProducto(editingTipoProducto.id);
+                        } else {
+                            createTipoProducto();
+                        }
+                        setIsModalOpen(false);
+                    }}>
                 {editingTipoProducto ? "Actualizar" : "Agregar"}
             </button>
+            </Modal>
+
+            {/* Modal Confirmación de Eliminación */}
+            <Modal isOpen={tipoProductoAEliminar !== null} onClose={() => setTipoProductoAEliminar(null)}>
+                <h2>¿Eliminar tipo de producto?</h2>
+                <p>Nombre: {tipoProductoAEliminar?.nombre}</p>
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <button onClick={() => {
+                        if (tipoProductoAEliminar) deleteTipoProducto(tipoProductoAEliminar.id);
+                        setTipoProductoAEliminar(null);
+                    }}>
+                        Confirmar
+                    </button>
+                    <button onClick={() => setTipoProductoAEliminar(null)}>Cancelar</button>
+                </div>
+            </Modal>
+            <div></div>
         </div>
     );
 };
 
-export default ProductoListContainer;
+export default TipoProductocontainer;

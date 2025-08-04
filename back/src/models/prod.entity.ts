@@ -20,6 +20,9 @@ export class Producto extends BaseEntity {
       @Property({nullable:true})
       precio_oferta?: number
 
+      @Property({nullable:false})
+      imagen!: string
+
       @ManyToOne(() => Tipo, {nullable:false})
       tipo!: Rel<Tipo>
 

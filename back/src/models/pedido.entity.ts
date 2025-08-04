@@ -8,7 +8,7 @@ import { Pago } from "./pago.entity.js";
 @Entity()
 export class Pedido extends BaseEntity {
 
-    @Property({nullable: false, unique: true})
+    @Property({nullable: false})
     fecha_pedido!: Date
 
     @Property()

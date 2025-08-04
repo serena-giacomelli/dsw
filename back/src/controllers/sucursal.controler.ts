@@ -6,7 +6,9 @@ const em  = orm.em
 
 async function findAll(req: Request, res: Response) {
     try {
-        const sucursales = await em.find(Sucursal, {})
+        const sucursales = await em.find(Sucursal, {}, { 
+            populate: ['localidades', 'localidades.provincia'] 
+        })
         res.status(200).json({ message: 'found all sucursales', data: sucursales })
     } catch (error:any) {
         res.status(500).json({ message: error.message })
@@ -16,7 +18,9 @@ async function findAll(req: Request, res: Response) {
 async function findOne(req: Request, res: Response) {
     try {
         const id = Number.parseInt(req.params.id);
-        const sucursal = await em.findOneOrFail(Sucursal, { id }) 
+        const sucursal = await em.findOneOrFail(Sucursal, { id }, { 
+            populate: ['localidades', 'localidades.provincia'] 
+        }) 
         res.status(200).json({ message: 'found one sucursal', data: sucursal })
     } catch (error:any) {
         res.status(500).json({ message: error.message })

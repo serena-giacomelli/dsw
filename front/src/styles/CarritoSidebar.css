@@ -1,0 +1,94 @@
+.carrito-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5); /* Negro con transparencia */
+  z-index: 999; /* Por debajo del carrito (1000) */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease;
+}
+
+.carrito-overlay.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.carrito-sidebar {
+  position: fixed;
+  right: -250px;  /* Se oculta fuera de la pantalla por la derecha */
+  top: 0;
+  width: 250px;
+  height: 100%;
+  background-color: #e7e2dc;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2); /* Sombra hacia la izquierda */
+  padding-top: 60px;
+  display: flex;
+  flex-direction: column;
+  transition: right 0.3s ease;
+  z-index: 1000;
+  overflow-y: auto; /* Para scroll si hay muchos productos */
+}
+
+.carrito-sidebar.open {
+  right: 0; /* Se desliza visible */
+}
+
+/* Igual que side-menu para enlaces, pero adaptado a tus botones dentro */
+.carrito-sidebar a,
+.carrito-sidebar button {
+  padding: 15px;
+  font-size: 18px;
+  color: #333;
+  border-bottom: 1px solid #ddd;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  border: none;
+  width: 100%;
+}
+
+.carrito-sidebar a:hover,
+.carrito-sidebar button:hover {
+  background-color: #ddd;
+}
+
+
+.finalizar-btn {
+  width: 100%;
+  background-color: black;
+  color: white;
+  padding: 14px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  margin: 20px 0 10px;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  border-radius: 2px;
+}
+
+.finalizar-btn:hover {
+  background-color: #222;
+}
+
+.carrito-links {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-top: 5px;
+}
+
+.link-carrito {
+  text-align: center;
+  font-size: 10px;
+  color: #000;
+  text-decoration: none;
+}
+
+.link-carrito:hover {
+  text-decoration: underline;
+}

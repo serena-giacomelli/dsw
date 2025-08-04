@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import '../../styles/productContainer.css';
 import { useLocation } from "react-router-dom";
+import Modal from "../Modal.tsx";
 
 interface ProductoType {
     id: number;
@@ -10,20 +11,25 @@ interface ProductoType {
     tipo: number;
     precio: number;
     precio_oferta: number;
+    imagen: string;
 }
 
-const ProductListContainer: React.FC = () => {
+const Productocontainer: React.FC = () => {
     const [productos, setProductos] = useState<ProductoType[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [newProduct, setNewProduct] = useState<ProductoType>({ id: 0, nombre: "", descripcion: "", cantidad: 0, tipo: 0, precio: 0, precio_oferta: 0 });
+    const [newProduct, setNewProduct] = useState<ProductoType>({ id: 0, nombre: "", descripcion: "", cantidad: 0, tipo: 0, precio: 0, precio_oferta: 0, imagen: "" });
     const [editingProduct, setEditingProduct] = useState<ProductoType | null>(null);
     const [cantidadFiltro, setCantidadFiltro] = useState<number | "">("");
     const [tipoProductoFiltro, setTipoProductoFiltro] = useState<number | "">("");
     const [descuento, setDescuento] = useState<{ [id: number]: number }>({});
+    const [orden, setOrden] = useState<'asc-nombre' | 'desc-nombre' | 'asc-precio' | 'desc-precio'>('asc-nombre');
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [productoAEliminar, setProductoAEliminar] = useState<ProductoType | null>(null);
+    const [mostrarFiltros, setMostrarFiltros] = useState(false);
+    
     const location = useLocation();
-        
-
+    
     const fetchProductos = async () => {
         setLoading(true);
         setError(null);
@@ -134,7 +140,7 @@ const ProductListContainer: React.FC = () => {
             }
 
             fetchProductos();
-            setNewProduct({ id: 0, nombre: "", descripcion: "", cantidad: 0, tipo: 0, precio: 0, precio_oferta: 0 });
+            setNewProduct({ id: 0, nombre: "", descripcion: "", cantidad: 0, tipo: 0, precio: 0, precio_oferta: 0, imagen: "" });
         } catch (error: any) {
             setError(error.message);
         }
@@ -143,6 +149,7 @@ const ProductListContainer: React.FC = () => {
     useEffect(() => {
         fetchProductos();
     }, [location]);
+
 
     const updateProducto = async (id: number) => {
         if (!editingProduct) return;
@@ -174,173 +181,423 @@ const ProductListContainer: React.FC = () => {
         }
     };
 
+    useEffect(() => {
+        const productosOrdenados = [...productos];
+    
+        switch (orden) {
+          case 'asc-nombre':
+            productosOrdenados.sort((a, b) => a.nombre.localeCompare(b.nombre));
+            break;
+          case 'desc-nombre':
+            productosOrdenados.sort((a, b) => b.nombre.localeCompare(a.nombre));
+            break;
+          case 'asc-precio':
+            productosOrdenados.sort((a, b) => a.precio - b.precio);
+            break;
+          case 'desc-precio':
+            productosOrdenados.sort((a, b) => b.precio - a.precio);
+            break;
+        }
+    
+        setProductos(productosOrdenados);
+      }, [orden]);
+
+
     return (
         <div className="product-list-container">
-            <h1>Lista de Productos</h1>
-    
-            <div className="filters">
-                <h3>Filtrar productos</h3>
-                <div>
-                    <label>Cantidad mínima de stock:</label>
-                    <input
+            <div className="filters" style={{ marginBottom: "1rem" }}>
+            <h3        
+                onClick={() => setMostrarFiltros(!mostrarFiltros)}
+                style={{
+                cursor: "pointer",
+                borderBottom: "1px solid #ccc",
+                paddingBottom: "5px",
+                marginBottom: "10px",
+                textTransform: "uppercase",
+                }}>
+                {mostrarFiltros ? "−" : "+"} Filtros
+            </h3>
+            
+                {mostrarFiltros && (
+                    <div style={{ paddingLeft: "10px" }}>
+                    <div style={{ marginBottom: "10px" }}>
+                        <label>Ordenar por:</label>
+                        <select
+                        value={orden}
+                        onChange={(e) => setOrden(e.target.value as any)}
+                        style={{ marginLeft: "10px" }}
+                        >
+                        <option value="asc-nombre">Nombre A-Z</option>
+                        <option value="desc-nombre">Nombre Z-A</option>
+                        <option value="asc-precio">Precio: menor a mayor</option>
+                        <option value="desc-precio">Precio: mayor a menor</option>
+                        </select>
+                    </div>
+
+                    <div style={{ marginBottom: "10px" }}>
+                        <label>Cantidad mínima de stock:</label>
+                        <input
                         type="number"
                         value={cantidadFiltro}
                         onChange={(e) => setCantidadFiltro(Number(e.target.value))}
-                    />
-                    <button onClick={fetchProductosPorStock}>Buscar por stock</button>
-                </div>
-                <div>
-                    <label>ID de tipo de producto:</label>
-                    <input
+                        style={{ marginLeft: "10px" }}
+                        />
+                        <button
+                        onClick={fetchProductosPorStock}
+                        style={{ display: "block", marginTop: "5px" }}
+                        >
+                        Buscar por stock
+                        </button>
+                    </div>
+
+                    <div style={{ marginBottom: "10px" }}>
+                        <label>ID de tipo de producto:</label>
+                        <input
                         type="number"
                         value={tipoProductoFiltro}
                         onChange={(e) => setTipoProductoFiltro(Number(e.target.value))}
+                        style={{ marginLeft: "10px" }}
+                        />
+                        <button
+                        onClick={fetchProductosPorTipo}
+                        style={{ display: "block", marginTop: "5px" }}
+                        >
+                        Buscar por tipo de producto
+                        </button>
+                    </div>
+
+                    <button
+                        onClick={() => {
+                        fetchProductos();
+                        setCantidadFiltro("");
+                        setTipoProductoFiltro("");
+                        }}
+                    >
+                        Mostrar todos los productos
+                    </button>
+                    </div>
+                )}
+  
+            </div>
+            <button onClick={() => setIsModalOpen(true)}style={{ marginTop: "5px", marginBottom: "5px" }}>Crear nuevo producto</button>
+            
+            <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+            <div className="new-product-form">
+                <h2>Agregar Nuevo Producto</h2>
+                
+                <div className="form-group">
+                <label htmlFor="nombre">Nombre</label>
+                <input
+                    id="nombre"
+                    type="text"
+                    value={newProduct.nombre}
+                    onChange={(e) => setNewProduct({ ...newProduct, nombre: e.target.value })}
+                />
+                </div>
+
+                <div className="form-group">
+                    <label htmlFor="imagen">Imagen del producto</label>
+                    <input
+                        id="imagen"
+                        type="file"
+                        accept="image/*"
+                        onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+
+                        const formData = new FormData();
+                        formData.append("file", file);
+                        formData.append("upload_preset", "muebles");
+
+                        try {
+                            const response = await fetch("https://api.cloudinary.com/v1_1/dsbcv1htw/image/upload", {
+                            method: "POST",
+                            body: formData,
+                            });
+                            const data = await response.json();
+
+                            setNewProduct({ ...newProduct, imagen: data.secure_url });
+                        } catch (err) {
+                            alert("Error al subir la imagen.");
+                            console.error(err);
+                        }
+                        }}
                     />
-                    <button onClick={fetchProductosPorTipo}>Buscar por tipo de producto</button>
+                    {newProduct.imagen && (
+                        <div style={{ marginTop: '10px' }}>
+                        <img src={newProduct.imagen} alt="Vista previa" width="100" />
+                        </div>
+                    )}
+                    </div>
+
+
+                <div className="form-group">
+                <label htmlFor="descripcion">Descripción</label>
+                <input
+                    id="descripcion"
+                    type="text"
+                    value={newProduct.descripcion}
+                    onChange={(e) => setNewProduct({ ...newProduct, descripcion: e.target.value })}
+                />
+                </div>
+                <div className="form-group">
+                <label htmlFor="tipo">Tipo</label>
+                <input
+                    id="tipo"
+                    type="number"
+                    value={newProduct.tipo}
+                    onChange={(e) => setNewProduct({ ...newProduct, tipo: Number(e.target.value) })}
+                />
+                </div>
+                <div className="form-group">
+                <label htmlFor="precio">Precio</label>
+                <input
+                    id="precio"
+                    type="number"
+                    value={newProduct.precio}
+                    onChange={(e) => setNewProduct({ ...newProduct, precio: Number(e.target.value) })}
+                />
+                </div>
+                <div className="form-group">
+                <label htmlFor="cantidad">Cantidad</label>
+                <input
+                    id="cantidad"
+                    type="number"
+                    value={newProduct.cantidad}
+                    onChange={(e) => setNewProduct({ ...newProduct, cantidad: Number(e.target.value) })}
+                />
                 </div>
                 <button
-                    onClick={() => {
-                        fetchProductos(); 
-                        setCantidadFiltro(""); 
-                        setTipoProductoFiltro(""); 
-                    }}
+                onClick={async () => {
+                    await createProducto();
+                    setIsModalOpen(false);
+                }}
                 >
-                    Mostrar todos los productos
+                Crear Producto
                 </button>
             </div>
-    
+            </Modal>
+
             {loading ? (
                 <p>Cargando productos...</p>
             ) : error ? (
                 <p className="error">{error}</p>
             ) : (
-                <ul>
-                    {productos.map((producto) => (
-                        <li key={producto.id}>
-                            <h3>{producto.nombre}</h3>
-                            <p>{producto.descripcion}</p>
-                            <p>Cantidad: {producto.cantidad}</p>
-                            <p>
-                                Precio:
-                                {producto.precio_oferta > 0 ? (
-                                    <>
-                                        <span style={{ textDecoration: "line-through", marginRight: "8px" }}>
-                                            ${producto.precio}
-                                        </span>
-                                        <span className="precio-descuento">${producto.precio_oferta}</span>
-                                    </>
-                                ) : (
-                                    `$${producto.precio}`
-                                )}
-                            </p>
-                            <div>
-                                <input
-                                    type="number"
-                                    placeholder="% descuento"
-                                    value={descuento[producto.id] || ""}
-                                    onChange={(e) =>
-                                        setDescuento({ ...descuento, [producto.id]: Number(e.target.value) })
-                                    }
-                                    style={{ width: "120px", marginRight: "8px" }}
-                                />
-                                <button onClick={() => handleOferta(producto.id)}>Poner en oferta</button>
-                            </div>
-                            {producto.precio_oferta > 0 && (
-                                <button onClick={() => handleDeleteOferta(producto.id)}>
-                                    Sacar de oferta
-                                </button>
-                            )}
-                            <button onClick={() => setEditingProduct(producto)}>Editar</button>
-                            <button onClick={() => deleteProducto(producto.id)}>Eliminar</button>
-                        </li>
-                    ))}
-                </ul>
 
-                
+                <ul
+                style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+                    gap: "20px",
+                    listStyle: "none",
+                    padding: 0,
+                }}>
+                {productos.map((producto) => (
+                    <li key={producto.id}
+                    style={{
+                        border: "1px solid #ccc",
+                        borderRadius: "0px",
+                        padding: "15px",
+                        boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
+                        backgroundColor: "#fff",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "space-between",
+                      }}
+                      >
+                        {/* Imagen del producto */}
+                        {producto.imagen && (
+                            <img
+                            src={producto.imagen}
+                            alt={producto.nombre}
+                            style={{
+                                width: "300px",
+                                height: "300px",
+                                objectFit: "cover",
+                                borderRadius: "0px",
+                                marginBottom: "10px",
+                              }}
+                            />
+                        )}
+                        {/* Información del producto */}
+                        <h3>{producto.nombre}</h3>
+                        <p>{producto.descripcion}</p>
+                        <p>Cantidad: {producto.cantidad}</p>
+                        <p>
+                            Precio:
+                            {producto.precio_oferta > 0 ? (
+                                <>
+                                    <span style={{ textDecoration: "line-through", marginRight: "8px" }}>
+                                        ${producto.precio}
+                                    </span>
+                                    <span className="precio-descuento">${producto.precio_oferta}</span>
+                                </>
+                            ) : (
+                                `$${producto.precio}`
+                            )}
+                        </p>
+                        <div style={{ marginTop: "10px" }}>
+                            <input
+                                type="number"
+                                placeholder="% descuento"
+                                value={descuento[producto.id] || ""}
+                                onChange={(e) =>
+                                    setDescuento({ ...descuento, [producto.id]: Number(e.target.value) })
+                                }
+                                style={{ width: "120px", marginRight: "8px" }}
+                            />
+                            <button onClick={() => handleOferta(producto.id)}>Ofertar</button>
+                        </div>
+                        {producto.precio_oferta > 0 && (
+                            <button onClick={() => handleDeleteOferta(producto.id)}>
+                                Sacar de oferta
+                            </button>
+                        )}
+                        <button onClick={() => setEditingProduct(producto)}style={{ marginTop: "5px" }}>Editar</button>
+                        <button onClick={() => setProductoAEliminar(producto)} style={{ marginTop: "5px" }}>Eliminar</button>
+                        
+                        <Modal isOpen={!!productoAEliminar} onClose={() => setProductoAEliminar(null)}>
+                        <h2>Confirmar Eliminación</h2>
+                        <p>¿Estás segura/o de que querés eliminar el producto <strong>{productoAEliminar?.nombre}</strong>?</p>
+                        <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
+                            <button
+                            style={{ backgroundColor: "blue", color: "white" }}
+                            onClick={() => {
+                                if (productoAEliminar) {
+                                deleteProducto(productoAEliminar.id);
+                                setProductoAEliminar(null);
+                                }
+                            }}
+                            >
+                            Sí, eliminar
+                            </button>
+                            <button onClick={() => setProductoAEliminar(null)}>Cancelar</button>
+                        </div>
+                        </Modal>
+                    </li>
+                ))}
+            </ul>
             )}
     
-        <div className="new-product-form">
-                    <h2>{editingProduct ? "Editar Producto" : "Agregar Nuevo Producto"}</h2>
-                    <div className="form-group">
-                        <label htmlFor="nombre">Nombre</label>
-                        <input
-                            id="nombre"
-                            type="text"
-                            placeholder="Nombre"
-                            value={editingProduct ? editingProduct.nombre : newProduct.nombre}
-                            onChange={(e) =>
-                                editingProduct
-                                    ? setEditingProduct({ ...editingProduct, nombre: e.target.value })
-                                    : setNewProduct({ ...newProduct, nombre: e.target.value })
-                            }
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="descripcion">Descripción</label>
-                        <input
-                            id="descripcion"
-                            type="text"
-                            placeholder="Descripción"
-                            value={editingProduct ? editingProduct.descripcion : newProduct.descripcion}
-                            onChange={(e) =>
-                                editingProduct
-                                    ? setEditingProduct({ ...editingProduct, descripcion: e.target.value })
-                                    : setNewProduct({ ...newProduct, descripcion: e.target.value })
-                            }
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="tipo">Tipo de producto</label>
-                        <input
-                            id="tipo"
-                            type="number"
-                            placeholder="Tipo de producto"
-                            value={editingProduct ? editingProduct.tipo : newProduct.tipo}
-                            onChange={(e) =>
-                                editingProduct
-                                    ? setEditingProduct({ ...editingProduct, tipo: Number(e.target.value) })
-                                    : setNewProduct({ ...newProduct, tipo: Number(e.target.value) })
-                            }
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="precio">Precio</label>
-                        <input
-                            id="precio"
-                            type="number"
-                            placeholder="Precio"
-                            value={editingProduct ? editingProduct.precio : newProduct.precio}
-                            onChange={(e) =>
-                                editingProduct
-                                    ? setEditingProduct({ ...editingProduct, precio: Number(e.target.value) })
-                                    : setNewProduct({ ...newProduct, precio: Number(e.target.value) })
-                            }
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="cantidad">Cantidad</label>
-                        <input
-                            id="cantidad"
-                            type="number"
-                            placeholder="Cantidad"
-                            value={editingProduct ? editingProduct.cantidad : newProduct.cantidad}
-                            onChange={(e) =>
-                                editingProduct
-                                    ? setEditingProduct({ ...editingProduct, cantidad: Number(e.target.value) })
-                                    : setNewProduct({ ...newProduct, cantidad: Number(e.target.value) })
-                            }
-                        />
-                    </div>
-                    <button
-                        onClick={
-                            editingProduct ? () => updateProducto(editingProduct.id) : createProducto
-                        }
-                    >
-                        {editingProduct ? "Guardar cambios" : "Crear producto"}
-                    </button>
+                <Modal isOpen={!!editingProduct} onClose={() => setEditingProduct(null)}>
+            <div className="new-product-form">
+                <h2>Editar Producto</h2>
+
+                <div className="form-group">
+                <label htmlFor="nombre">Nombre</label>
+                <input
+                    id="nombre"
+                    type="text"
+                    placeholder="Nombre"
+                    value={editingProduct?.nombre ?? ""}
+                    onChange={(e) =>
+                    setEditingProduct({ ...editingProduct!, nombre: e.target.value })
+                    }
+                />
                 </div>
+
+                <div className="form-group">
+                <label htmlFor="imagen">Imagen del producto</label>
+                <input
+                    id="imagen"
+                    type="file"
+                    accept="image/*"
+                    onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+
+                    const formData = new FormData();
+                    formData.append("file", file);
+                    formData.append("upload_preset", "muebles");
+
+                    try {
+                        const response = await fetch("https://api.cloudinary.com/v1_1/dsbcv1htw/image/upload", {
+                        method: "POST",
+                        body: formData,
+                        });
+                        const data = await response.json();
+
+                        setEditingProduct({
+                        ...editingProduct!,
+                        imagen: data.secure_url,
+                        });
+                    } catch (err) {
+                        alert("Error al subir la imagen.");
+                        console.error(err);
+                    }
+                    }}
+                />
+                {editingProduct?.imagen && (
+                    <div style={{ marginTop: '10px' }}>
+                    <img src={editingProduct.imagen} alt="Vista previa" width="100" />
+                    </div>
+                )}
+                </div>
+
+                <div className="form-group">
+                <label htmlFor="descripcion">Descripción</label>
+                <input
+                    id="descripcion"
+                    type="text"
+                    placeholder="Descripción"
+                    value={editingProduct?.descripcion ?? ""}
+                    onChange={(e) =>
+                    setEditingProduct({ ...editingProduct!, descripcion: e.target.value })
+                    }
+                />
+                </div>
+
+                <div className="form-group">
+                <label htmlFor="tipo">Tipo de producto</label>
+                <input
+                    id="tipo"
+                    type="number"
+                    placeholder="Tipo de producto"
+                    value={editingProduct?.tipo ?? 0}
+                    onChange={(e) =>
+                    setEditingProduct({ ...editingProduct!, tipo: Number(e.target.value) })
+                    }
+                />
+                </div>
+
+                <div className="form-group">
+                <label htmlFor="precio">Precio</label>
+                <input
+                    id="precio"
+                    type="number"
+                    placeholder="Precio"
+                    value={editingProduct?.precio ?? 0}
+                    onChange={(e) =>
+                    setEditingProduct({ ...editingProduct!, precio: Number(e.target.value) })
+                    }
+                />
+                </div>
+
+                <div className="form-group">
+                <label htmlFor="cantidad">Cantidad</label>
+                <input
+                    id="cantidad"
+                    type="number"
+                    placeholder="Cantidad"
+                    value={editingProduct?.cantidad ?? 0}
+                    onChange={(e) =>
+                    setEditingProduct({ ...editingProduct!, cantidad: Number(e.target.value) })
+                    }
+                />
+                </div>
+
+
+                <button onClick={() => updateProducto(editingProduct!.id)}>
+                Guardar cambios
+                </button>
+            </div>
+            </Modal>
         </div>
+        
     );
 };
 
-export default ProductListContainer;
+
+
+export default Productocontainer;
+
