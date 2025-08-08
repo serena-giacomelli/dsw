@@ -16,26 +16,43 @@ export const sucursalService = {
   // Obtener todas las sucursales
   async obtenerSucursales(): Promise<Sucursal[]> {
     try {
-      const response = await fetch('api/sucursal', {
+      console.log('🔍 Iniciando obtención de sucursales...');
+      console.log('🌐 URL del API:', '/api/sucursal (proxy -> http://localhost:3000/api/sucursal)');
+      
+      const response = await fetch('/api/sucursal', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
         }
       });
 
+      console.log('📡 Respuesta del servidor:', {
+        status: response.status,
+        statusText: response.statusText,
+        ok: response.ok,
+        url: response.url
+      });
+
       if (!response.ok) {
-        throw new Error(`Error al obtener sucursales: ${response.status}`);
+        const errorText = await response.text();
+        console.error('❌ Error del servidor:', errorText);
+        throw new Error(`Error al obtener sucursales: ${response.status} - ${errorText}`);
       }
 
       const result = await response.json();
-      console.log('Datos raw del API de sucursales:', result);
+      console.log('📊 Datos raw del API de sucursales:', result);
       
       const sucursales = result.data || result || [];
-      console.log('Sucursales parseadas:', sucursales);
+      console.log('🏢 Sucursales parseadas:', sucursales);
+      
+      if (!Array.isArray(sucursales)) {
+        console.error('❌ Los datos recibidos no son un array:', typeof sucursales);
+        return [];
+      }
       
       // Validar y normalizar los datos
       const sucursalesNormalizadas = sucursales.map((sucursal: any) => {
-        console.log('Procesando sucursal:', sucursal);
+        console.log('🔧 Procesando sucursal:', sucursal);
         
         return {
           id: sucursal.id || 0,
@@ -43,7 +60,7 @@ export const sucursalService = {
           contacto: sucursal.contacto || 'Contacto no disponible',
           localidades: Array.isArray(sucursal.localidades) 
             ? sucursal.localidades.map((loc: any) => {
-                console.log('Procesando localidad:', loc);
+                console.log('📍 Procesando localidad:', loc);
                 return {
                   id: loc?.id || 0,
                   nombre: loc?.nombre || 'Sin nombre',
@@ -57,10 +74,17 @@ export const sucursalService = {
         };
       });
       
-      console.log('Sucursales normalizadas finales:', sucursalesNormalizadas);
+      console.log('✅ Sucursales normalizadas finales:', sucursalesNormalizadas);
       return sucursalesNormalizadas;
     } catch (error) {
-      console.error('Error en obtenerSucursales:', error);
+      console.error('❌ Error en obtenerSucursales:', error);
+      
+      // Mostrar información adicional del error
+      if (error instanceof TypeError && error.message === 'Failed to fetch') {
+        console.error('🔌 Error de conectividad: No se puede conectar al servidor');
+        console.error('💡 Verifica que el servidor backend esté ejecutándose en http://localhost:3000');
+      }
+      
       // Retornar array vacío en caso de error para evitar crashes
       return [];
     }
@@ -68,23 +92,39 @@ export const sucursalService = {
 
   // Filtrar sucursales por ciudad/localidad
   filtrarSucursalesPorCiudad(sucursales: Sucursal[], ciudad: string): Sucursal[] {
-    if (!ciudad || !sucursales || sucursales.length === 0) return sucursales || [];
+    if (!sucursales || sucursales.length === 0) {
+      console.log('⚠️ No hay sucursales para filtrar');
+      return [];
+    }
     
-    console.log('Filtrando sucursales por ciudad:', ciudad);
-    console.log('Sucursales disponibles para filtrar:', sucursales);
+    if (!ciudad || ciudad.trim() === '') {
+      console.log('ℹ️ No hay ciudad especificada, devolviendo todas las sucursales');
+      return sucursales;
+    }
+    
+    console.log('🔍 Filtrando sucursales por ciudad:', ciudad);
+    console.log('🏢 Sucursales disponibles para filtrar:', sucursales.length);
     
     const ciudadLower = ciudad.toLowerCase().trim();
     
     const filtradas = sucursales.filter(sucursal => {
       // Verificar que la sucursal y sus localidades existan
       if (!sucursal || !sucursal.localidades || !Array.isArray(sucursal.localidades)) {
-        console.log('Sucursal sin localidades válidas:', sucursal);
+        console.log('⚠️ Sucursal sin localidades válidas:', sucursal);
+        return false;
+      }
+      
+      if (sucursal.localidades.length === 0) {
+        console.log('⚠️ Sucursal sin localidades:', sucursal.direccion);
         return false;
       }
       
       // Buscar en nombres de localidades y provincias
       const coincide = sucursal.localidades.some(localidad => {
-        if (!localidad || !localidad.nombre) return false;
+        if (!localidad || !localidad.nombre) {
+          console.log('⚠️ Localidad sin datos válidos:', localidad);
+          return false;
+        }
         
         const nombreLocalidad = localidad.nombre.toLowerCase();
         const nombreProvincia = localidad.provincia?.nombre?.toLowerCase() || '';
@@ -92,17 +132,53 @@ export const sucursalService = {
         const coincideLocalidad = nombreLocalidad.includes(ciudadLower);
         const coincideProvincia = nombreProvincia.includes(ciudadLower);
         
-        console.log(`Comparando "${ciudadLower}" con localidad "${nombreLocalidad}" y provincia "${nombreProvincia}"`, 
-                   { coincideLocalidad, coincideProvincia });
+        console.log(`🔄 Comparando "${ciudadLower}" con:`, {
+          localidad: nombreLocalidad,
+          provincia: nombreProvincia,
+          coincideLocalidad,
+          coincideProvincia
+        });
         
         return coincideLocalidad || coincideProvincia;
       });
       
-      console.log(`Sucursal ${sucursal.direccion} coincide:`, coincide);
+      console.log(`${coincide ? '✅' : '❌'} Sucursal "${sucursal.direccion}" ${coincide ? 'coincide' : 'no coincide'}`);
       return coincide;
     });
     
-    console.log('Sucursales filtradas:', filtradas);
+    console.log(`📊 Resultado del filtrado: ${filtradas.length} de ${sucursales.length} sucursales`);
+    
+    // Si no se encontraron coincidencias exactas, intentar búsqueda más flexible
+    if (filtradas.length === 0 && ciudadLower.length > 2) {
+      console.log('🔄 Intentando búsqueda más flexible...');
+      
+      const filtroFlexible = sucursales.filter(sucursal => {
+        if (!sucursal?.localidades) return false;
+        
+        return sucursal.localidades.some(localidad => {
+          if (!localidad?.nombre) return false;
+          
+          const nombreLocalidad = localidad.nombre.toLowerCase();
+          const nombreProvincia = localidad.provincia?.nombre?.toLowerCase() || '';
+          
+          // Búsqueda más flexible: contiene palabras parciales
+          const palabrasCiudad = ciudadLower.split(' ');
+          return palabrasCiudad.some(palabra => 
+            palabra.length > 2 && (
+              nombreLocalidad.includes(palabra) || 
+              nombreProvincia.includes(palabra)
+            )
+          );
+        });
+      });
+      
+      if (filtroFlexible.length > 0) {
+        console.log(`✅ Búsqueda flexible encontró ${filtroFlexible.length} sucursales`);
+        return filtroFlexible;
+      }
+    }
+    
+    console.log('📋 Sucursales filtradas finales:', filtradas);
     return filtradas;
   }
 };

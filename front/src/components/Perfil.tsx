@@ -35,10 +35,10 @@ const Perfil: React.FC = () => {
             <div className="perfil-acciones">
                 {user.tipoUsuario === 'admin' ? (
                     <button 
-                        onClick={() => navigate('/admin/pedidos')} 
-                        className="btn-admin-pedidos"
+                        onClick={() => navigate('/admin/gestion')} 
+                        className="btn-admin-gestion"
                     >
-                        Gestionar Pedidos
+                        Gestión
                     </button>
                 ) : (
                     <button 

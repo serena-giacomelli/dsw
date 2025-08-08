@@ -532,3 +532,79 @@
     padding: 4px 8px;
   }
 }
+
+/* Estilos para validaciones de tarjeta */
+.campo-tarjeta {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.campo-tarjeta input.error {
+  border: 2px solid #dc3545;
+  background-color: #fff5f5;
+}
+
+.error-mensaje {
+  color: #dc3545;
+  font-size: 0.8rem;
+  display: block;
+  margin-top: 0.25rem;
+  font-weight: 500;
+}
+
+.info-seguridad {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  padding: 0.75rem;
+  margin-top: 1rem;
+}
+
+.info-seguridad small {
+  color: #6c757d;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+/* Estilos mejorados para datos de tarjeta */
+.datos-tarjeta {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-top: 1rem;
+  border-left: 4px solid #007bff;
+}
+
+.datos-tarjeta input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.datos-tarjeta input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.datos-tarjeta input[type="password"] {
+  letter-spacing: 0.1em;
+}
+
+/* Responsive para campos de tarjeta */
+@media (max-width: 768px) {
+  .form-fila {
+    flex-direction: column;
+  }
+  
+  .form-fila .campo-tarjeta {
+    margin-bottom: 1rem;
+  }
+  
+  .datos-tarjeta {
+    padding: 1rem;
+  }
+}

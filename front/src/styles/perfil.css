@@ -41,7 +41,7 @@
   background: #2980b9;
 }
 
-.btn-admin-pedidos {
+.btn-admin-gestion {
   background: #8e44ad;
   color: white;
   border: none;
@@ -53,7 +53,7 @@
   font-weight: 600;
 }
 
-.btn-admin-pedidos:hover {
+.btn-admin-gestion:hover {
   background: #732d91;
 }
 

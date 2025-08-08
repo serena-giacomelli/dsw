@@ -66,6 +66,10 @@ const App: React.FC = () => {
             <PrivateRoute requiredTipo="admin">
                 <AdminPedidos />
             </PrivateRoute>} />
+          <Route path="/admin/gestion" element={
+            <PrivateRoute requiredTipo="admin">
+                <AdminPedidos />
+            </PrivateRoute>} />
           <Route path="/test-checkout" element={<TestCheckout />} />
          </Routes>
          <Banner />

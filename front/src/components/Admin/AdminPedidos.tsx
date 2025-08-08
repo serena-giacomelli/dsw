@@ -47,7 +47,9 @@ const AdminPedidos: React.FC = () => {
   const [pagosPendientes, setPagosPendientes] = useState<Pago[]>([]);
   const [loading, setLoading] = useState(true);
   const [procesando, setProcesando] = useState<number | null>(null);
+  const [mostrarPedidos, setMostrarPedidos] = useState(false);
   const [mostrarGestionPagos, setMostrarGestionPagos] = useState(false);
+  const [mostrarEstadisticas, setMostrarEstadisticas] = useState(false);
 
   useEffect(() => {
     cargarDatos();
@@ -59,7 +61,6 @@ const AdminPedidos: React.FC = () => {
       console.log('Token encontrado:', token ? 'Sí' : 'No');
       if (!token) return;
 
-      // Cargar pedidos, transportistas y pagos pendientes en paralelo
       console.log('Iniciando carga de datos...');
       const [pedidosResponse, transportistasData, pagosPendientesResponse] = await Promise.all([
         pedidoService.obtenerPedidosUsuario(token), // Este endpoint ya maneja admin vs usuario
@@ -269,11 +270,50 @@ const AdminPedidos: React.FC = () => {
     }
   };
 
+  // Función para calcular productos más populares
+  const calcularProductosPopulares = () => {
+    const productosVendidos: { [key: number]: { 
+      id: number, 
+      nombre: string, 
+      cantidad: number, 
+      pedidos: number,
+      imagen?: string 
+    } } = {};
+
+    // Solo contar pedidos completados para estadísticas reales
+    const pedidosCompletados = pedidos.filter(pedido => 
+      pedido.estado === 'completado' || pedido.estado === 'entregado'
+    );
+
+    pedidosCompletados.forEach(pedido => {
+      pedido.lineasPed.forEach(linea => {
+        const producto = linea.productos[0];
+        if (producto) {
+          if (!productosVendidos[producto.id]) {
+            productosVendidos[producto.id] = {
+              id: producto.id,
+              nombre: producto.nombre,
+              cantidad: 0,
+              pedidos: 0,
+              imagen: producto.imagen
+            };
+          }
+          productosVendidos[producto.id].cantidad += Number(linea.cantidad);
+          productosVendidos[producto.id].pedidos += 1;
+        }
+      });
+    });
+
+    return Object.values(productosVendidos)
+      .sort((a, b) => b.cantidad - a.cantidad)
+      .slice(0, 10); // Top 10 productos
+  };
+
   if (loading) {
     return (
       <div className="admin-pedidos-container">
-        <h2>Gestión de Pedidos</h2>
-        <p>Cargando pedidos...</p>
+        <h2>Panel de Gestión</h2>
+        <p>Cargando datos...</p>
       </div>
     );
   }
@@ -286,36 +326,111 @@ const AdminPedidos: React.FC = () => {
 
   return (
     <div className="admin-pedidos-container">
-      <h2>Gestión de Pedidos</h2>
+      <h2>Panel de Gestión</h2>
       
-      {/* Botón para mostrar/ocultar gestión de pagos */}
-      <div style={{ marginBottom: '20px' }}>
+      {/* Botones principales de navegación */}
+      <div style={{ 
+        marginBottom: '30px', 
+        display: 'flex', 
+        gap: '20px', 
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        padding: '20px',
+        backgroundColor: '#f8f9fa',
+        borderRadius: '10px',
+        border: '1px solid #dee2e6'
+      }}>
         <button 
-          className="btn-toggle-pagos"
-          onClick={() => setMostrarGestionPagos(!mostrarGestionPagos)}
+          onClick={() => {
+            setMostrarPedidos(!mostrarPedidos);
+            setMostrarGestionPagos(false);
+            setMostrarEstadisticas(false);
+          }}
           style={{
-            backgroundColor: mostrarGestionPagos ? '#e74c3c' : '#3498db',
+            backgroundColor: mostrarPedidos ? '#e74c3c' : '#3498db',
             color: 'white',
-            padding: '10px 20px',
+            padding: '15px 25px',
             border: 'none',
-            borderRadius: '5px',
+            borderRadius: '8px',
             cursor: 'pointer',
-            fontSize: '16px'
+            fontSize: '16px',
+            fontWeight: 'bold',
+            minWidth: '200px',
+            transition: 'all 0.3s ease',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
           }}
         >
-          {mostrarGestionPagos ? 'Ocultar Gestión de Pagos' : 'Mostrar Gestión de Pagos'}
+          📦 {mostrarPedidos ? 'Ocultar Pedidos' : 'Mostrar Pedidos'}
+          {(pedidosPendientes.length + pedidosPagoAprobado.length) > 0 && (
+            <span style={{
+              backgroundColor: '#e74c3c',
+              color: 'white',
+              borderRadius: '50%',
+              padding: '2px 8px',
+              fontSize: '12px',
+              marginLeft: '10px'
+            }}>
+              {pedidosPendientes.length + pedidosPagoAprobado.length}
+            </span>
+          )}
+        </button>
+
+        <button 
+          onClick={() => {
+            setMostrarGestionPagos(!mostrarGestionPagos);
+            setMostrarPedidos(false);
+            setMostrarEstadisticas(false);
+          }}
+          style={{
+            backgroundColor: mostrarGestionPagos ? '#e74c3c' : '#f39c12',
+            color: 'white',
+            padding: '15px 25px',
+            border: 'none',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            fontSize: '16px',
+            fontWeight: 'bold',
+            minWidth: '200px',
+            transition: 'all 0.3s ease',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+          }}
+        >
+          💳 {mostrarGestionPagos ? 'Ocultar Pagos' : 'Mostrar Pagos'}
           {pagosPendientes.length > 0 && (
             <span style={{
               backgroundColor: '#e74c3c',
               color: 'white',
               borderRadius: '50%',
-              padding: '2px 6px',
+              padding: '2px 8px',
               fontSize: '12px',
               marginLeft: '10px'
             }}>
               {pagosPendientes.length}
             </span>
           )}
+        </button>
+
+        <button 
+          onClick={() => {
+            setMostrarEstadisticas(!mostrarEstadisticas);
+            setMostrarPedidos(false);
+            setMostrarGestionPagos(false);
+          }}
+          style={{
+            backgroundColor: mostrarEstadisticas ? '#e74c3c' : '#16a085',
+            color: 'white',
+            padding: '15px 25px',
+            border: 'none',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            fontSize: '16px',
+            fontWeight: 'bold',
+            minWidth: '200px',
+            transition: 'all 0.3s ease',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+          }}
+        >
+          📊 {mostrarEstadisticas ? 'Ocultar Productos' : 'Productos Destacados'}
         </button>
       </div>
 
@@ -475,9 +590,195 @@ const AdminPedidos: React.FC = () => {
           )}
         </div>
       )}
+
+      {/* Estadísticas de Productos Populares */}
+      {mostrarEstadisticas && (
+        <div className="seccion-estadisticas" style={{ marginBottom: '30px' }}>
+          <h3>📊 Productos Más Populares</h3>
+          <p className="seccion-descripcion">
+            Basado en productos vendidos en pedidos completados y entregados
+          </p>
+          
+          {(() => {
+            const productosPopulares = calcularProductosPopulares();
+            const totalUnidadesVendidas = productosPopulares.reduce((total, producto) => total + producto.cantidad, 0);
+            const totalPedidosConProductos = productosPopulares.reduce((total, producto) => total + producto.pedidos, 0);
+            
+            return productosPopulares.length === 0 ? (
+              <div style={{ 
+                backgroundColor: '#f8f9fa', 
+                border: '1px solid #dee2e6', 
+                padding: '15px', 
+                borderRadius: '5px',
+                color: '#6c757d'
+              }}>
+                📈 No hay datos suficientes para mostrar estadísticas de productos populares
+              </div>
+            ) : (
+              <>
+                {/* Resumen de estadísticas */}
+                <div style={{ 
+                  display: 'flex', 
+                  gap: '20px', 
+                  marginBottom: '20px',
+                  flexWrap: 'wrap'
+                }}>
+                  <div style={{
+                    backgroundColor: '#fff',
+                    border: '1px solid #dee2e6',
+                    borderRadius: '8px',
+                    padding: '15px',
+                    minWidth: '200px',
+                    textAlign: 'center'
+                  }}>
+                    <h4 style={{ margin: '0 0 5px 0', color: '#27ae60' }}>
+                      {totalUnidadesVendidas}
+                    </h4>
+                    <p style={{ margin: 0, color: '#666', fontSize: '14px' }}>
+                      Total unidades vendidas
+                    </p>
+                  </div>
+                  
+                  <div style={{
+                    backgroundColor: '#fff',
+                    border: '1px solid #dee2e6',
+                    borderRadius: '8px',
+                    padding: '15px',
+                    minWidth: '200px',
+                    textAlign: 'center'
+                  }}>
+                    <h4 style={{ margin: '0 0 5px 0', color: '#3498db' }}>
+                      {productosPopulares.length}
+                    </h4>
+                    <p style={{ margin: 0, color: '#666', fontSize: '14px' }}>
+                      Productos diferentes vendidos
+                    </p>
+                  </div>
+                  
+                  <div style={{
+                    backgroundColor: '#fff',
+                    border: '1px solid #dee2e6',
+                    borderRadius: '8px',
+                    padding: '15px',
+                    minWidth: '200px',
+                    textAlign: 'center'
+                  }}>
+                    <h4 style={{ margin: '0 0 5px 0', color: '#f39c12' }}>
+                      {Math.round(totalUnidadesVendidas / productosPopulares.length)}
+                    </h4>
+                    <p style={{ margin: 0, color: '#666', fontSize: '14px' }}>
+                      Promedio por producto
+                    </p>
+                  </div>
+                </div>
+
+                <div className="productos-populares-grid" style={{ 
+                  display: 'grid', 
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', 
+                  gap: '15px' 
+                }}>
+                  {productosPopulares.map((producto, index) => (
+                    <div key={producto.id} style={{
+                      border: '1px solid #ddd',
+                      borderRadius: '8px',
+                      padding: '15px',
+                      backgroundColor: '#fff',
+                      boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                      position: 'relative'
+                    }}>
+                      {/* Badge de posición */}
+                      <div style={{
+                        position: 'absolute',
+                        top: '-5px',
+                        right: '-5px',
+                        backgroundColor: index < 3 ? '#f39c12' : '#95a5a6',
+                        color: 'white',
+                        borderRadius: '50%',
+                        width: '25px',
+                        height: '25px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '12px',
+                        fontWeight: 'bold'
+                      }}>
+                        #{index + 1}
+                      </div>
+
+                      {/* Imagen del producto */}
+                      {producto.imagen && (
+                        <img
+                          src={producto.imagen}
+                          alt={producto.nombre}
+                          style={{
+                            width: '100%',
+                            height: '150px',
+                            objectFit: 'cover',
+                            borderRadius: '5px',
+                            marginBottom: '10px'
+                          }}
+                          onError={(e) => {
+                            e.currentTarget.src = '/placeholder-product.svg';
+                          }}
+                        />
+                      )}
+
+                      <h4 style={{ margin: '0 0 10px 0', color: '#2c3e50' }}>
+                        {producto.nombre}
+                      </h4>
+                      
+                      <div style={{ fontSize: '14px', color: '#666' }}>
+                        <p style={{ margin: '5px 0' }}>
+                          <strong>📦 Unidades vendidas:</strong> 
+                          <span style={{ color: '#27ae60', fontWeight: 'bold', fontSize: '16px', marginLeft: '5px' }}>
+                            {producto.cantidad}
+                          </span>
+                        </p>
+                        <p style={{ margin: '5px 0' }}>
+                          <strong>🛒 Aparece en pedidos:</strong> 
+                          <span style={{ color: '#3498db', fontWeight: 'bold', marginLeft: '5px' }}>
+                            {producto.pedidos}
+                          </span>
+                        </p>
+                        <p style={{ margin: '5px 0', fontSize: '12px' }}>
+                          <strong>📊 Porcentaje del total:</strong> 
+                          <span style={{ color: '#8e44ad', fontWeight: 'bold', marginLeft: '5px' }}>
+                            {((producto.cantidad / totalUnidadesVendidas) * 100).toFixed(1)}%
+                          </span>
+                        </p>
+                      </div>
+
+                      {/* Barra de progreso visual */}
+                      <div style={{ marginTop: '10px' }}>
+                        <div style={{
+                          backgroundColor: '#ecf0f1',
+                          borderRadius: '10px',
+                          height: '8px',
+                          overflow: 'hidden'
+                        }}>
+                          <div style={{
+                            backgroundColor: index < 3 ? '#f39c12' : '#3498db',
+                            height: '100%',
+                            width: `${(producto.cantidad / productosPopulares[0].cantidad) * 100}%`,
+                            borderRadius: '10px',
+                            transition: 'width 0.3s ease'
+                          }}></div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            );
+          })()}
+        </div>
+      )}
       
-      {/* Pedidos Pendientes */}
-      <div className="seccion-pedidos">
+      {/* Sección de Pedidos - Solo mostrar cuando mostrarPedidos sea true */}
+      {mostrarPedidos && (
+        <div className="seccion-completa-pedidos">
+          {/* Pedidos Pendientes */}
+          <div className="seccion-pedidos">
         <h3>Pedidos Pendientes ({pedidosPendientes.length})</h3>
         <p className="seccion-descripcion">Estos pedidos están esperando confirmación de pago</p>
         {pedidosPendientes.length === 0 ? (
@@ -912,6 +1213,8 @@ const AdminPedidos: React.FC = () => {
           </div>
         )}
       </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -51,17 +51,30 @@ const FinalizarPedido: React.FC = () => {
   const [emailSugerencia, setEmailSugerencia] = useState<string>("");
   const [mostrarSugerencia, setMostrarSugerencia] = useState(false);
   const [cargandoSucursales, setCargandoSucursales] = useState(false);
+  const [errorSucursales, setErrorSucursales] = useState<string>("");
+  const [erroresPago, setErroresPago] = useState<{[key: string]: string}>({});
 
   // Cargar sucursales al montar el componente
   useEffect(() => {
     const cargarSucursales = async () => {
       try {
+        console.log('🚀 Iniciando carga de sucursales...');
         setCargandoSucursales(true);
+        setErrorSucursales("");
+        
         const sucursalesData = await sucursalService.obtenerSucursales();
+        
+        console.log('📥 Sucursales recibidas:', sucursalesData);
         setSucursales(sucursalesData || []);
-        console.log('Sucursales cargadas:', sucursalesData);
+        
+        if (!sucursalesData || sucursalesData.length === 0) {
+          setErrorSucursales("No se encontraron sucursales disponibles");
+        }
+        
       } catch (error) {
-        console.error('Error al cargar sucursales:', error);
+        console.error('❌ Error al cargar sucursales:', error);
+        const errorMessage = error instanceof Error ? error.message : 'Error desconocido al cargar sucursales';
+        setErrorSucursales(errorMessage);
         setSucursales([]); // Asegurar que siempre sea un array
       } finally {
         setCargandoSucursales(false);
@@ -74,14 +87,18 @@ const FinalizarPedido: React.FC = () => {
   // Filtrar sucursales cuando cambie la ciudad
   useEffect(() => {
     try {
+      console.log('🔄 Filtrando sucursales - Ciudad:', datosEnvio.ciudad, 'Sucursales disponibles:', sucursales.length);
+      
       if (datosEnvio.ciudad && sucursales && sucursales.length > 0) {
         const filtradas = sucursalService.filtrarSucursalesPorCiudad(sucursales, datosEnvio.ciudad);
+        console.log('📋 Sucursales filtradas:', filtradas.length);
         setSucursalesFiltradas(filtradas || []);
       } else {
+        console.log('📋 Mostrando todas las sucursales');
         setSucursalesFiltradas(sucursales || []);
       }
     } catch (error) {
-      console.error('Error al filtrar sucursales:', error);
+      console.error('❌ Error al filtrar sucursales:', error);
       setSucursalesFiltradas([]);
     }
   }, [datosEnvio.ciudad, sucursales]);
@@ -125,6 +142,87 @@ const FinalizarPedido: React.FC = () => {
     return false;
   };
 
+  // Función para validar número de tarjeta
+  const validarNumeroTarjeta = (numero: string) => {
+    // Eliminar espacios y caracteres no numéricos
+    const numeroLimpio = numero.replace(/\D/g, '');
+    
+    if (numeroLimpio.length < 13 || numeroLimpio.length > 19) {
+      return 'El número de tarjeta debe tener entre 13 y 19 dígitos';
+    }
+    
+    // Algoritmo de Luhn para validar número de tarjeta
+    let suma = 0;
+    let alternar = false;
+    
+    for (let i = numeroLimpio.length - 1; i >= 0; i--) {
+      let digito = parseInt(numeroLimpio.charAt(i));
+      
+      if (alternar) {
+        digito *= 2;
+        if (digito > 9) {
+          digito = (digito % 10) + 1;
+        }
+      }
+      
+      suma += digito;
+      alternar = !alternar;
+    }
+    
+    if (suma % 10 !== 0) {
+      return 'Número de tarjeta inválido';
+    }
+    
+    return '';
+  };
+
+  // Función para validar fecha de vencimiento
+  const validarFechaVencimiento = (fecha: string) => {
+    if (!/^\d{2}\/\d{2}$/.test(fecha)) {
+      return 'Formato inválido. Use MM/AA';
+    }
+    
+    const [mes, año] = fecha.split('/').map(num => parseInt(num));
+    
+    if (mes < 1 || mes > 12) {
+      return 'Mes inválido';
+    }
+    
+    const fechaActual = new Date();
+    const añoCompleto = 2000 + año;
+    const fechaVencimiento = new Date(añoCompleto, mes - 1);
+    
+    if (fechaVencimiento <= fechaActual) {
+      return 'La tarjeta está vencida';
+    }
+    
+    return '';
+  };
+
+  // Función para validar CVV
+  const validarCVV = (cvv: string) => {
+    if (!/^\d{3,4}$/.test(cvv)) {
+      return 'CVV debe tener 3 o 4 dígitos';
+    }
+    return '';
+  };
+
+  // Función para formatear número de tarjeta con espacios
+  const formatearNumeroTarjeta = (numero: string) => {
+    const numeroLimpio = numero.replace(/\D/g, '');
+    const grupos = numeroLimpio.match(/.{1,4}/g);
+    return grupos ? grupos.join(' ') : numeroLimpio;
+  };
+
+  // Función para formatear fecha MM/AA
+  const formatearFechaVencimiento = (fecha: string) => {
+    const numerosSolo = fecha.replace(/\D/g, '');
+    if (numerosSolo.length >= 2) {
+      return numerosSolo.substring(0, 2) + '/' + numerosSolo.substring(2, 4);
+    }
+    return numerosSolo;
+  };
+
   const calcularTotal = () => {
     return carrito.reduce((acc, producto) => {
       const precioUnitario = producto.precio_oferta > 0 ? producto.precio_oferta : producto.precio;
@@ -134,26 +232,67 @@ const FinalizarPedido: React.FC = () => {
 
   const handleEnvioChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setDatosEnvio({
-      ...datosEnvio,
-      [name]: value
-    });
+    
+    // Si cambia el tipo de entrega, manejar la lógica especial
+    if (name === 'tipoEntrega') {
+      setDatosEnvio({
+        ...datosEnvio,
+        tipoEntrega: value as 'domicilio' | 'sucursal',
+        // Limpiar sucursal seleccionada cuando cambia a domicilio
+        // y mantener undefined cuando cambia a sucursal hasta que se seleccione una
+        sucursalSeleccionada: value === 'domicilio' ? undefined : datosEnvio.sucursalSeleccionada
+      });
+    } else {
+      setDatosEnvio({
+        ...datosEnvio,
+        [name]: value
+      });
+    }
 
     // Validar email en tiempo real
     if (name === 'email') {
       validarEmail(value);
     }
-
-    // Si cambia el tipo de entrega, limpiar sucursal seleccionada
-    if (name === 'tipoEntrega' && value === 'domicilio') {
-      setDatosEnvio(prev => ({ ...prev, sucursalSeleccionada: undefined }));
-    }
   };
 
   const handlePagoChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    let valorProcesado = value;
+    
+    // Limpiar errores previos del campo
+    setErroresPago(prev => ({
+      ...prev,
+      [name]: ''
+    }));
+    
+    // Procesar según el tipo de campo
+    if (name === 'numeroTarjeta') {
+      // Solo permitir números y formatear con espacios
+      const numerosSolo = value.replace(/\D/g, '');
+      if (numerosSolo.length <= 19) {
+        valorProcesado = formatearNumeroTarjeta(numerosSolo);
+      } else {
+        return; // No actualizar si excede la longitud máxima
+      }
+    } else if (name === 'fechaVencimiento') {
+      // Formatear automáticamente como MM/AA
+      valorProcesado = formatearFechaVencimiento(value);
+    } else if (name === 'cvv') {
+      // Solo permitir números, máximo 4 dígitos
+      const numerosSolo = value.replace(/\D/g, '');
+      if (numerosSolo.length <= 4) {
+        valorProcesado = numerosSolo;
+      } else {
+        return; // No actualizar si excede la longitud máxima
+      }
+    } else if (name === 'nombreTitular') {
+      // Solo permitir letras y espacios
+      valorProcesado = value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+    }
+    
     setDatosPago({
       ...datosPago,
-      [e.target.name]: e.target.value
+      [name]: valorProcesado
     });
   };
 
@@ -185,12 +324,38 @@ const FinalizarPedido: React.FC = () => {
     if (datosPago.metodoPago === "transferencia") {
       return true;
     }
-    return (
-      datosPago.numeroTarjeta &&
-      datosPago.nombreTitular &&
-      datosPago.fechaVencimiento &&
-      datosPago.cvv
-    );
+    
+    // Validar todos los campos de tarjeta
+    const errores: {[key: string]: string} = {};
+    
+    if (!datosPago.numeroTarjeta) {
+      errores.numeroTarjeta = 'Número de tarjeta requerido';
+    } else {
+      const errorNumero = validarNumeroTarjeta(datosPago.numeroTarjeta);
+      if (errorNumero) errores.numeroTarjeta = errorNumero;
+    }
+    
+    if (!datosPago.nombreTitular) {
+      errores.nombreTitular = 'Nombre del titular requerido';
+    }
+    
+    if (!datosPago.fechaVencimiento) {
+      errores.fechaVencimiento = 'Fecha de vencimiento requerida';
+    } else {
+      const errorFecha = validarFechaVencimiento(datosPago.fechaVencimiento);
+      if (errorFecha) errores.fechaVencimiento = errorFecha;
+    }
+    
+    if (!datosPago.cvv) {
+      errores.cvv = 'CVV requerido';
+    } else {
+      const errorCVV = validarCVV(datosPago.cvv);
+      if (errorCVV) errores.cvv = errorCVV;
+    }
+    
+    setErroresPago(errores);
+    
+    return Object.keys(errores).length === 0;
   };
 
   const verificarToken = async (): Promise<boolean> => {
@@ -443,8 +608,8 @@ const FinalizarPedido: React.FC = () => {
                 className="select-tipo-entrega"
                 required
               >
-                <option value="Domicilio">Entrega a Domicilio</option>
-                <option value="Ducursal">Retiro en Sucursal</option>
+                <option value="domicilio">Entrega a Domicilio</option>
+                <option value="sucursal">Retiro en Sucursal</option>
               </select>
             </div>
 
@@ -474,9 +639,52 @@ const FinalizarPedido: React.FC = () => {
                 <label>
                   <strong>Sucursal para retiro:</strong>
                 </label>
-                {cargandoSucursales ? (
-                  <p>Cargando sucursales...</p>
-                ) : sucursalesFiltradas.length > 0 ? (
+                
+                {/* Estado de carga */}
+                {cargandoSucursales && (
+                  <div className="cargando-sucursales">
+                    <p>🔄 Cargando sucursales...</p>
+                  </div>
+                )}
+                
+                {/* Error al cargar sucursales */}
+                {errorSucursales && !cargandoSucursales && (
+                  <div className="error-sucursales" style={{ 
+                    color: 'red', 
+                    backgroundColor: '#ffe6e6', 
+                    padding: '10px', 
+                    borderRadius: '5px', 
+                    margin: '10px 0' 
+                  }}>
+                    <p>❌ Error: {errorSucursales}</p>
+                    <button 
+                      type="button" 
+                      onClick={() => window.location.reload()}
+                      style={{ 
+                        marginTop: '5px', 
+                        padding: '5px 10px', 
+                        backgroundColor: '#dc3545', 
+                        color: 'white', 
+                        border: 'none', 
+                        borderRadius: '3px', 
+                        cursor: 'pointer' 
+                      }}
+                    >
+                      Reintentar
+                    </button>
+                  </div>
+                )}
+                
+                {/* Información de debug */}
+                {!cargandoSucursales && !errorSucursales && (
+                  <div className="debug-info" style={{ fontSize: '12px', color: '#666', margin: '5px 0' }}>
+                    📊 Total sucursales: {sucursales.length} | Filtradas: {sucursalesFiltradas.length}
+                    {datosEnvio.ciudad && ` | Filtro: "${datosEnvio.ciudad}"`}
+                  </div>
+                )}
+                
+                {/* Selector de sucursales */}
+                {!cargandoSucursales && !errorSucursales && sucursalesFiltradas.length > 0 ? (
                   <select
                     name="sucursalSeleccionada"
                     value={datosEnvio.sucursalSeleccionada || ''}
@@ -494,12 +702,37 @@ const FinalizarPedido: React.FC = () => {
                       </option>
                     ))}
                   </select>
-                ) : (
-                  <p className="no-sucursales">
-                    No hay sucursales disponibles en tu ciudad. 
-                    {datosEnvio.ciudad && ` Intenta con una ciudad cercana o selecciona entrega a domicilio.`}
-                  </p>
-                )}
+                ) : !cargandoSucursales && !errorSucursales ? (
+                  <div className="no-sucursales">
+                    {sucursales.length === 0 ? (
+                      <p>❌ No hay sucursales disponibles en el sistema.</p>
+                    ) : (
+                      <div>
+                        <p>⚠️ No hay sucursales disponibles en "{datosEnvio.ciudad}".</p>
+                        <p>💡 Sugerencias:</p>
+                        <ul style={{ marginLeft: '20px' }}>
+                          <li>Intenta con una ciudad cercana</li>
+                          <li>Verifica la ortografía de la ciudad</li>
+                          <li>Selecciona entrega a domicilio</li>
+                        </ul>
+                        {sucursales.length > 0 && (
+                          <details style={{ marginTop: '10px' }}>
+                            <summary style={{ cursor: 'pointer', color: '#007bff' }}>
+                              Ver todas las sucursales disponibles
+                            </summary>
+                            <ul style={{ marginTop: '10px' }}>
+                              {sucursales.map(s => (
+                                <li key={s.id}>
+                                  {s.direccion} - {s.localidades.map(l => l.nombre).join(', ')}
+                                </li>
+                              ))}
+                            </ul>
+                          </details>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ) : null}
                 
                 {datosEnvio.sucursalSeleccionada && (
                   <div className="sucursal-info">
@@ -520,6 +753,7 @@ const FinalizarPedido: React.FC = () => {
               </div>
             )}
           </div>
+          
           <button
             onClick={() => setPaso(2)}
             disabled={!validarPaso1()}
@@ -560,42 +794,75 @@ const FinalizarPedido: React.FC = () => {
 
             {datosPago.metodoPago === "tarjeta" && (
               <div className="datos-tarjeta">
-                <input
-                  type="text"
-                  name="numeroTarjeta"
-                  placeholder="Número de tarjeta"
-                  value={datosPago.numeroTarjeta || ""}
-                  onChange={handlePagoChange}
-                  maxLength={16}
-                  required
-                />
-                <input
-                  type="text"
-                  name="nombreTitular"
-                  placeholder="Nombre del titular"
-                  value={datosPago.nombreTitular || ""}
-                  onChange={handlePagoChange}
-                  required
-                />
+                <div className="campo-tarjeta">
+                  <input
+                    type="text"
+                    name="numeroTarjeta"
+                    placeholder="Número de tarjeta (1234 5678 9012 3456)"
+                    value={datosPago.numeroTarjeta || ""}
+                    onChange={handlePagoChange}
+                    className={erroresPago.numeroTarjeta ? 'error' : ''}
+                    required
+                  />
+                  {erroresPago.numeroTarjeta && (
+                    <span className="error-mensaje">{erroresPago.numeroTarjeta}</span>
+                  )}
+                </div>
+                
+                <div className="campo-tarjeta">
+                  <input
+                    type="text"
+                    name="nombreTitular"
+                    placeholder="Nombre del titular (como aparece en la tarjeta)"
+                    value={datosPago.nombreTitular || ""}
+                    onChange={handlePagoChange}
+                    className={erroresPago.nombreTitular ? 'error' : ''}
+                    required
+                  />
+                  {erroresPago.nombreTitular && (
+                    <span className="error-mensaje">{erroresPago.nombreTitular}</span>
+                  )}
+                </div>
+                
                 <div className="form-fila">
-                  <input
-                    type="text"
-                    name="fechaVencimiento"
-                    placeholder="MM/AA"
-                    value={datosPago.fechaVencimiento || ""}
-                    onChange={handlePagoChange}
-                    maxLength={5}
-                    required
-                  />
-                  <input
-                    type="text"
-                    name="cvv"
-                    placeholder="CVV"
-                    value={datosPago.cvv || ""}
-                    onChange={handlePagoChange}
-                    maxLength={3}
-                    required
-                  />
+                  <div className="campo-tarjeta">
+                    <input
+                      type="text"
+                      name="fechaVencimiento"
+                      placeholder="MM/AA"
+                      value={datosPago.fechaVencimiento || ""}
+                      onChange={handlePagoChange}
+                      className={erroresPago.fechaVencimiento ? 'error' : ''}
+                      maxLength={5}
+                      required
+                    />
+                    {erroresPago.fechaVencimiento && (
+                      <span className="error-mensaje">{erroresPago.fechaVencimiento}</span>
+                    )}
+                  </div>
+                  
+                  <div className="campo-tarjeta">
+                    <input
+                      type="password"
+                      name="cvv"
+                      placeholder="CVV"
+                      value={datosPago.cvv || ""}
+                      onChange={handlePagoChange}
+                      className={erroresPago.cvv ? 'error' : ''}
+                      maxLength={4}
+                      required
+                    />
+                    {erroresPago.cvv && (
+                      <span className="error-mensaje">{erroresPago.cvv}</span>
+                    )}
+                  </div>
+                </div>
+                
+                <div className="info-seguridad">
+                  <small>
+                    🔒 Tus datos están protegidos. El CVV es el código de 3 o 4 dígitos 
+                    que aparece en el reverso de tu tarjeta.
+                  </small>
                 </div>
               </div>
             )}
@@ -605,8 +872,11 @@ const FinalizarPedido: React.FC = () => {
               Anterior
             </button>
             <button
-              onClick={() => setPaso(3)}
-              disabled={!validarPaso2()}
+              onClick={() => {
+                if (validarPaso2()) {
+                  setPaso(3);
+                }
+              }}
               className="btn-siguiente"
             >
               Continuar
