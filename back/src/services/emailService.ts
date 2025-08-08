@@ -1,8 +1,6 @@
 import nodemailer from 'nodemailer';
 import { Usuario } from '../models/usuarios.entity.js';
 import { Pedido } from '../models/pedido.entity.js';
-import { LineaPed } from '../models/lineaPed.entity.js';
-
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -10,11 +8,10 @@ const transporter = nodemailer.createTransport({
     user: process.env.GMAIL_USER,
     pass: process.env.GMAIL_APP_PASSWORD 
   },
-  debug: true, // Habilitar debug
-  logger: true // Habilitar logs detallados
+  debug: true,
+  logger: true
 });
 
-// Datos de transferencia bancaria (configúralos según tu empresa)
 const DATOS_TRANSFERENCIA = {
   banco: 'Banco Nación',
   cbu: '1234567890123456789012',
@@ -30,7 +27,7 @@ interface DatosEnvio {
   direccion?: string;
   ciudad?: string;
   telefono?: string;
-  tipoEntrega: 'domicilio' | 'sucursal';  // Cambiado a minúsculas para coincidir con frontend
+  tipoEntrega: 'domicilio' | 'sucursal';  
 }
 
 interface ProductoEmail {
