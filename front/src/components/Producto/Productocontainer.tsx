@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import '../../styles/productContainer.css';
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Modal from "../Modal.tsx";
 
 interface ProductoType {
@@ -29,6 +29,7 @@ const Productocontainer: React.FC = () => {
     const [mostrarFiltros, setMostrarFiltros] = useState(false);
     
     const location = useLocation();
+    const navigate = useNavigate();
     
     const fetchProductos = async () => {
         setLoading(true);
@@ -420,10 +421,20 @@ const Productocontainer: React.FC = () => {
                             />
                         )}
                         {/* Información del producto */}
-                        <h3>{producto.nombre}</h3>
-                        <p>{producto.descripcion}</p>
-                        <p>Cantidad: {producto.cantidad}</p>
-                        <p>
+                        <h3 
+                            onClick={() => navigate(`/producto/${producto.id}`)}
+                            style={{ 
+                                cursor: "pointer", 
+                                color: "#000",
+                                textDecoration: "none",
+                                transition: "text-decoration 0.2s"
+                            }}
+                            onMouseEnter={(e) => ((e.target as HTMLHeadingElement).style.textDecoration = "underline")}
+                            onMouseLeave={(e) => ((e.target as HTMLHeadingElement).style.textDecoration = "none")}
+                        >
+                            {producto.nombre}
+                        </h3>
+                        <p style={{ marginBottom: "2px" }}>
                             Precio:
                             {producto.precio_oferta > 0 ? (
                                 <>

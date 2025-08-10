@@ -20,6 +20,7 @@ import FinalizarPedido from './components/finalizarPedido.tsx';
 import MisPedidos from './components/Usuario/MisPedidos.tsx';
 import AdminPedidos from './components/Admin/AdminPedidos.tsx';
 import TestCheckout from './components/TestCheckout.tsx';
+import ProductDetail from './components/Producto/ProductDetail.tsx';
 
 const App: React.FC = () => {
     const location = useLocation();
@@ -71,6 +72,7 @@ const App: React.FC = () => {
                 <AdminPedidos />
             </PrivateRoute>} />
           <Route path="/test-checkout" element={<TestCheckout />} />
+          <Route path="/producto/:id" element={<ProductDetail />} />
          </Routes>
          <Banner />
      </>

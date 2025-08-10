@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import '../styles/header.css';
 import { Link } from 'react-router-dom';
-import Home from './home.tsx';
 import { useCart } from '../Context/CartContext.tsx';
 import CarritoSidebar from './CarritoSidebar';
 
@@ -72,7 +71,7 @@ const Header = () => {
                 </div>
             </nav>
                     <CarritoSidebar visible={carritoVisible} onClose={() => setCarritoVisible(false)} />
-            <div><Home /></div>
+            
         </header>
     );
 };

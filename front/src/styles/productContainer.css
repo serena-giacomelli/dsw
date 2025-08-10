@@ -37,10 +37,12 @@
 .product-name {
     font-weight: bold;
     margin-bottom: 8px;
+    text-align: center;
 }
 
 .product-prices {
-    margin-bottom: 12px;
+    margin-bottom: 2px;
+    text-align: center;
 }
 
 .old-price {
@@ -50,7 +52,7 @@
 }
 
 .discounted-price {
-    color: #d32f2f;
+    color: #000;
     font-weight: bold;
 }
 
@@ -84,4 +86,3 @@
     font-size: 1.2rem;
     cursor: pointer;
 }
-      

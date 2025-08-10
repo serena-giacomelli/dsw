@@ -25,12 +25,6 @@ const [filtroSeleccionado, setFiltroSeleccionado] = useState("");
 const [cantidadFiltro, setCantidadFiltro] = useState<number | "">("");
 const [tipoProductoFiltro, setTipoProductoFiltro] = useState<number | "">("");
 const [mostrarFiltros, setMostrarFiltros] = useState(false);
-const { agregarAlCarrito } = useCart();
-const [cantidades, setCantidades] = useState<{ [key: number]: number }>({});
-const [mensajeAgregado, setMensajeAgregado] = useState<string | null>(null);
-const manejarCambioCantidad = (id: number, valor: number) => {
-  setCantidades(prev => ({ ...prev, [id]: valor }));
-};
 const { id } = useParams();
 const navigate = useNavigate();
 
@@ -112,27 +106,6 @@ setProductos(productosOrdenados);
 }, [orden]);
 
 
-const manejarAgregarAlCarrito = (producto: ProductoType) => {
-  const cantidad = cantidades[producto.id] || 1;
-
-  const exito = agregarAlCarrito({
-    id: producto.id,
-    nombre: producto.nombre,
-    precio: producto.precio,
-    precio_oferta: producto.precio_oferta,
-    imagen: producto.imagen,
-    cantidad: cantidad
-  });
-
-  if (exito) {
-    setMensajeAgregado(`Se agregó "${producto.nombre}" (${cantidad}) al carrito.`);
-    setTimeout(() => {
-      setMensajeAgregado(null);
-    }, 2500);
-  }
-};
-
-
 return (
     <div className="product-list-container">
         <div className="filters" style={{ marginBottom: "1rem" }}>
@@ -212,13 +185,6 @@ return (
             </div> 
         )}
 
-            {mensajeAgregado && (
-            <div style={{ background: "#d4edda", color: "#155724", padding: "10px", marginBottom: "15px", borderRadius: "5px" }}>
-            {mensajeAgregado}
-            </div>
-            )}
-
-
         </div>
             {loading ? (
                 <p>Cargando productos...</p>
@@ -262,10 +228,20 @@ return (
                 />
             )}
             {/* Información del producto */}
-            <h3>{producto.nombre}</h3>
-            <p>{producto.descripcion}</p>
-            <p>Cantidad: {producto.cantidad}</p>
-            <p>
+            <h3 
+                onClick={() => navigate(`/producto/${producto.id}`)}
+                style={{ 
+                    cursor: "pointer", 
+                    color: "#000",
+                    textDecoration: "none",
+                    transition: "text-decoration 0.2s"
+                }}
+                onMouseEnter={(e) => ((e.target as HTMLElement).style.textDecoration = "underline")}
+                onMouseLeave={(e) => ((e.target as HTMLElement).style.textDecoration = "none")}
+            >
+                {producto.nombre}
+            </h3>
+            <p style={{ marginBottom: "0px" }}>
                 Precio:
                 {producto.precio_oferta > 0 ? (
                     <>
@@ -276,33 +252,18 @@ return (
                     </>
                 ) : (
                     `$${producto.precio}`
-                                          )}
-                            </p>
-
-                {producto.cantidad === 0 ? (
-                <div style={{ marginTop: "10px", color: "red", fontWeight: "bold" }}>
-                    FUERA DE STOCK
-                </div>
-                ) : (
-                <div style={{ marginTop: "10px" }}>
-                    <label>Cantidad:</label>
-                    <input
-                    type="number"
-                    min="1"
-                    value={cantidades[producto.id] || 1}
-                    onChange={(e) => manejarCambioCantidad(producto.id, parseInt(e.target.value))}
-                    style={{ width: "60px", marginLeft: "10px" }}
-                    />
-                    <button
-                    onClick={() => manejarAgregarAlCarrito(producto)}
-                    style={{ marginLeft: "10px" }}
-                    >
-                    Agregar al carrito
-                    </button>
-                </div>
                 )}
-                        </li>
-                    ))}
+            </p>
+            <p style={{ fontSize: "14px", color: "#888", marginBottom: "8px" }}>
+                Precio sin impuestos nacionales: $ {producto.precio_oferta > 0 ? 
+                    (producto.precio_oferta / 1.21).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : 
+                    (producto.precio / 1.21).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+            </p>
+            <p style={{ color: producto.cantidad > 0 ? "#666" : "#999", fontWeight: "normal", fontSize: "14px" }}>
+                {producto.cantidad > 0 ? `Stock: ${producto.cantidad} unidades` : "FUERA DE STOCK"}
+            </p>
+        </li>
+    ))}
                 </ul>
             )}
         </div>

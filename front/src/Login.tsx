@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from './Context/CartContext.tsx';
+import './styles/Login.css';
 
 const Login: React.FC = () => {
   const [mail, setMail] = useState('');
@@ -85,27 +85,26 @@ const Login: React.FC = () => {
                 required
               />
             </div>
+
             {error && <p className="error-message">{error}</p>}
-            {success && <p className="success-message">{success}</p>} {/* Mostrar mensaje de éxito */}
+            {success && <p className="success-message">{success}</p>}
+            
             <div className="container-button">
               <button type="submit" className="btn-login">Iniciar Sesión</button>
             </div>
+            
+            <div className="forgot-password">
+            <Link to="/forgot-password">¿Olvidaste tu contraseña?</Link>
+            </div>
+            <div className="register-button">
+            <p>¿No tienes cuenta? <Link to="/register">Regístrate</Link></p>
+            </div>
           </form>
         </div>
-
-        <div className='divider'></div>
-
-        <div className='right-side'>
-          <div className='forgot-password'>
-            <Link to="/forgot-password">¿Olvidaste tu contraseña?</Link>
-          </div>
-          <div className='register-button'>
-            <p>¿No tienes cuenta? <Link to="/register">Regístrate</Link></p>
-          </div>
-        </div>
-      </div>
+    </div>
     </div>
   );
 };
+
 
 export default Login;

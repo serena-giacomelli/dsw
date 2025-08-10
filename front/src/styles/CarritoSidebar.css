@@ -4,8 +4,8 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.5); /* Negro con transparencia */
-  z-index: 999; /* Por debajo del carrito (1000) */
+  background: rgba(0,0,0,0.5);
+  z-index: 999;
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s ease;
@@ -18,56 +18,144 @@
 
 .carrito-sidebar {
   position: fixed;
-  right: -250px;  /* Se oculta fuera de la pantalla por la derecha */
+  right: -350px;
   top: 0;
-  width: 250px;
+  width: 350px;
   height: 100%;
   background-color: #e7e2dc;
-  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2); /* Sombra hacia la izquierda */
-  padding-top: 60px;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
   transition: right 0.3s ease;
   z-index: 1000;
-  overflow-y: auto; /* Para scroll si hay muchos productos */
+  overflow-y: auto;
 }
 
 .carrito-sidebar.open {
-  right: 0; /* Se desliza visible */
+  right: 0;
 }
 
-/* Igual que side-menu para enlaces, pero adaptado a tus botones dentro */
-.carrito-sidebar a,
-.carrito-sidebar button {
-  padding: 15px;
-  font-size: 18px;
-  color: #333;
+/* Header del carrito */
+.carrito-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
   border-bottom: 1px solid #ddd;
-  background: none;
-  text-align: left;
-  cursor: pointer;
+  background-color: #e7e2dc;
+}
+
+.carrito-titulo {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0;
+  color: #333;
+}
+
+.cerrar-btn {
+  all: unset;
+  background: none !important;
   border: none;
-  width: 100%;
+  font-size: 24px;
+  cursor: pointer;
+  color: #8B4513 !important;
+  padding: 0;
+  margin: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
 }
 
-.carrito-sidebar a:hover,
-.carrito-sidebar button:hover {
-  background-color: #ddd;
+/* Contenido del carrito */
+.carrito-contenido {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
 }
 
+/* Item del carrito */
+.carrito-item {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.carrito-item img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.item-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.item-nombre {
+  font-size: 14px;
+  font-weight: bold;
+  margin: 0 0 5px 0;
+  color: #333;
+}
+
+.item-precio {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0;
+  color: #333;
+}
+
+.precio-sin-impuestos {
+  font-size: 10px;
+  color: #666;
+  margin: 2px 0 0 0;
+}
+
+.eliminar-btn {
+  background: none !important;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #8B4513 !important;
+  padding: 0;
+  width: auto; 
+  height: auto;
+  display: inline-flex; 
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* Footer del carrito */
+.carrito-footer {
+  padding: 20px;
+  border-top: 1px solid #ddd;
+  background-color: #e7e2dc;
+}
 
 .finalizar-btn {
   width: 100%;
   background-color: black;
   color: white;
-  padding: 14px;
+  padding: 15px;
   font-weight: bold;
   border: none;
   cursor: pointer;
-  margin: 20px 0 10px;
-  font-size: 15px;
+  font-size: 14px;
   letter-spacing: 0.5px;
   border-radius: 2px;
+  margin-bottom: 15px;
 }
 
 .finalizar-btn:hover {
@@ -78,17 +166,46 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  margin-top: 5px;
+  gap: 8px;
 }
 
 .link-carrito {
   text-align: center;
-  font-size: 10px;
+  font-size: 12px;
   color: #000;
-  text-decoration: none;
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 .link-carrito:hover {
-  text-decoration: underline;
+  color: #333;
+}
+
+/* Subtotal */
+.carrito-subtotal {
+  margin: 20px 0;
+  padding-top: 15px;
+  border-top: 1px solid #ddd;
+  text-align: right;
+}
+
+.subtotal-texto {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+}
+
+.subtotal-precio {
+  font-size: 18px;
+}
+
+.subtotal-impuestos {
+  font-size: 9px;
+  color: #666;
+  text-align: right;
+  margin: 2px 0 0 0;
 }

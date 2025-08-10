@@ -16,8 +16,7 @@ const Producto: React.FC<Producto> = ({ id, nombre, descripcion, cantidad, preci
         <div className="producto-card">
             <h3>{nombre}</h3>
                 <p>{descripcion}</p>
-                <p>Cantidad: {cantidad}</p>
-                <p>Precio: ${precio}</p>
+                <p style={{ marginBottom: "2px" }}>Precio: ${precio}</p>
                 <button onClick={onEdit}>Editar</button>
                 <button onClick={onDelete}>Eliminar</button>
         </div>
@@ -25,3 +24,4 @@ const Producto: React.FC<Producto> = ({ id, nombre, descripcion, cantidad, preci
 };
 
 export default Producto;
+

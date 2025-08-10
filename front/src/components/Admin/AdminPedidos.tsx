@@ -4,6 +4,7 @@ import { pagoService, Pago } from "../../services/pagoService";
 import { transportistaService } from "../../../services/transportistaService";
 import "../../styles/AdminPedidos.css";
 import "../../styles/placeholder.css";
+import ProductosDestacados from "../ProductosDestacados";
 
 interface Transportista {
   id: number;
@@ -270,45 +271,6 @@ const AdminPedidos: React.FC = () => {
     }
   };
 
-  // Función para calcular productos más populares
-  const calcularProductosPopulares = () => {
-    const productosVendidos: { [key: number]: { 
-      id: number, 
-      nombre: string, 
-      cantidad: number, 
-      pedidos: number,
-      imagen?: string 
-    } } = {};
-
-    // Solo contar pedidos completados para estadísticas reales
-    const pedidosCompletados = pedidos.filter(pedido => 
-      pedido.estado === 'completado' || pedido.estado === 'entregado'
-    );
-
-    pedidosCompletados.forEach(pedido => {
-      pedido.lineasPed.forEach(linea => {
-        const producto = linea.productos[0];
-        if (producto) {
-          if (!productosVendidos[producto.id]) {
-            productosVendidos[producto.id] = {
-              id: producto.id,
-              nombre: producto.nombre,
-              cantidad: 0,
-              pedidos: 0,
-              imagen: producto.imagen
-            };
-          }
-          productosVendidos[producto.id].cantidad += Number(linea.cantidad);
-          productosVendidos[producto.id].pedidos += 1;
-        }
-      });
-    });
-
-    return Object.values(productosVendidos)
-      .sort((a, b) => b.cantidad - a.cantidad)
-      .slice(0, 10); // Top 10 productos
-  };
-
   if (loading) {
     return (
       <div className="admin-pedidos-container">
@@ -360,12 +322,12 @@ const AdminPedidos: React.FC = () => {
             boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
           }}
         >
-          📦 {mostrarPedidos ? 'Ocultar Pedidos' : 'Mostrar Pedidos'}
+           {mostrarPedidos ? 'Ocultar Pedidos' : 'Mostrar Pedidos'}
           {(pedidosPendientes.length + pedidosPagoAprobado.length) > 0 && (
             <span style={{
               backgroundColor: '#e74c3c',
               color: 'white',
-              borderRadius: '50%',
+              borderRadius: '0',
               padding: '2px 8px',
               fontSize: '12px',
               marginLeft: '10px'
@@ -395,7 +357,7 @@ const AdminPedidos: React.FC = () => {
             boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
           }}
         >
-          💳 {mostrarGestionPagos ? 'Ocultar Pagos' : 'Mostrar Pagos'}
+           {mostrarGestionPagos ? 'Ocultar Pagos' : 'Mostrar Pagos'}
           {pagosPendientes.length > 0 && (
             <span style={{
               backgroundColor: '#e74c3c',
@@ -430,7 +392,7 @@ const AdminPedidos: React.FC = () => {
             boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
           }}
         >
-          📊 {mostrarEstadisticas ? 'Ocultar Productos' : 'Productos Destacados'}
+         {mostrarEstadisticas ? 'Ocultar Productos' : 'Productos Destacados'}
         </button>
       </div>
 
@@ -594,183 +556,15 @@ const AdminPedidos: React.FC = () => {
       {/* Estadísticas de Productos Populares */}
       {mostrarEstadisticas && (
         <div className="seccion-estadisticas" style={{ marginBottom: '30px' }}>
-          <h3>📊 Productos Más Populares</h3>
+          <h3> Productos Más Populares</h3>
           <p className="seccion-descripcion">
             Basado en productos vendidos en pedidos completados y entregados
           </p>
           
-          {(() => {
-            const productosPopulares = calcularProductosPopulares();
-            const totalUnidadesVendidas = productosPopulares.reduce((total, producto) => total + producto.cantidad, 0);
-            const totalPedidosConProductos = productosPopulares.reduce((total, producto) => total + producto.pedidos, 0);
-            
-            return productosPopulares.length === 0 ? (
-              <div style={{ 
-                backgroundColor: '#f8f9fa', 
-                border: '1px solid #dee2e6', 
-                padding: '15px', 
-                borderRadius: '5px',
-                color: '#6c757d'
-              }}>
-                📈 No hay datos suficientes para mostrar estadísticas de productos populares
-              </div>
-            ) : (
-              <>
-                {/* Resumen de estadísticas */}
-                <div style={{ 
-                  display: 'flex', 
-                  gap: '20px', 
-                  marginBottom: '20px',
-                  flexWrap: 'wrap'
-                }}>
-                  <div style={{
-                    backgroundColor: '#fff',
-                    border: '1px solid #dee2e6',
-                    borderRadius: '8px',
-                    padding: '15px',
-                    minWidth: '200px',
-                    textAlign: 'center'
-                  }}>
-                    <h4 style={{ margin: '0 0 5px 0', color: '#27ae60' }}>
-                      {totalUnidadesVendidas}
-                    </h4>
-                    <p style={{ margin: 0, color: '#666', fontSize: '14px' }}>
-                      Total unidades vendidas
-                    </p>
-                  </div>
-                  
-                  <div style={{
-                    backgroundColor: '#fff',
-                    border: '1px solid #dee2e6',
-                    borderRadius: '8px',
-                    padding: '15px',
-                    minWidth: '200px',
-                    textAlign: 'center'
-                  }}>
-                    <h4 style={{ margin: '0 0 5px 0', color: '#3498db' }}>
-                      {productosPopulares.length}
-                    </h4>
-                    <p style={{ margin: 0, color: '#666', fontSize: '14px' }}>
-                      Productos diferentes vendidos
-                    </p>
-                  </div>
-                  
-                  <div style={{
-                    backgroundColor: '#fff',
-                    border: '1px solid #dee2e6',
-                    borderRadius: '8px',
-                    padding: '15px',
-                    minWidth: '200px',
-                    textAlign: 'center'
-                  }}>
-                    <h4 style={{ margin: '0 0 5px 0', color: '#f39c12' }}>
-                      {Math.round(totalUnidadesVendidas / productosPopulares.length)}
-                    </h4>
-                    <p style={{ margin: 0, color: '#666', fontSize: '14px' }}>
-                      Promedio por producto
-                    </p>
-                  </div>
-                </div>
-
-                <div className="productos-populares-grid" style={{ 
-                  display: 'grid', 
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', 
-                  gap: '15px' 
-                }}>
-                  {productosPopulares.map((producto, index) => (
-                    <div key={producto.id} style={{
-                      border: '1px solid #ddd',
-                      borderRadius: '8px',
-                      padding: '15px',
-                      backgroundColor: '#fff',
-                      boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                      position: 'relative'
-                    }}>
-                      {/* Badge de posición */}
-                      <div style={{
-                        position: 'absolute',
-                        top: '-5px',
-                        right: '-5px',
-                        backgroundColor: index < 3 ? '#f39c12' : '#95a5a6',
-                        color: 'white',
-                        borderRadius: '50%',
-                        width: '25px',
-                        height: '25px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '12px',
-                        fontWeight: 'bold'
-                      }}>
-                        #{index + 1}
-                      </div>
-
-                      {/* Imagen del producto */}
-                      {producto.imagen && (
-                        <img
-                          src={producto.imagen}
-                          alt={producto.nombre}
-                          style={{
-                            width: '100%',
-                            height: '150px',
-                            objectFit: 'cover',
-                            borderRadius: '5px',
-                            marginBottom: '10px'
-                          }}
-                          onError={(e) => {
-                            e.currentTarget.src = '/placeholder-product.svg';
-                          }}
-                        />
-                      )}
-
-                      <h4 style={{ margin: '0 0 10px 0', color: '#2c3e50' }}>
-                        {producto.nombre}
-                      </h4>
-                      
-                      <div style={{ fontSize: '14px', color: '#666' }}>
-                        <p style={{ margin: '5px 0' }}>
-                          <strong>📦 Unidades vendidas:</strong> 
-                          <span style={{ color: '#27ae60', fontWeight: 'bold', fontSize: '16px', marginLeft: '5px' }}>
-                            {producto.cantidad}
-                          </span>
-                        </p>
-                        <p style={{ margin: '5px 0' }}>
-                          <strong>🛒 Aparece en pedidos:</strong> 
-                          <span style={{ color: '#3498db', fontWeight: 'bold', marginLeft: '5px' }}>
-                            {producto.pedidos}
-                          </span>
-                        </p>
-                        <p style={{ margin: '5px 0', fontSize: '12px' }}>
-                          <strong>📊 Porcentaje del total:</strong> 
-                          <span style={{ color: '#8e44ad', fontWeight: 'bold', marginLeft: '5px' }}>
-                            {((producto.cantidad / totalUnidadesVendidas) * 100).toFixed(1)}%
-                          </span>
-                        </p>
-                      </div>
-
-                      {/* Barra de progreso visual */}
-                      <div style={{ marginTop: '10px' }}>
-                        <div style={{
-                          backgroundColor: '#ecf0f1',
-                          borderRadius: '10px',
-                          height: '8px',
-                          overflow: 'hidden'
-                        }}>
-                          <div style={{
-                            backgroundColor: index < 3 ? '#f39c12' : '#3498db',
-                            height: '100%',
-                            width: `${(producto.cantidad / productosPopulares[0].cantidad) * 100}%`,
-                            borderRadius: '10px',
-                            transition: 'width 0.3s ease'
-                          }}></div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </>
-            );
-          })()}
+          <ProductosDestacados 
+            mostrarEstadisticas={true}
+            limite={15}
+          />
         </div>
       )}
       
