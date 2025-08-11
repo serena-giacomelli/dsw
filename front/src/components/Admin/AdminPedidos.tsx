@@ -299,7 +299,7 @@ const AdminPedidos: React.FC = () => {
         justifyContent: 'center',
         padding: '20px',
         backgroundColor: '#f8f9fa',
-        borderRadius: '10px',
+        borderRadius: '0px',
         border: '1px solid #dee2e6'
       }}>
         <button 
@@ -362,7 +362,7 @@ const AdminPedidos: React.FC = () => {
             <span style={{
               backgroundColor: '#e74c3c',
               color: 'white',
-              borderRadius: '50%',
+              borderRadius: '0',
               padding: '2px 8px',
               fontSize: '12px',
               marginLeft: '10px'
@@ -383,7 +383,7 @@ const AdminPedidos: React.FC = () => {
             color: 'white',
             padding: '15px 25px',
             border: 'none',
-            borderRadius: '8px',
+            borderRadius: '0px',
             cursor: 'pointer',
             fontSize: '16px',
             fontWeight: 'bold',
@@ -398,7 +398,7 @@ const AdminPedidos: React.FC = () => {
 
       {/* Gestión de Pagos */}
       {mostrarGestionPagos && (
-        <div className="seccion-pagos" style={{ marginBottom: '30px' }}>
+        <div className="seccion-pagos" style={{ marginBottom: '0px' }}>
           <h3>Gestión de Pagos Pendientes ({pagosPendientes.length})</h3>
           <p className="seccion-descripcion">Pagos que requieren aprobación o rechazo del administrador</p>
           
@@ -407,7 +407,7 @@ const AdminPedidos: React.FC = () => {
               backgroundColor: '#d4edda', 
               border: '1px solid #c3e6cb', 
               padding: '15px', 
-              borderRadius: '5px',
+              borderRadius: '0px',
               color: '#155724'
             }}>
               ✅ No hay pagos pendientes de revisión
@@ -417,7 +417,7 @@ const AdminPedidos: React.FC = () => {
               {pagosPendientes.map((pago) => (
                 <div key={pago.id} className="pago-card" style={{
                   border: '1px solid #ddd',
-                  borderRadius: '8px',
+                  borderRadius: '0px',
                   padding: '20px',
                   backgroundColor: '#fff',
                   boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
@@ -429,7 +429,7 @@ const AdminPedidos: React.FC = () => {
                         backgroundColor: '#f39c12',
                         color: 'white',
                         padding: '2px 8px',
-                        borderRadius: '3px',
+                        borderRadius: '0px',
                         fontSize: '12px',
                         marginLeft: '10px'
                       }}>
@@ -465,7 +465,7 @@ const AdminPedidos: React.FC = () => {
                         <div key={pedido.id} style={{ 
                           backgroundColor: '#f8f9fa', 
                           padding: '10px', 
-                          borderRadius: '5px',
+                          borderRadius: '0px',
                           fontSize: '14px'
                         }}>
                           <p style={{ margin: '2px 0' }}><strong>Pedido:</strong> #{pedido.id}</p>
@@ -483,7 +483,7 @@ const AdminPedidos: React.FC = () => {
                       <div style={{ 
                         backgroundColor: '#f8f9fa', 
                         padding: '10px', 
-                        borderRadius: '5px',
+                        borderRadius: '0px',
                         fontSize: '14px'
                       }}>
                         <p style={{ margin: '2px 0' }}>
@@ -521,7 +521,7 @@ const AdminPedidos: React.FC = () => {
                         color: 'white',
                         border: 'none',
                         padding: '8px 15px',
-                        borderRadius: '4px',
+                        borderRadius: '0px',
                         cursor: 'pointer',
                         fontSize: '14px',
                         flex: 1
@@ -537,7 +537,7 @@ const AdminPedidos: React.FC = () => {
                         color: 'white',
                         border: 'none',
                         padding: '8px 15px',
-                        borderRadius: '4px',
+                        borderRadius: '0px',
                         cursor: 'pointer',
                         fontSize: '14px',
                         flex: 1
@@ -805,7 +805,7 @@ const AdminPedidos: React.FC = () => {
                         color: 'white',
                         border: 'none',
                         padding: '10px 20px',
-                        borderRadius: '5px',
+                        borderRadius: '0px',
                         cursor: 'pointer'
                       }}
                     >

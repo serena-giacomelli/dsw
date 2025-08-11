@@ -23,6 +23,7 @@ import TestCheckout from './components/TestCheckout.tsx';
 import ProductDetail from './components/Producto/ProductDetail.tsx';
 import Register from './components/Register.tsx';
 import EmailVerification from './components/EmailVerification.tsx';
+import Footer from "./components/Footer";
 
 const App: React.FC = () => {
     const location = useLocation();
@@ -79,6 +80,7 @@ const App: React.FC = () => {
           <Route path="/verify-email/:token" element={<EmailVerification />} />
          </Routes>
          <Banner />
+         <Footer />
      </>
     );
 };
