@@ -7,7 +7,7 @@ export const pedidoRouter = Router()
 pedidoRouter.get('/test-email', authMiddleware, testEmailConfig)
 pedidoRouter.post('/test-email-send', authMiddleware, testEmailSend)
 pedidoRouter.post('/finalizar', authMiddleware, finalizarPedido)
-pedidoRouter.get('/', authMiddleware, findAll)
+pedidoRouter.get('/', findAll) // Se quita authMiddleware para permitir acceso público
 pedidoRouter.get('/:id', authMiddleware, findOne)
 pedidoRouter.post('/', authMiddleware, add)
 pedidoRouter.put('/:id', authMiddleware, update)

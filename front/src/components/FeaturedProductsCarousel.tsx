@@ -17,43 +17,12 @@ interface ProductoDestacado {
 const FeaturedProductsCarousel: React.FC = () => {
   const [productosDestacados, setProductosDestacados] = useState<ProductoDestacado[]>([]);
   const [loading, setLoading] = useState(true);
-  const [mostrarSeccion, setMostrarSeccion] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
-    verificarUsuarioYCargarProductos();
+    setLoading(false); // Ya no hay verificación de usuario
   }, []);
-
-  const verificarUsuarioYCargarProductos = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      
-      // Si hay token, verificar si es admin
-      if (token) {
-        const response = await fetch('http://localhost:3000/api/auth/profile', {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-
-        if (response.ok) {
-          const userData = await response.json();
-          // Si es admin, no mostrar la sección
-          if (userData.rol === 'admin') {
-            setMostrarSeccion(false);
-            setLoading(false);
-            return;
-          }
-        }
-      }
-
-      setLoading(false);
-    } catch (error) {
-      console.error('Error al verificar usuario:', error);
-      setLoading(false);
-    }
-  };
 
   const manejarProductosCalculados = (productos: ProductoDestacado[]) => {
     setProductosDestacados(productos);
@@ -84,11 +53,6 @@ const FeaturedProductsCarousel: React.FC = () => {
       prevIndex === 0 ? Math.ceil(productosDestacados.length / 4) - 1 : prevIndex - 1
     );
   };
-
-  // No mostrar nada si es admin
-  if (!mostrarSeccion) {
-    return null;
-  }
 
   if (loading) {
     return (

@@ -21,6 +21,8 @@ import MisPedidos from './components/Usuario/MisPedidos.tsx';
 import AdminPedidos from './components/Admin/AdminPedidos.tsx';
 import TestCheckout from './components/TestCheckout.tsx';
 import ProductDetail from './components/Producto/ProductDetail.tsx';
+import Register from './components/Register.tsx';
+import EmailVerification from './components/EmailVerification.tsx';
 
 const App: React.FC = () => {
     const location = useLocation();
@@ -73,6 +75,8 @@ const App: React.FC = () => {
             </PrivateRoute>} />
           <Route path="/test-checkout" element={<TestCheckout />} />
           <Route path="/producto/:id" element={<ProductDetail />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/verify-email/:token" element={<EmailVerification />} />
          </Routes>
          <Banner />
      </>

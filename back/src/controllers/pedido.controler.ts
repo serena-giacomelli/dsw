@@ -13,22 +13,11 @@ const em  = orm.em
 
 async function findAll(req: AuthRequest, res: Response) {
     try {
-        // Si es admin, puede ver todos los pedidos, sino solo los suyos
-        let pedidos;
-        if (req.user && req.user.tipoUsuario === 'admin') {
-            pedidos = await em.find(Pedido, {}, { 
-                populate: ['usuarios', 'lineasPed', 'lineasPed.productos', 'pagos', 'transportista'],
-                orderBy: { fecha_pedido: 'DESC' }
-            });
-        } else if (req.user) {
-            pedidos = await em.find(Pedido, { usuarios: req.user.id }, { 
-                populate: ['usuarios', 'lineasPed', 'lineasPed.productos', 'pagos', 'transportista'],
-                orderBy: { fecha_pedido: 'DESC' }
-            });
-        } else {
-            return res.status(401).json({ message: 'Usuario no autorizado' });
-        }
-        
+        // Cambiar: siempre devolver todos los pedidos, sin importar el usuario
+        const pedidos = await em.find(Pedido, {}, { 
+            populate: ['usuarios', 'lineasPed', 'lineasPed.productos', 'pagos', 'transportista'],
+            orderBy: { fecha_pedido: 'DESC' }
+        });
         res.status(200).json({ message: 'found pedidos', data: pedidos })
     } catch (error:any) {
         res.status(500).json({ message: error.message })
@@ -388,6 +377,7 @@ async function testEmailSend(req: AuthRequest, res: Response) {
         });
     }
 }
+
 
 
 export {findAll, findOne, add, update, remove, finalizarPedido, testEmailConfig, testEmailSend}

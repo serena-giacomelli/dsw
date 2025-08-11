@@ -100,25 +100,6 @@
   font-weight: 500;
 }
 
-/* Exact same consultar button styling as grid */
-.featured-consultar-btn {
-  background-color: #007bff;
-  color: white;
-  padding: 8px 12px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  margin-top: auto;
-}
-
-.featured-consultar-btn:hover {
-  background-color: #0056b3;
-  transform: translateY(-1px);
-}
-
 /* Responsive design */
 @media (max-width: 1200px) {
   .carousel-slide {

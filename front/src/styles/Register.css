@@ -1,0 +1,78 @@
+.form-session {
+    /* Puedes ajustar el ancho, márgenes y fondo si lo deseas */
+    max-width: 400px;
+    margin: 40px auto;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    padding: 32px 24px;
+}
+
+.left-side {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.title-login h2 {
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.input-group {
+    margin-bottom: 18px;
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group label {
+    font-weight: 500;
+    margin-bottom: 6px;
+}
+
+.input-group input {
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.input-group small {
+    color: #888;
+    font-size: 12px;
+    margin-top: 2px;
+}
+
+.error-message {
+    color: #d32f2f;
+    margin-bottom: 10px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.success-message {
+    color: #388e3c;
+    margin-bottom: 10px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.container-button {
+    display: flex;
+    justify-content: center;
+    margin-top: 16px;
+}
+
+.btn-login {
+    background: #1976d2;
+    color: #fff;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.btn-login:disabled {
+    background: #90caf9;
+    cursor: not-allowed;
+}

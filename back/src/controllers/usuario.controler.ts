@@ -3,6 +3,7 @@ import { orm } from '../shared/db/orm.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { Usuario } from '../models/usuarios.entity.js';
+import nodemailer from 'nodemailer';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'tu-secret-key';
 
@@ -105,6 +106,96 @@ async function login(req: Request, res: Response) {
     }
   }
 
+// Almacén temporal de códigos OTP (en producción usar base de datos o cache)
+const emailOtps = new Map<string, { otp: string, usuarioData: any, expires: number }>();
+
+function generateOtp() {
+    return Math.floor(100000 + Math.random() * 900000).toString(); // 6 dígitos
+}
+
+async function register(req: Request, res: Response) {
+    try {
+        const { nombre, apellido, mail, password, dni, fechaNacimiento } = req.body;
+        if (!nombre || !apellido || !mail || !password || !dni) {
+            return res.status(400).json({ message: 'Faltan campos obligatorios.' });
+        }
+
+        const existe = await em.findOne(Usuario, { mail });
+        if (existe) {
+            return res.status(409).json({ message: 'El email ya está registrado.' });
+        }
+
+        // Hashea la contraseña pero NO guardes el usuario aún
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+        // Genera OTP y almacena temporalmente los datos
+        const otp = generateOtp();
+        emailOtps.set(mail, {
+            otp,
+            usuarioData: {
+                nombre,
+                apellido,
+                mail,
+                password: hashedPassword,
+                dni,
+                fechaNacimiento: fechaNacimiento || '',
+                tipoUsuario: 'user',
+            },
+            expires: Date.now() + 10 * 60 * 1000 // 10 minutos
+        });
+
+        // Envía el OTP por email
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.GMAIL_USER,
+                pass: process.env.GMAIL_APP_PASSWORD
+            }
+        });
+
+        await transporter.sendMail({
+            from: process.env.GMAIL_USER,
+            to: mail,
+            subject: 'Código de verificación',
+            html: `<p>Hola ${nombre},</p>
+                   <p>Tu código de verificación es: <b>${otp}</b></p>
+                   <p>Este código es válido por 10 minutos.</p>`
+        });
+
+        res.status(200).json({ message: 'Código de verificación enviado al email.' });
+    } catch (error: any) {
+        console.error('Error en registro:', error);
+        res.status(500).json({ message: error.message });
+    }
+}
+
+async function verifyOtp(req: Request, res: Response) {
+    try {
+        const { mail, otp } = req.body;
+        const entry = emailOtps.get(mail);
+        if (!entry) {
+            return res.status(400).json({ message: 'No se solicitó código para este email.' });
+        }
+        if (entry.expires < Date.now()) {
+            emailOtps.delete(mail);
+            return res.status(400).json({ message: 'El código ha expirado.' });
+        }
+        if (entry.otp !== otp) {
+            return res.status(400).json({ message: 'Código incorrecto.' });
+        }
+
+        // Crea el usuario definitivo
+        const usuario = em.create(Usuario, entry.usuarioData);
+        await em.flush();
+        emailOtps.delete(mail);
+
+        res.status(201).json({ message: 'Usuario verificado y registrado correctamente.' });
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+}
 
 
-export {findAll, findOne, add, update, remove, login}
+export {findAll, findOne, add, update, remove, login, register, verifyOtp}
+
