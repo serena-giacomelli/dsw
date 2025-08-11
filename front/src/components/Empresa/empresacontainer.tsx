@@ -80,15 +80,39 @@ const empresaContainer = () =>{
     return (
         <div className="empresa-container">
             <h1>Lista de Empresas</h1>
+            <style>
+                {`
+                .empresa-lista-item {
+                    display: flex;
+                    align-items: center;
+                    margin-bottom: 8px;
+                }
+                .empresa-datos {
+                    flex: 1;
+                }
+                .empresa-botones {
+                    display: flex;
+                    gap: 8px;
+                }
+                .empresa-btn {
+                    min-width: 80px;
+                    padding: 4px 12px;
+                }
+                `}
+            </style>
             {loading ? (
                 <p>Cargando Empresas...</p>
             ) : (
-                <ul>
+                <ul style={{ listStyle: "none", padding: 0 }}>
                     {empresa.map((empresas) => (
-                        <li key={empresas.id}>
-                            <strong>{empresas.nombre} </strong> - RAZON SOCIAL: {empresas.razonSocial} - CUIL: {empresas.cuil} - SITIO WEB: {empresas.sitioWeb}
-                            <button onClick={() => setEditingEmpresa(empresas)}>Editar</button>
-                            <button onClick={() => deleteEmpresa(empresas.id)}>Eliminar</button>
+                        <li key={empresas.id} className="empresa-lista-item">
+                            <span className="empresa-datos">
+                                <strong>{empresas.nombre} </strong> - RAZON SOCIAL: {empresas.razonSocial} - CUIL: {empresas.cuil} - SITIO WEB: {empresas.sitioWeb}
+                            </span>
+                            <span className="empresa-botones">
+                                <button className="empresa-btn" onClick={() => setEditingEmpresa(empresas)}>Editar</button>
+                                <button className="empresa-btn" onClick={() => deleteEmpresa(empresas.id)}>Eliminar</button>
+                            </span>
                         </li>
                     ))}
                 </ul>
@@ -125,4 +149,4 @@ const empresaContainer = () =>{
         </div>
     );
 }         
-export default empresaContainer;     
+export default empresaContainer;
