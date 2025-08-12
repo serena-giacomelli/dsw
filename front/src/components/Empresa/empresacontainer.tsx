@@ -107,7 +107,10 @@ const empresaContainer = () =>{
                     {empresa.map((empresas) => (
                         <li key={empresas.id} className="empresa-lista-item">
                             <span className="empresa-datos">
-                                <strong>{empresas.nombre} </strong> - RAZON SOCIAL: {empresas.razonSocial} - CUIL: {empresas.cuil} - SITIO WEB: {empresas.sitioWeb}
+                                <strong>{empresas.nombre} </strong>
+                                - RAZON SOCIAL: {empresas.razonSocial}
+                                - CUIL: {empresas.cuil}
+                                - SITIO WEB: <a href={empresas.sitioWeb} target="_blank" rel="noopener noreferrer">{empresas.sitioWeb}</a>
                             </span>
                             <span className="empresa-botones">
                                 <button className="empresa-btn" onClick={() => setEditingEmpresa(empresas)}>Editar</button>
