@@ -295,7 +295,7 @@ export class EmailService {
                 <p style="color: #155724; font-size: 16px; margin: 15px 0;">
                   ¡Excelente noticia! Tu pago para el <strong>Pedido #${pedidoId}</strong> ha sido aprobado.
                 </p>
-                <p style="color: #155724;">Tu pedido será procesado y enviado en breve.</p>
+                <p style="color: #155724; font-weight: bold;">Tu pedido será procesado y enviado en breve.</p>
                 ${comentarios ? `<div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 15px 0;">
                   <p style="color: #495057; margin: 0;"><strong>Comentarios del administrador:</strong></p>
                   <p style="color: #495057; margin: 5px 0 0 0;">${comentarios}</p>
@@ -405,6 +405,73 @@ export class EmailService {
       return true;
     } catch (error) {
       console.error('❌ Error al enviar email de estado:', error);
+      return false;
+    }
+  }
+
+  // Enviar email de cancelación de pedido con motivo y reembolso
+  static async enviarEmailCancelacionPedido(
+    email: string,
+    pedidoId: number,
+    motivo: string,
+    requiereReembolso: boolean = false
+  ): Promise<boolean> {
+    try {
+      const configuracionOK = await this.verificarConfiguracion();
+      if (!configuracionOK) return false;
+
+      const asunto = `❌ Pedido #${pedidoId} cancelado - Lusechi`;
+      let mensaje = `Tu pedido #${pedidoId} ha sido cancelado.\n\nMotivo: ${motivo}`;
+      let htmlContent = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 20px; border-radius: 5px; text-align: center;">
+            <h2 style="color: #721c24; margin-top: 0;">❌ Pedido Cancelado</h2>
+            <p style="color: #721c24; font-size: 16px; margin: 15px 0;">
+              Tu pedido <strong>#${pedidoId}</strong> ha sido cancelado.
+            </p>
+            <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 15px 0;">
+              <p style="color: #495057; margin: 0;"><strong>Motivo:</strong></p>
+              <p style="color: #495057; margin: 5px 0 0 0;">${motivo}</p>
+            </div>
+            ${
+              requiereReembolso
+                ? `<div style="background-color: #fff3cd; border: 1px solid #ffeeba; padding: 15px; border-radius: 5px; margin: 15px 0;">
+                    <p style="color: #856404; margin: 0;"><strong>Se iniciará el proceso de reembolso correspondiente.</strong></p>
+                  </div>`
+                : ''
+            }
+            <p style="color: #721c24;">Si tienes dudas, contáctanos.</p>
+            <div style="background-color: #d1ecf1; border: 1px solid #bee5eb; padding: 15px; border-radius: 5px; margin: 15px 0;">
+              <p style="color: #0c5460; margin: 0;">
+                📞 Contáctanos: <a href="mailto:ventas@lusechi.com" style="color: #0c5460;">ventas@lusechi.com</a><br>
+                📱 WhatsApp: +54 9 11 1234-5678
+              </p>
+            </div>
+          </div>
+        </div>
+      `;
+
+      if (requiereReembolso) {
+        mensaje += `\n\nSe iniciará el proceso de reembolso correspondiente.`;
+      }
+      mensaje += `\n\nSi tienes dudas, contáctanos: ventas@lusechi.com`;
+
+      const mailOptions = {
+        from: {
+          name: 'Lusechi - Tienda Online',
+          address: process.env.GMAIL_USER || 'noreply@lusechi.com'
+        },
+        to: email,
+        subject: asunto,
+        html: htmlContent,
+        text: mensaje
+      };
+
+      const info = await transporter.sendMail(mailOptions);
+      console.log('✅ Email de cancelación enviado:', info.messageId);
+      return true;
+    } catch (error) {
+      console.error('❌ Error al enviar email de cancelación:', error);
       return false;
     }
   }

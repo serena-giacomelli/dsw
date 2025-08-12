@@ -1,0 +1,56 @@
+.empresa-titulo {
+    color: #6a5d4d;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 2em;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.empresa-descripcion {
+    color: #6a5d4d;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 1.2em;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.empresa-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    list-style: none;
+    padding: 0;
+}
+
+.empresa-card {
+    border: 1px solid #ccc;
+    border-radius: 0px;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: default !important; 
+}
+
+.empresa-marcas {
+    margin-top: 10px;
+}
+
+.marca-list {
+    margin-top: 8px;
+}
+
+.marca-item {
+    margin-bottom: 8px;
+}
+
+.marca-nombre {
+    font-weight: bold;
+}
+
+.marca-sucursales {
+    margin-left: 10px;
+}
+

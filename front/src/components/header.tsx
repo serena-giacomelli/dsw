@@ -63,11 +63,12 @@ const Header = () => {
 
                     
                     {(!isLoggedIn || user.tipoUsuario !== 'admin') && (
-                                    <><Link to="/tipoproductos" onClick={closeMenu}>Tipo Productos</Link>
-                                    <Link to="/productos" onClick={closeMenu}>Productos</Link></>
+                        <>
+                            <Link to="/tipoproductos" onClick={closeMenu}>Tipo Productos</Link>
+                            <Link to="/productos" onClick={closeMenu}>Productos</Link>
+                            <Link to="/empresas" onClick={closeMenu}>Empresas</Link>
+                        </>
                     )}
-                       
-                   
                 </div>
             </nav>
                     <CarritoSidebar visible={carritoVisible} onClose={() => setCarritoVisible(false)} />

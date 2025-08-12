@@ -255,7 +255,7 @@ export const pedidoService = {
   },
 
   // Cancelar un pedido (solo usuarios)
-  async cancelarPedido(pedidoId: number, token: string) {
+  async cancelarPedido(pedidoId: number, motivo: string, token: string) {
     try {
       const response = await fetch(`http://localhost:3000/api/pedido/${pedidoId}`, {
         method: 'PUT',
@@ -263,7 +263,7 @@ export const pedidoService = {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ estado: 'cancelado' })
+        body: JSON.stringify({ estado: 'cancelado', motivo_cancelacion: motivo })
       });
 
       if (!response.ok) {

@@ -6,7 +6,7 @@ const em  = orm.em
 
 async function findAll(req: Request, res: Response) {
     try {
-        const marcas = await em.find(Marca, {})
+        const marcas = await em.find(Marca, {}, { populate: ['empresa', 'sucursales'] })
         res.status(200).json({ message: 'found all marcas', data: marcas })
     } catch (error:any) {
         res.status(500).json({ message: error.message })
@@ -16,7 +16,7 @@ async function findAll(req: Request, res: Response) {
 async function findOne(req: Request, res: Response) {
     try {
         const id = Number.parseInt(req.params.id);
-        const marca = await em.findOneOrFail(Marca, { id }) 
+        const marca = await em.findOneOrFail(Marca, { id }, { populate: ['empresa', 'sucursales'] }) 
         res.status(200).json({ message: 'found one marca', data: marca })
     } catch (error:any) {
         res.status(500).json({ message: error.message })

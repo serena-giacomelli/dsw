@@ -271,6 +271,26 @@ const AdminPedidos: React.FC = () => {
     }
   };
 
+  // Función para cancelar pedido
+  const cancelarPedido = async (pedidoId: number) => {
+    const motivo = prompt('Ingrese el motivo de la cancelación:');
+    if (!motivo || !motivo.trim()) {
+      alert('Debe ingresar un motivo para cancelar el pedido.');
+      return;
+    }
+    try {
+      setProcesando(pedidoId);
+      const token = localStorage.getItem('token');
+      await pedidoService.cancelarPedido(pedidoId, motivo, token!);
+      await cargarDatos();
+      alert('Pedido cancelado exitosamente');
+    } catch (error) {
+      alert('Error al cancelar el pedido');
+    } finally {
+      setProcesando(null);
+    }
+  };
+
   if (loading) {
     return (
       <div className="admin-pedidos-container">
@@ -669,6 +689,24 @@ const AdminPedidos: React.FC = () => {
                     ))}
                   </div>
                 </div>
+
+                {/* Botón cancelar */}
+                <div style={{ marginTop: 10 }}>
+                  <button
+                    onClick={() => cancelarPedido(pedido.id)}
+                    disabled={procesando === pedido.id}
+                    style={{
+                      backgroundColor: '#e74c3c',
+                      color: 'white',
+                      border: 'none',
+                      padding: '8px 15px',
+                      borderRadius: '0px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    {procesando === pedido.id ? 'Procesando...' : '❌ Cancelar pedido'}
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -812,6 +850,22 @@ const AdminPedidos: React.FC = () => {
                       {procesando === pedido.id ? 'Procesando...' : '🏪 Aprobar retiro en sucursal'}
                     </button>
                   )}
+
+                  <button
+                    onClick={() => cancelarPedido(pedido.id)}
+                    disabled={procesando === pedido.id}
+                    style={{
+                      backgroundColor: '#e74c3c',
+                      color: 'white',
+                      border: 'none',
+                      padding: '8px 15px',
+                      borderRadius: '0px',
+                      cursor: 'pointer',
+                      marginTop: '10px'
+                    }}
+                  >
+                    {procesando === pedido.id ? 'Procesando...' : '❌ Cancelar pedido'}
+                  </button>
                 </div>
               </div>
             ))}

@@ -24,6 +24,9 @@ import ProductDetail from './components/Producto/ProductDetail.tsx';
 import Register from './components/Register.tsx';
 import EmailVerification from './components/EmailVerification.tsx';
 import Footer from "./components/Footer";
+import EmpresaDetail from "./components/Empresa/EmpresaDetail";
+import EmpresaContainerUser from './components/Empresa/empresacontainerUser.tsx';
+
 
 const App: React.FC = () => {
     const location = useLocation();
@@ -58,9 +61,14 @@ const App: React.FC = () => {
             <TipoProductoUser />
             )}/>
           <Route path="/empresas" element={
-            <PrivateRoute requiredTipo="admin">
+            user?.tipoUsuario === "admin" ? (
+              <PrivateRoute requiredTipo="admin">
                 <EmpresaContainer />
-            </PrivateRoute>} />
+              </PrivateRoute>
+            ) : (
+              <EmpresaContainerUser />
+            )
+          } />
           <Route path="/login" element={<Login />} />
           <Route path="/perfil" element={<Perfil />} />
           <Route path="/carrito" element={<Carrito />} />
@@ -78,6 +86,7 @@ const App: React.FC = () => {
           <Route path="/producto/:id" element={<ProductDetail />} />
           <Route path="/register" element={<Register />} />
           <Route path="/verify-email/:token" element={<EmailVerification />} />
+          <Route path="/empresa/:id" element={<EmpresaDetail />} />
          </Routes>
          <Banner />
          <Footer />

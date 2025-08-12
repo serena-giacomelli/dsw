@@ -32,4 +32,10 @@ export class Pedido extends BaseEntity {
     @ManyToMany(() => Pago, pago => pago.pedidos)
     pagos = new Collection<Pago>(this)
 
+    @Property({ nullable: true })
+    fecha_cancelacion?: Date;
+
+    @Property({ nullable: true })
+    motivo_cancelacion?: string;
+
 }

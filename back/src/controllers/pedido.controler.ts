@@ -13,11 +13,20 @@ const em  = orm.em
 
 async function findAll(req: AuthRequest, res: Response) {
     try {
-        // Cambiar: siempre devolver todos los pedidos, sin importar el usuario
-        const pedidos = await em.find(Pedido, {}, { 
-            populate: ['usuarios', 'lineasPed', 'lineasPed.productos', 'pagos', 'transportista'],
-            orderBy: { fecha_pedido: 'DESC' }
-        });
+        let pedidos;
+        if (req.user?.tipoUsuario === 'admin') {
+            // Admin: ver todos los pedidos
+            pedidos = await em.find(Pedido, {}, { 
+                populate: ['usuarios', 'lineasPed', 'lineasPed.productos', 'pagos', 'transportista'],
+                orderBy: { fecha_pedido: 'DESC' }
+            });
+        } else {
+            // Usuario común: solo sus pedidos
+            pedidos = await em.find(Pedido, { usuarios: req.user?.id }, { 
+                populate: ['usuarios', 'lineasPed', 'lineasPed.productos', 'pagos', 'transportista'],
+                orderBy: { fecha_pedido: 'DESC' }
+            });
+        }
         res.status(200).json({ message: 'found pedidos', data: pedidos })
     } catch (error:any) {
         res.status(500).json({ message: error.message })
@@ -47,7 +56,7 @@ async function add(req: Request, res: Response) {
     try {
         const id = Number.parseInt(req.params.id)
         const pedido = await em.findOneOrFail(Pedido, { id }, { 
-            populate: ['usuarios', 'transportista'] 
+            populate: ['usuarios', 'transportista', 'pagos'] 
         });
 
         // Verificar permisos: solo admin o el usuario propietario puede actualizar
@@ -60,6 +69,53 @@ async function add(req: Request, res: Response) {
 
         const estadoAnterior = pedido.estado;
         let emailEnviado = false;
+
+        // --- CANCELACIÓN DE PEDIDO ---
+        if (req.body.estado === 'cancelado') {
+            // Solo permitir cancelar si está pendiente o pago_aprobado
+            if (pedido.estado !== 'pendiente' && pedido.estado !== 'pago_aprobado') {
+                return res.status(400).json({ message: 'Solo se pueden cancelar pedidos pendientes o con pago aprobado' });
+            }
+            pedido.estado = 'cancelado';
+            pedido.fecha_cancelacion = new Date();
+            pedido.motivo_cancelacion = req.body.motivo_cancelacion || '';
+
+            // Si el pedido tenía pago aprobado, marcar para reembolso
+            let requiereReembolso = false;
+            if (pedido.pagos && pedido.pagos.getItems().some(p => p.estado === 'aprobado')) {
+                requiereReembolso = true;
+                // Aquí podrías crear una solicitud de reembolso en tu sistema
+            }
+
+            // Enviar email de cancelación
+            try {
+                const usuario = pedido.usuarios.getItems()[0];
+                if (usuario && usuario.mail) {
+                    emailEnviado = await EmailService.enviarEmailCancelacionPedido(
+                        usuario.mail,
+                        pedido.id,
+                        pedido.motivo_cancelacion || '',
+                        requiereReembolso
+                    );
+                }
+            } catch (emailError) {
+                console.error('❌ Error al enviar email de cancelación:', emailError);
+            }
+
+            await em.flush();
+
+            // Recargar para respuesta
+            const pedidoActualizado = await em.findOneOrFail(Pedido, { id }, { 
+                populate: ['usuarios', 'lineasPed', 'lineasPed.productos', 'pagos', 'transportista'] 
+            });
+
+            return res.status(200).json({ 
+                message: 'pedido cancelado', 
+                data: pedidoActualizado,
+                emailEnviado,
+                requiereReembolso
+            });
+        }
 
         // Si se está asignando un transportista, cambiar estado a 'entregado'
         if (req.body.transportista) {
