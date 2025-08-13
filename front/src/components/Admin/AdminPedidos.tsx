@@ -583,7 +583,7 @@ const AdminPedidos: React.FC = () => {
           
           <ProductosDestacados 
             mostrarEstadisticas={true}
-            limite={15}
+            limite={6}
           />
         </div>
       )}

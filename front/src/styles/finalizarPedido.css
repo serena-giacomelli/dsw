@@ -1,10 +1,10 @@
 .finalizar-pedido-container {
-  max-width: 800px;
-  margin: 2rem auto;
-  padding: 2rem;
+  max-width: 100%;
+  margin: 1rem;
+  padding: 1rem;
   background: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
 .finalizar-pedido-container h2 {
@@ -263,8 +263,8 @@
 }
 
 .producto-confirmacion img {
-  width: 60px;
-  height: 60px;
+  width: 50px; /* Mobile-first */
+  height: 50px;
   object-fit: cover;
   border-radius: 5px;
 }
@@ -343,6 +343,51 @@
     flex-direction: row;
     justify-content: center;
     gap: 0.5rem;
+  }
+}
+
+/* Breakpoint SM (≥640px) */
+@media (min-width: 640px) {
+  .finalizar-pedido-container {
+    max-width: 600px;
+    margin: 1.5rem auto;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.09);
+  }
+  .producto-confirmacion img {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+/* Breakpoint MD (≥768px) */
+@media (min-width: 768px) {
+  .finalizar-pedido-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  .producto-confirmacion img {
+    width: 70px;
+    height: 70px;
+  }
+}
+
+/* Breakpoint LG (≥1024px) */
+@media (min-width: 1024px) {
+  .finalizar-pedido-container {
+    max-width: 900px;
+    margin: 2.5rem auto;
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+  }
+  .producto-confirmacion img {
+    width: 80px;
+    height: 80px;
   }
 }
 

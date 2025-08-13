@@ -1,8 +1,11 @@
 import { Router } from 'express'
-import { findAll, findOne, add, update, remove, finalizarPedido, testEmailConfig, testEmailSend} from '../controllers/pedido.controler.js';
+import { findAll, findOne, add, update, remove, finalizarPedido, testEmailConfig, testEmailSend, obtenerEstadisticasPublicas} from '../controllers/pedido.controler.js';
 import { authMiddleware } from '../middleware/authMiddleware.js';
 
 export const pedidoRouter = Router()
+
+// Ruta pública para estadísticas de productos destacados (NO requiere autenticación)
+pedidoRouter.get('/estadisticas-publicas', obtenerEstadisticasPublicas)
 
 pedidoRouter.get('/test-email', authMiddleware, testEmailConfig)
 pedidoRouter.post('/test-email-send', authMiddleware, testEmailSend)

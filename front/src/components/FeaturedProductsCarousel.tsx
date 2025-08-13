@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import ProductosDestacados from "./ProductosDestacados";
 import "../styles/FeaturedProductsCarousel.css";
 
 interface ProductoDestacado {
@@ -21,21 +20,76 @@ const FeaturedProductsCarousel: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    setLoading(false); // Ya no hay verificación de usuario
+    cargarProductosDestacados();
   }, []);
 
-  const manejarProductosCalculados = (productos: ProductoDestacado[]) => {
-    setProductosDestacados(productos);
-  };
+  const cargarProductosDestacados = async () => {
+    try {
+      // Obtener todos los productos
+      const productosResponse = await fetch('/api/producto');
+      const productosData = await productosResponse.json();
+      const todosLosProductos = productosData.data || [];
 
-  const manejarConsulta = (producto: ProductoDestacado, event: React.MouseEvent) => {
-    event.preventDefault();
-    event.stopPropagation();
-    
-    const mensaje = `Hola! Me interesa el producto: ${producto.nombre}. ¿Podrían darme más información?`;
-    const numeroWhatsApp = "1234567890"; // Reemplazar con el número real
-    const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
-    window.open(url, '_blank');
+      // Obtener estadísticas públicas de productos destacados (sin autenticación)
+      const estadisticasResponse = await fetch('/api/pedido/estadisticas-publicas');
+      
+      if (estadisticasResponse.ok) {
+        const estadisticasData = await estadisticasResponse.json();
+        const productosConEstadisticas = estadisticasData.data || [];
+
+        if (productosConEstadisticas.length > 0) {
+          // Combinar datos de estadísticas con información completa del producto
+          const productosDestacadosCompletos = productosConEstadisticas.map((prodStats: any) => {
+            const prodInfo = todosLosProductos.find((p: any) => p.id === prodStats.id) || {};
+            return {
+              id: prodStats.id,
+              nombre: prodStats.nombre,
+              cantidad: prodStats.cantidad,
+              pedidos: prodStats.pedidos,
+              imagen: prodStats.imagen || prodInfo.imagen,
+              precio: prodInfo.precio,
+              precio_oferta: prodInfo.precio_oferta,
+              stock: prodInfo.cantidad
+            };
+          }).slice(0, 6); // Limitar a 6 productos
+
+          console.log('Productos destacados con estadísticas reales:', productosDestacadosCompletos.length);
+          setProductosDestacados(productosDestacadosCompletos);
+        } else {
+          // Sin datos de estadísticas, usar productos con ofertas
+          console.log('Sin estadísticas disponibles, mostrando productos con ofertas');
+          const productosParaMostrar = todosLosProductos
+            .filter((producto: any) => producto.cantidad > 0) // Solo productos con stock
+            .sort((a: any, b: any) => {
+              // Priorizar productos con precio_oferta
+              if (a.precio_oferta > 0 && b.precio_oferta <= 0) return -1;
+              if (b.precio_oferta > 0 && a.precio_oferta <= 0) return 1;
+              // Si ambos tienen o no tienen oferta, ordenar por ID descendente (más recientes primero)
+              return b.id - a.id;
+            })
+            .slice(0, 6)
+            .map((producto: any) => ({
+              id: producto.id,
+              nombre: producto.nombre,
+              cantidad: 0,
+              pedidos: 0,
+              imagen: producto.imagen,
+              precio: producto.precio,
+              precio_oferta: producto.precio_oferta,
+              stock: producto.cantidad
+            }));
+          
+          setProductosDestacados(productosParaMostrar);
+        }
+      } else {
+        throw new Error('No se pudieron cargar las estadísticas');
+      }
+    } catch (error) {
+      console.error('Error al cargar productos destacados:', error);
+      setProductosDestacados([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const manejarClickProducto = (productoId: number) => {
@@ -66,15 +120,6 @@ const FeaturedProductsCarousel: React.FC = () => {
 
   return (
     <div className="featured-carousel-container">
-      {/* Usar el componente ProductosDestacados para obtener los datos */}
-      <div style={{ display: 'none' }}>
-        <ProductosDestacados 
-          mostrarEstadisticas={false}
-          limite={16}
-          onProductosCalculados={manejarProductosCalculados}
-        />
-      </div>
-
       {productosDestacados.length === 0 ? (
         <div className="no-products-message">
           <p>No hay productos destacados disponibles en este momento</p>

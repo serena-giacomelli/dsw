@@ -434,6 +434,58 @@ async function testEmailSend(req: AuthRequest, res: Response) {
     }
 }
 
+// Función pública para obtener estadísticas de productos destacados
+async function obtenerEstadisticasPublicas(req: Request, res: Response) {
+    try {
+        // Obtener todos los pedidos completados y entregados con sus líneas y productos
+        const pedidos = await em.find(Pedido, 
+            { 
+                $or: [
+                    { estado: 'completado' },
+                    { estado: 'entregado' }
+                ]
+            }, 
+            { 
+                populate: ['lineasPed', 'lineasPed.productos'] 
+            }
+        );
 
+        // Calcular estadísticas de productos más vendidos
+        const productosVendidos: { [key: number]: any } = {};
 
-export {findAll, findOne, add, update, remove, finalizarPedido, testEmailConfig, testEmailSend}
+        pedidos.forEach((pedido) => {
+            const lineasArray = pedido.lineasPed.getItems();
+            lineasArray.forEach((linea: any) => {
+                const productosArray = linea.productos.getItems();
+                const producto = productosArray[0];
+                if (producto) {
+                    if (!productosVendidos[producto.id]) {
+                        productosVendidos[producto.id] = {
+                            id: producto.id,
+                            nombre: producto.nombre,
+                            imagen: producto.imagen,
+                            cantidad: 0,
+                            pedidos: 0
+                        };
+                    }
+                    productosVendidos[producto.id].cantidad += Number(linea.cantidad);
+                    productosVendidos[producto.id].pedidos += 1;
+                }
+            });
+        });
+
+        // Ordenar por cantidad vendida y devolver solo los datos básicos
+        const productosCalculados = Object.values(productosVendidos)
+            .sort((a: any, b: any) => b.cantidad - a.cantidad);
+
+        res.status(200).json({ 
+            message: 'Estadísticas públicas obtenidas',
+            data: productosCalculados
+        });
+    } catch (error: any) {
+        console.error('Error al obtener estadísticas públicas:', error);
+        res.status(500).json({ message: error.message });
+    }
+}
+
+export {findAll, findOne, add, update, remove, finalizarPedido, testEmailConfig, testEmailSend, obtenerEstadisticasPublicas}

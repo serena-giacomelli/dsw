@@ -460,6 +460,61 @@
   }
 }
 
+/* Breakpoint SM (≥640px) */
+@media (min-width: 640px) {
+  .admin-pedidos-container {
+    padding: 1.5rem;
+  }
+  .pedidos-grid {
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.2rem;
+  }
+  .producto-imagen {
+    width: 45px;
+    height: 45px;
+  }
+  .producto-popular-imagen {
+    height: 120px;
+  }
+}
+
+/* Breakpoint MD (≥768px) */
+@media (min-width: 768px) {
+  .admin-pedidos-container {
+    padding: 2rem;
+  }
+  .pedidos-grid {
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 1.5rem;
+  }
+  .producto-imagen {
+    width: 50px;
+    height: 50px;
+  }
+  .producto-popular-imagen {
+    height: 150px;
+  }
+}
+
+/* Breakpoint LG (≥1024px) */
+@media (min-width: 1024px) {
+  .admin-pedidos-container {
+    padding: 3rem;
+    max-width: 1400px;
+  }
+  .pedidos-grid {
+    grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+    gap: 2rem;
+  }
+  .producto-imagen {
+    width: 60px;
+    height: 60px;
+  }
+  .producto-popular-imagen {
+    height: 180px;
+  }
+}
+
 /* Animaciones */
 @keyframes fadeIn {
   from {

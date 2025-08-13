@@ -22,7 +22,7 @@ header {
   padding: 10px 20px;
   position: relative;
   margin-top: 20px; /* Ajustar según la altura de .top-bar */
-  height: 120px; /* Fija la altura del header */
+  height: 70px; /* Mobile-first: menor altura */
   width: 100%; /* Asegura que ocupe todo el ancho */
   z-index: 900;
 }
@@ -40,7 +40,7 @@ header {
 /* Estilo del logo */
 
 .logo {
-  font-size: 110px;
+  font-size: clamp(2.5rem, 10vw, 6rem); /* Tamaño fluido entre 2.5rem y 6rem */
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
@@ -49,6 +49,7 @@ header {
   max-width: none;
   display: inline-block;
   height: auto;
+  white-space: nowrap; /* Evita saltos de línea */
 }
 
 /* Estilo del icono del menú */
@@ -107,8 +108,8 @@ header {
   display: flex; /* Alinea los iconos en una fila */
   align-items: center; /* Centra los iconos verticalmente */
   margin-left: auto; /* Empuja el contenedor a la derecha */
-  margin-right: 20px; /* Espacio desde el borde derecho */
-  gap: 10px; /* Espaciado entre los iconos */
+  margin-right: 10px; /* Espacio desde el borde derecho */
+  gap: 6px; /* Mobile-first: menor espacio */
 }
 
 /* Estilo del icono del carrito */
@@ -224,4 +225,46 @@ header {
 
 .user-dropdown a:hover {
   background-color: #ccc;
+}
+
+/* Breakpoint SM (≥640px) */
+@media (min-width: 640px) {
+  header {
+    height: 90px;
+  }
+  .logo {
+    font-size: clamp(3rem, 8vw, 7rem);
+  }
+  .icons-container {
+    gap: 10px;
+    margin-right: 20px;
+  }
+}
+
+/* Breakpoint MD (≥768px) */
+@media (min-width: 768px) {
+  header {
+    height: 110px;
+  }
+  .logo {
+    font-size: clamp(3.5rem, 7vw, 8rem);
+  }
+  .icons-container {
+    gap: 14px;
+    margin-right: 30px;
+  }
+}
+
+/* Breakpoint LG (≥1024px) */
+@media (min-width: 1024px) {
+  header {
+    height: 120px;
+  }
+  .logo {
+    font-size: clamp(4rem, 6vw, 9rem);
+  }
+  .icons-container {
+    gap: 18px;
+    margin-right: 40px;
+  }
 }

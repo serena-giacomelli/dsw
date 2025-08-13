@@ -1,5 +1,5 @@
 .carrito-container {
-  padding: 2rem;
+  padding: 1rem; /* Mobile-first: menor padding */
 }
 
 .carrito-lista {
@@ -16,8 +16,8 @@
 }
 
 .carrito-item img {
-  width: 100px;
-  height: 100px;
+  width: 70px; /* Mobile-first: menor tamaño */
+  height: 70px;
   object-fit: cover;
 }
 
@@ -32,4 +32,37 @@
 .carrito-total button {
   margin-right: 1rem;
   padding: 0.5rem 1rem;
+}
+
+/* Breakpoint SM (≥640px) */
+@media (min-width: 640px) {
+  .carrito-container {
+    padding: 1.5rem;
+  }
+  .carrito-item img {
+    width: 90px;
+    height: 90px;
+  }
+}
+
+/* Breakpoint MD (≥768px) */
+@media (min-width: 768px) {
+  .carrito-container {
+    padding: 2rem;
+  }
+  .carrito-item img {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+/* Breakpoint LG (≥1024px) */
+@media (min-width: 1024px) {
+  .carrito-container {
+    padding: 3rem;
+  }
+  .carrito-item img {
+    width: 120px;
+    height: 120px;
+  }
 }

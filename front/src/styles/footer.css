@@ -1,12 +1,12 @@
 .footer {
   background: #012a48;
   color: #e7e2dc;
-  padding: 32px 0 16px 0;
+  padding: 24px 0 12px 0; /* Mobile-first: menos padding */
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
   align-items: flex-start;
-  font-size: 16px;
+  font-size: 14px; /* Mobile-first: menor tamaño */
 }
 
 .footer-section {
@@ -37,5 +37,29 @@
   }
   .footer-section {
     margin: 12px 0;
+  }
+}
+
+/* Breakpoint SM (≥640px) */
+@media (min-width: 640px) {
+  .footer {
+    font-size: 15px;
+    padding: 28px 0 14px 0;
+  }
+}
+
+/* Breakpoint MD (≥768px) */
+@media (min-width: 768px) {
+  .footer {
+    font-size: 16px;
+    padding: 32px 0 16px 0;
+  }
+}
+
+/* Breakpoint LG (≥1024px) */
+@media (min-width: 1024px) {
+  .footer {
+    font-size: 18px;
+    padding: 40px 0 20px 0;
   }
 }

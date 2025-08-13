@@ -6,10 +6,35 @@
     display: flex;
     justify-content: center;
     color: rgb(107, 94, 78);
-    font-size: 2rem;
+    font-size: 1.5rem; /* Mobile-first */
     font-weight: bold;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
 }
+
+/* Breakpoint SM (≥640px) */
+@media (min-width: 640px) {
+  .titulo {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+}
+
+/* Breakpoint MD (≥768px) */
+@media (min-width: 768px) {
+  .titulo {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+/* Breakpoint LG (≥1024px) */
+@media (min-width: 1024px) {
+  .titulo {
+    font-size: 3rem;
+    margin-bottom: 2rem;
+  }
+}
+
 html, body, #root {
     width: 100%;
     height: 100%;

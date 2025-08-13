@@ -18,9 +18,10 @@
 
 .carrito-sidebar {
   position: fixed;
-  right: -350px;
+  right: -100vw;
   top: 0;
-  width: 350px;
+  width: 90vw; /* Mobile-first: ancho relativo */
+  max-width: 350px;
   height: 100%;
   background-color: #e7e2dc;
   box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
@@ -89,8 +90,8 @@
 }
 
 .carrito-item img {
-  width: 80px;
-  height: 80px;
+  width: 60px; /* Mobile-first: menor tamaño */
+  height: 60px;
   object-fit: cover;
   border-radius: 4px;
 }
@@ -208,4 +209,40 @@
   color: #666;
   text-align: right;
   margin: 2px 0 0 0;
+}
+
+/* Breakpoint SM (≥640px) */
+@media (min-width: 640px) {
+  .carrito-sidebar {
+    width: 350px;
+    right: -350px;
+  }
+  .carrito-item img {
+    width: 80px;
+    height: 80px;
+  }
+}
+
+/* Breakpoint MD (≥768px) */
+@media (min-width: 768px) {
+  .carrito-sidebar {
+    width: 400px;
+    right: -400px;
+  }
+  .carrito-header,
+  .carrito-footer {
+    padding: 20px 30px;
+  }
+}
+
+/* Breakpoint LG (≥1024px) */
+@media (min-width: 1024px) {
+  .carrito-sidebar {
+    width: 450px;
+    right: -450px;
+  }
+  .carrito-header,
+  .carrito-footer {
+    padding: 25px 40px;
+  }
 }

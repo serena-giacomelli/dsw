@@ -1,0 +1,23 @@
+/* ...existing code... */
+
+/* Mobile-first: estilos base ya existentes aquí */
+
+/* Breakpoint SM (ejemplo: >= 640px) */
+@media (min-width: 640px) {
+  /* Aquí puedes agregar o sobrescribir estilos para pantallas pequeñas */
+  /* ... */
+}
+
+/* Breakpoint MD (ejemplo: >= 768px) */
+@media (min-width: 768px) {
+  /* Aquí puedes agregar o sobrescribir estilos para pantallas medianas */
+  /* ... */
+}
+
+/* Breakpoint LG (ejemplo: >= 1024px) */
+@media (min-width: 1024px) {
+  /* Aquí puedes agregar o sobrescribir estilos para pantallas grandes */
+  /* ... */
+}
+
+/* ...existing code... */

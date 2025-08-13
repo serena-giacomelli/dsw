@@ -1,8 +1,8 @@
 .breadcrumb {
-    font-size: 14px;
-    margin: 15px;
-    margin-left: 10px;
-    padding: 5px;
+    font-size: 12px; /* Mobile-first */
+    margin: 10px;
+    margin-left: 5px;
+    padding: 4px;
   }
   
   .breadcrumb a {
@@ -19,3 +19,33 @@
   .breadcrumb strong {
     font-weight: bold;
   }
+  
+  /* Breakpoint SM (≥640px) */
+@media (min-width: 640px) {
+  .breadcrumb {
+    font-size: 14px;
+    margin: 15px;
+    margin-left: 10px;
+    padding: 5px;
+  }
+}
+
+/* Breakpoint MD (≥768px) */
+@media (min-width: 768px) {
+  .breadcrumb {
+    font-size: 16px;
+    margin: 20px;
+    margin-left: 15px;
+    padding: 7px;
+  }
+}
+
+/* Breakpoint LG (≥1024px) */
+@media (min-width: 1024px) {
+  .breadcrumb {
+    font-size: 18px;
+    margin: 25px;
+    margin-left: 20px;
+    padding: 10px;
+  }
+}

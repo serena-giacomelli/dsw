@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { pedidoService } from "../services/pedidoService";
 import "../styles/ProductosDestacadosAdmin.css";
+
          
 interface ProductoDestacado {
   id: number;
@@ -49,7 +49,7 @@ interface ProductosDestacadosProps {
 
 const ProductosDestacados: React.FC<ProductosDestacadosProps> = ({
   mostrarEstadisticas = true,
-  limite = 15,
+  limite = 6,
   onProductosCalculados
 }) => {
   const [productosDestacados, setProductosDestacados] = useState<ProductoDestacado[]>([]);
@@ -64,7 +64,7 @@ const ProductosDestacados: React.FC<ProductosDestacadosProps> = ({
     cargarProductosDestacados();
   }, []);
 
-  // Cambia la función para obtener todos los productos y todos los pedidos
+  // Función para obtener productos destacados basados en estadísticas globales
   const cargarProductosDestacados = async () => {
     try {
       // Obtener todos los productos
@@ -72,70 +72,91 @@ const ProductosDestacados: React.FC<ProductosDestacadosProps> = ({
       const productosData = await productosResponse.json();
       const todosLosProductos = productosData.data || [];
 
-      // Obtener todos los pedidos (de todos los usuarios)
-      const token = localStorage.getItem('token');
-      const pedidosResponse = await fetch('/api/pedido', {
-        headers: token ? {
-          'Authorization': `Bearer ${token}`
-        } : {}
-      });
-      const pedidosData = await pedidosResponse.json();
-      const pedidos = pedidosData.data || [];
+      // Obtener estadísticas públicas de productos destacados (sin autenticación)
+      const estadisticasResponse = await fetch('/api/pedido/estadisticas-publicas');
+      
+      if (estadisticasResponse.ok) {
+        const estadisticasData = await estadisticasResponse.json();
+        const productosConEstadisticas = estadisticasData.data || [];
 
-      // Calcular los productos más pedidos
-      const productosVendidos: { [key: number]: ProductoDestacado } = {};
+        if (productosConEstadisticas.length > 0) {
+          // Combinar datos de estadísticas con información completa del producto
+          const productosDestacadosCompletos = productosConEstadisticas.map((prodStats: any) => {
+            const prodInfo = todosLosProductos.find((p: any) => p.id === prodStats.id) || {};
+            return {
+              id: prodStats.id,
+              nombre: prodStats.nombre,
+              cantidad: prodStats.cantidad,
+              pedidos: prodStats.pedidos,
+              imagen: prodStats.imagen || prodInfo.imagen,
+              precio: prodInfo.precio,
+              precio_oferta: prodInfo.precio_oferta,
+              stock: prodInfo.cantidad
+            };
+          }).slice(0, limite); // Respetar el límite configurado
 
-      // Solo contar pedidos completados o entregados
-      const pedidosCompletados = pedidos.filter((pedido: any) =>
-        pedido.estado === 'completado' || pedido.estado === 'entregado'
-      );
+          setProductosDestacados(productosDestacadosCompletos);
 
-      pedidosCompletados.forEach((pedido: any) => {
-        (pedido.lineasPed || []).forEach((linea: any) => {
-          const producto = (linea.productos && linea.productos[0]) || null;
-          if (producto) {
-            if (!productosVendidos[producto.id]) {
-              // Buscar info extra del producto en todosLosProductos
-              const prodInfo = todosLosProductos.find((p: any) => p.id === producto.id) || {};
-              productosVendidos[producto.id] = {
-                id: producto.id,
-                nombre: producto.nombre,
-                cantidad: 0,
-                pedidos: 0,
-                imagen: producto.imagen || prodInfo.imagen,
-                precio: prodInfo.precio,
-                precio_oferta: prodInfo.precio_oferta,
-                stock: prodInfo.cantidad
-              };
-            }
-            productosVendidos[producto.id].cantidad += Number(linea.cantidad);
-            productosVendidos[producto.id].pedidos += 1;
+          // Calcular estadísticas reales
+          const totalUnidadesVendidas = productosDestacadosCompletos.reduce((total, producto) => total + producto.cantidad, 0);
+          const totalProductosDiferentes = productosDestacadosCompletos.length;
+          const promedioPorProducto = totalProductosDiferentes > 0 ? Math.round(totalUnidadesVendidas / totalProductosDiferentes) : 0;
+
+          const stats = {
+            totalUnidadesVendidas,
+            totalProductosDiferentes,
+            promedioPorProducto
+          };
+
+          setEstadisticas(stats);
+          console.log(`Productos destacados con estadísticas reales (limitados a ${limite}):`, productosDestacadosCompletos.length);
+
+          // Callback para componentes padre
+          if (onProductosCalculados) {
+            onProductosCalculados(productosDestacadosCompletos, stats);
           }
-        });
-      });
+        } else {
+          // Sin datos de estadísticas, usar productos con ofertas
+          console.log('Sin estadísticas disponibles, mostrando productos con ofertas');
+          const productosParaMostrar = todosLosProductos
+            .filter((producto: any) => producto.cantidad > 0) // Solo productos con stock
+            .sort((a: any, b: any) => {
+              // Priorizar productos con precio_oferta
+              if (a.precio_oferta > 0 && b.precio_oferta <= 0) return -1;
+              if (b.precio_oferta > 0 && a.precio_oferta <= 0) return 1;
+              // Si ambos tienen o no tienen oferta, ordenar por ID descendente (más recientes primero)
+              return b.id - a.id;
+            })
+            .slice(0, limite)
+            .map((producto: any) => ({
+              id: producto.id,
+              nombre: producto.nombre,
+              cantidad: 0,
+              pedidos: 0,
+              imagen: producto.imagen,
+              precio: producto.precio,
+              precio_oferta: producto.precio_oferta,
+              stock: producto.cantidad
+            }));
+          
+          setProductosDestacados(productosParaMostrar);
 
-      // Ordenar por cantidad vendida
-      const productosCalculados = Object.values(productosVendidos).sort((a, b) => b.cantidad - a.cantidad);
-      const productosLimitados = productosCalculados.slice(0, limite);
+          // Estadísticas básicas sin datos de ventas
+          const stats = {
+            totalUnidadesVendidas: 0,
+            totalProductosDiferentes: productosParaMostrar.length,
+            promedioPorProducto: 0
+          };
 
-      setProductosDestacados(productosLimitados);
+          setEstadisticas(stats);
 
-      // Calcular estadísticas
-      const totalUnidadesVendidas = productosCalculados.reduce((total, producto) => total + producto.cantidad, 0);
-      const totalProductosDiferentes = productosCalculados.length;
-      const promedioPorProducto = totalProductosDiferentes > 0 ? Math.round(totalUnidadesVendidas / totalProductosDiferentes) : 0;
-
-      const stats = {
-        totalUnidadesVendidas,
-        totalProductosDiferentes,
-        promedioPorProducto
-      };
-
-      setEstadisticas(stats);
-
-      // Callback para componentes padre
-      if (onProductosCalculados) {
-        onProductosCalculados(productosLimitados, stats);
+          // Callback para componentes padre
+          if (onProductosCalculados) {
+            onProductosCalculados(productosParaMostrar, stats);
+          }
+        }
+      } else {
+        throw new Error('No se pudieron cargar las estadísticas');
       }
 
     } catch (error) {
@@ -183,7 +204,7 @@ const ProductosDestacados: React.FC<ProductosDestacadosProps> = ({
   if (productosDestacados.length === 0) {
     return (
       <div className="productos-destacados-empty">
-        📈 No hay datos suficientes para mostrar estadísticas de productos populares
+        � No hay productos disponibles en este momento
       </div>
     );
   }
@@ -269,13 +290,13 @@ const ProductosDestacados: React.FC<ProductosDestacadosProps> = ({
                 <p>
                   <strong> Unidades vendidas:</strong> 
                   <span className="stat-vendidas">
-                    {producto.cantidad}
+                    {producto.cantidad === 0 ? 'Sin datos' : producto.cantidad}
                   </span>
                 </p>
                 <p>
                   <strong> Aparece en pedidos:</strong> 
                   <span className="stat-pedidos">
-                    {producto.pedidos}
+                    {producto.pedidos === 0 ? 'Sin datos' : producto.pedidos}
                   </span>
                 </p>
                 <p className="stat-porcentaje">
@@ -311,4 +332,6 @@ const ProductosDestacados: React.FC<ProductosDestacadosProps> = ({
   );
 };
 
+
 export default ProductosDestacados;
+

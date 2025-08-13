@@ -1,17 +1,17 @@
 .mis-pedidos-container {
-  max-width: 1000px;
-  margin: 2rem auto;
-  padding: 2rem;
+  max-width: 100%;
+  margin: 1rem;
+  padding: 1rem;
   background: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
 .mis-pedidos-container h2 {
   text-align: center;
   color: #2c3e50;
-  margin-bottom: 2rem;
-  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  font-size: 1.3rem; /* Mobile-first */
 }
 
 .sin-pedidos {
@@ -655,5 +655,51 @@
 
   .modal-footer {
     padding: 1rem;
+  }
+}
+
+/* Breakpoint SM (≥640px) */
+@media (min-width: 640px) {
+  .mis-pedidos-container {
+    max-width: 600px;
+    margin: 1.5rem auto;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.09);
+  }
+
+  .mis-pedidos-container h2 {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+  }
+}
+
+/* Breakpoint MD (≥768px) */
+@media (min-width: 768px) {
+  .mis-pedidos-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .mis-pedidos-container h2 {
+    font-size: 1.7rem;
+  }
+}
+
+/* Breakpoint LG (≥1024px) */
+@media (min-width: 1024px) {
+  .mis-pedidos-container {
+    max-width: 1000px;
+    margin: 2.5rem auto;
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+  }
+
+  .mis-pedidos-container h2 {
+    font-size: 2rem;
   }
 }

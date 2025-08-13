@@ -1,11 +1,11 @@
 .form-session {
-    /* Puedes ajustar el ancho, márgenes y fondo si lo deseas */
-    max-width: 400px;
-    margin: 40px auto;
+    max-width: 95%;
+    margin: 24px auto;
     background: #fff;
-    border-radius: 8px;
+    border-radius: 6px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    padding: 32px 24px;
+    padding: 18px 12px; /* Mobile-first */
+    font-size: 1rem;
 }
 
 .left-side {
@@ -34,6 +34,7 @@
     padding: 8px 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    font-size: 1rem;
 }
 
 .input-group small {
@@ -75,4 +76,46 @@
 .btn-login:disabled {
     background: #90caf9;
     cursor: not-allowed;
+}
+
+/* Breakpoint SM (≥640px) */
+@media (min-width: 640px) {
+  .form-session {
+    max-width: 400px;
+    margin: 40px auto;
+    border-radius: 8px;
+    padding: 32px 24px;
+    font-size: 1.05rem;
+  }
+  .input-group input {
+    font-size: 1.05rem;
+  }
+}
+
+/* Breakpoint MD (≥768px) */
+@media (min-width: 768px) {
+  .form-session {
+    max-width: 450px;
+    margin: 48px auto;
+    border-radius: 10px;
+    padding: 40px 32px;
+    font-size: 1.1rem;
+  }
+  .input-group input {
+    font-size: 1.1rem;
+  }
+}
+
+/* Breakpoint LG (≥1024px) */
+@media (min-width: 1024px) {
+  .form-session {
+    max-width: 500px;
+    margin: 56px auto;
+    border-radius: 12px;
+    padding: 48px 40px;
+    font-size: 1.15rem;
+  }
+  .input-group input {
+    font-size: 1.15rem;
+  }
 }
