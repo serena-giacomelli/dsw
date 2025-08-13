@@ -1,0 +1,246 @@
+/* --- Estilos para EmpresaContainer --- */
+.empresa-container {
+  margin-left: 8px;
+  margin-right: 8px;
+}
+
+.empresa-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  list-style: none;
+  padding: 0;
+}
+
+.empresa-item {
+  border: 1px solid #e5d7c1;
+  border-radius: 5px;
+  padding: 15px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.07);
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+}
+.empresa-item:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+.empresa-info h3 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  margin-left: 15px;
+  color: #6a5d4d;
+  font-size: 1.5em;
+  font-weight: 700;
+  word-break: break-word;
+  text-align: center;
+  font-family: 'Times New Roman', Times, serif;
+}
+.empresa-info p {
+  margin: 4px 0;
+  text-align: center;
+  color: #6a5d4d;
+  font-size: 0.8em;
+}
+
+.empresa-info a {
+  color: #6a5d4d;
+  text-decoration: underline;
+  font-size: 0.80em;
+}
+
+.empresa-actions {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+}
+
+.empresa-btn {
+  background-color: #6a5d4d;
+  color: white;
+  border: none;
+  border-radius: 0px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-size: 0.8em;
+  font-weight: bold;
+  flex: 1;
+}
+.empresa-btn:hover {
+  background-color: #8b7b5b;
+}
+.empresa-btn-add {
+  font-weight: bold;
+  font-size: 0.8em;
+}
+.empresa-btn-delete {
+  background-color: #dc3545;
+}
+.empresa-btn-delete:hover {
+  background-color: #b71c1c;
+}
+
+.empresa-modal {
+  padding: 20px;
+  background: #fff;
+  border-radius: 0px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+}
+.empresa-modal-form {
+  display: grid;
+  gap: 15px;
+  margin-top: 20px;
+}
+.empresa-input {
+  padding: 10px;
+  border-radius: 0px;
+  border: 1px solid #ccc;
+}
+.empresa-modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+.empresa-modal-delete {
+  text-align: center;
+}
+
+@media (min-width: 640px) {
+  .empresa-container {
+    margin-left: 24px;
+    margin-right: 24px;
+  }
+}
+@media (min-width: 768px) {
+  .empresa-container {
+    margin-left: 48px;
+    margin-right: 48px;
+  }
+}
+@media (min-width: 1024px) {
+  .empresa-container {
+    margin-left: 120px;
+    margin-right: 120px;
+  }
+}
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+body{
+    font-family: 'Roboto', sans-serif;
+}
+
+h1 {
+    font-size: 1.5em; /* Mobile-first */
+    color: #6a5d4d;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    background-color: #fefefe;
+    border: 1px solid #e5d7c1;
+    border-radius: 0px;
+    padding: 10px; /* Mobile-first */
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.95em; /* Mobile-first */
+}
+
+button {
+    background-color: #6a5d4d;
+    color: white;
+    border: none;
+    border-radius: 0px;
+    padding: 7px 10px; /* Mobile-first */
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 0.95em; /* Mobile-first */
+}
+
+button:hover {
+    background-color: #8b7b5b;
+}
+
+input {
+    border: 1px solid #d3d3d3;
+    border-radius: 5px;
+    padding: 8px; /* Mobile-first */
+    width: calc(100% - 18px);
+    margin-bottom: 12px;
+}
+
+/* Breakpoint SM (≥640px) */
+@media (min-width: 640px) {
+  h1 {
+    font-size: 1.7em;
+    margin-bottom: 18px;
+  }
+  li {
+    padding: 12px;
+    margin-bottom: 10px;
+    font-size: 1em;
+  }
+  button {
+    padding: 8px 12px;
+    font-size: 1em;
+  }
+  input {
+    padding: 10px;
+    width: calc(100% - 22px);
+    margin-bottom: 14px;
+  }
+}
+
+/* Breakpoint MD (≥768px) */
+@media (min-width: 768px) {
+  h1 {
+    font-size: 2em;
+    margin-bottom: 20px;
+  }
+  li {
+    padding: 15px;
+    margin-bottom: 12px;
+    font-size: 1.05em;
+  }
+  button {
+    padding: 10px 14px;
+    font-size: 1.05em;
+  }
+  input {
+    padding: 12px;
+    width: calc(100% - 26px);
+    margin-bottom: 16px;
+  }
+}
+
+/* Breakpoint LG (≥1024px) */
+@media (min-width: 1024px) {
+  h1 {
+    font-size: 2.3em;
+    margin-bottom: 24px;
+  }
+  li {
+    padding: 18px;
+    margin-bottom: 14px;
+    font-size: 1.1em;
+  }
+  button {
+    padding: 12px 16px;
+    font-size: 1.1em;
+  }
+  input {
+    padding: 14px;
+    width: calc(100% - 30px);
+    margin-bottom: 18px;
+  }
+}

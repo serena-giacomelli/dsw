@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import "../styles/Breadcrumb.css";
+import "../../styles/Estructura/breadcrumb.css";
 
 const routeNameMap: { [key: string]: string } = {
   productos: "PRODUCTOS",

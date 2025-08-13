@@ -1,7 +1,7 @@
 import React from "react";
-import { useCart } from "../Context/CartContext.tsx";
+import { useCart } from "../../Context/cartContext.tsx";
 import { Link, useNavigate } from "react-router-dom";
-import "../styles/Carrito.css";
+import "../../styles/Usuario/carrito.css";
 
 const Carrito: React.FC = () => {
   const { carrito, quitarDelCarrito, vaciarCarrito } = useCart();

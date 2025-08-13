@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import '../styles/header.css';
+import '../../styles/Estructura/header.css';
 import { Link } from 'react-router-dom';
-import { useCart } from '../Context/CartContext.tsx';
-import CarritoSidebar from './CarritoSidebar';
+import { useCart } from '../../Context/cartContext.tsx';
+import CarritoSidebar from '../CU/carritoSidebar.tsx';
 
 const Header = () => {
     const [menuOpen, setMenuOpen] = useState(false);

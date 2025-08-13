@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "../../styles/empresaContainerUser.css";
+import "../../styles/Usuario/empresacontainerUser.css";
 
 interface Empresa {
     id: number;
@@ -71,10 +71,16 @@ const EmpresaContainerUser = () => {
 
     return (
         <div className="empresa-list-container">
-            <h2 className="empresa-titulo">
+            <h2
+                className="empresa-titulo"
+                style={{ color: '#6a5d4d', fontFamily: 'Times New Roman, Times, serif' }}
+            >
                 CALIDEZ, CALIDAD Y DISEÑO
             </h2>
-            <p className="empresa-descripcion">
+            <p
+                className="empresa-descripcion"
+                style={{ color: '#6a5d4d', fontFamily: 'Times New Roman, Times, serif' }}
+            >
                 Les presentamos las Empresas y Marcas con las que trabajamos para brindar la mejor calidad a nuestros clientes
             </p>
             {loading ? (

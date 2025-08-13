@@ -1,7 +1,7 @@
 import React from "react";
 import Carousel from "./carousel.tsx";
 import FloatingButton from "./floatingButton.tsx";
-import FeaturedProductsCarousel from "./FeaturedProductsCarousel.tsx";
+import FeaturedProductsCarousel from "../CU/featuredProductsCarousel.tsx";
 
 const Home: React.FC = () => {
   return (

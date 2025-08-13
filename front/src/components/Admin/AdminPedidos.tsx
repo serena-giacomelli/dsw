@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { pedidoService } from "../../services/pedidoService";
 import { pagoService, Pago } from "../../services/pagoService";
 import { transportistaService } from "../../../services/transportistaService";
-import "../../styles/AdminPedidos.css";
-import "../../styles/placeholder.css";
-import ProductosDestacados from "../ProductosDestacados";
+import "../../styles/Admin/adminPedidos.css";
+import "../../styles/Estructura/placeholder.css";
+import ProductosDestacados from "../CU/productosDestacados.tsx";
 
 interface Transportista {
   id: number;
@@ -319,7 +319,7 @@ const AdminPedidos: React.FC = () => {
         justifyContent: 'center',
         padding: '20px',
         backgroundColor: '#f8f9fa',
-        borderRadius: '0px',
+        borderRadius: '0',
         border: '1px solid #dee2e6'
       }}>
         <button 
@@ -333,7 +333,7 @@ const AdminPedidos: React.FC = () => {
             color: 'white',
             padding: '15px 25px',
             border: 'none',
-            borderRadius: '8px',
+            borderRadius: '0',
             cursor: 'pointer',
             fontSize: '16px',
             fontWeight: 'bold',
@@ -368,7 +368,7 @@ const AdminPedidos: React.FC = () => {
             color: 'white',
             padding: '15px 25px',
             border: 'none',
-            borderRadius: '8px',
+            borderRadius: '0',
             cursor: 'pointer',
             fontSize: '16px',
             fontWeight: 'bold',
@@ -403,7 +403,7 @@ const AdminPedidos: React.FC = () => {
             color: 'white',
             padding: '15px 25px',
             border: 'none',
-            borderRadius: '0px',
+            borderRadius: '0',
             cursor: 'pointer',
             fontSize: '16px',
             fontWeight: 'bold',
@@ -601,67 +601,44 @@ const AdminPedidos: React.FC = () => {
           <div className="pedidos-grid">
             {pedidosPendientes.map((pedido) => (
               <div key={pedido.id} className="pedido-admin-card">
-                <div className="pedido-header">
-                  <div className="pedido-numero">
-                    <strong>Pedido #{pedido.id}</strong>
-                  </div>
-                  <div 
-                    className="pedido-estado"
-                    style={{ backgroundColor: getEstadoColor(pedido.estado) }}
-                  >
-                    {getEstadoTexto(pedido.estado)}
-                  </div>
-                </div>
-                
-                <div className="pedido-info">
-                  <div className="info-item">
-                    <span className="label">Cliente:</span>
-                    <span className="value">
-                      {pedido.usuarios[0]?.nombre} {pedido.usuarios[0]?.apellido}
+                <div className="pedido-header" style={{ borderBottom: '1px solid #eee', paddingBottom: '15px', marginBottom: '15px' }}>
+                  <h4 style={{ margin: '0 0 10px 0', color: '#2c3e50', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    📦 Pedido #{pedido.id}
+                    <span style={{
+                      backgroundColor: getEstadoColor(pedido.estado),
+                      color: 'white',
+                      padding: '2px 8px',
+                      borderRadius: '0px',
+                      fontSize: '12px',
+                      marginLeft: '10px'
+                    }}>
+                      {getEstadoTexto(pedido.estado)}
                     </span>
-                  </div>
-                  
-                  <div className="info-item">
-                    <span className="label">Email:</span>
-                    <span className="value">{pedido.usuarios[0]?.mail}</span>
-                  </div>
-                  
-                  <div className="info-item">
-                    <span className="label">Fecha:</span>
-                    <span className="value">{formatearFecha(pedido.fecha_pedido)}</span>
-                  </div>
-                  
-                  <div className="info-item">
-                    <span className="label">Total:</span>
-                    <span className="value total">${pedido.total.toFixed(2)}</span>
-                  </div>
-                  
-                  <div className="info-item">
-                    <span className="label">Tipo de entrega:</span>
-                    <span className="value tipo-entrega">
-                      {pedido.tipo_entrega === 'domicilio' ? 'A domicilio' : 'Retiro en sucursal'}
-                    </span>
-                  </div>
-
-                  {/* Información de pago */}
-                  {pedido.pagos && pedido.pagos.length > 0 && (
-                    <div className="info-item">
-                      <span className="label">Estado del pago:</span>
-                      <span 
-                        className="value"
-                        style={{
-                          color: pedido.pagos[0].estado === 'aprobado' ? '#27ae60' : 
-                                 pedido.pagos[0].estado === 'rechazado' ? '#e74c3c' : '#f39c12',
-                          fontWeight: 'bold'
-                        }}
-                      >
-                        {pedido.pagos[0].estado === 'pendiente' ? '⏳ Pendiente' :
-                         pedido.pagos[0].estado === 'aprobado' ? '✅ Aprobado' :
-                         pedido.pagos[0].estado === 'rechazado' ? '❌ Rechazado' : pedido.pagos[0].estado}
+                  </h4>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                    <span style={{ color: '#666' }}><strong>Fecha:</strong> {formatearFecha(pedido.fecha_pedido)}</span>
+                    <span style={{ color: '#27ae60', fontWeight: 'bold', fontSize: '16px' }}><strong>Total:</strong> ${pedido.total.toFixed(2)}</span>
+                    <span style={{ color: '#666' }}><strong>Tipo de entrega:</strong> {pedido.tipo_entrega === 'domicilio' ? 'A domicilio' : 'Retiro en sucursal'}</span>
+                    {pedido.pagos && pedido.pagos.length > 0 && (
+                      <span style={{ color: pedido.pagos[0].estado === 'aprobado' ? '#27ae60' : pedido.pagos[0].estado === 'rechazado' ? '#e74c3c' : '#f39c12', fontWeight: 'bold' }}>
+                        <strong>Estado del pago:</strong> {pedido.pagos[0].estado === 'pendiente' ? '⏳ Pendiente' : pedido.pagos[0].estado === 'aprobado' ? '✅ Aprobado' : pedido.pagos[0].estado === 'rechazado' ? '❌ Rechazado' : pedido.pagos[0].estado}
                         {pedido.pagos[0].metodo_pago && ` (${obtenerNombreMetodoPago(pedido.pagos[0].metodo_pago)})`}
                       </span>
-                    </div>
-                  )}
+                    )}
+                  </div>
+                </div>
+
+                {/* Información del cliente */}
+                <div style={{ marginBottom: '15px' }}>
+                  <h5 style={{ margin: '0 0 10px 0', color: '#34495e' }}>👤 Cliente:</h5>
+                  <div style={{ backgroundColor: '#f8f9fa', padding: '10px', borderRadius: '0px', fontSize: '14px' }}>
+                    <p style={{ margin: '2px 0' }}>
+                      <strong>Nombre:</strong> {pedido.usuarios[0]?.nombre} {pedido.usuarios[0]?.apellido}
+                    </p>
+                    <p style={{ margin: '2px 0' }}>
+                      <strong>Email:</strong> {pedido.usuarios[0]?.mail}
+                    </p>
+                  </div>
                 </div>
 
                 {/* Productos del pedido */}

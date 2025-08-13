@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useCart } from './Context/CartContext.tsx';
-import './styles/Login.css';
+import { useCart } from './Context/cartContext.tsx';
+import "./styles/login.css";
 
 const Login: React.FC = () => {
   const [mail, setMail] = useState('');
@@ -62,7 +62,7 @@ const Login: React.FC = () => {
       <div className='form-session'>
         <div className='left-side'>
           <div className='title-login'>
-            <h2>Ingresar a mi cuenta</h2>
+            <h2 style={{ color: '#6a5d4d', fontFamily: 'Times New Roman, Times, serif' }}>Ingresar a mi cuenta</h2>
           </div>
           <form onSubmit={handleLogin} className="login-form">
             <div className="input-group">

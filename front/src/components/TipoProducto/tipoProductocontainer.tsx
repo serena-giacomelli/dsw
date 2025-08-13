@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import TipoProducto from "./TipoProducto";
 import { useLocation } from "react-router-dom";
-import "../../styles/tipoProducto.css";
-import Modal from "../Modal.tsx";
+import "../../styles/Usuario/tipoProducto.css";
+import Modal from "../Estructura/modal.tsx";
 
 interface TipoProducto {
     id: number;

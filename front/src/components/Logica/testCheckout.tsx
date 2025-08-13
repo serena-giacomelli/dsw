@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { pedidoService } from "../services/pedidoService";
-import EmailTest from "./EmailTest";
-
+import { pedidoService } from "../../services/pedidoService";
+import EmailTest from "../Logica/emailTest.tsx";
 const TestCheckout: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<any[]>([]);

@@ -1,5 +1,4 @@
 import React from 'react';
-import "./Empresa.css";
 
 interface EmpresaProps {
     nombre: string;

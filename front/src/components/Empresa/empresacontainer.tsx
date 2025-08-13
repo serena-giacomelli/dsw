@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "../../styles/empresaContainer.css";
-import Modal from "../Modal.tsx";
+import "../../styles/Admin/empresaContainer.css";
+import Modal from "../Estructura/modal.tsx";
 
 interface Empresa {
     id: number;
@@ -112,19 +112,10 @@ const EmpresaContainer = () => {
     }, []);
 
     return (
-        <div className="empresa-list-container">
+        <div className="empresa-container">
             <button
                 onClick={handleNewEmpresa}
-                className="custom-styled"
-                style={{
-                    marginBottom: "20px",
-                    padding: "10px 20px",
-                    backgroundColor: "#6a5d4d",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "4px",
-                    cursor: "pointer"
-                }}
+                className="empresa-btn empresa-btn-add"
             >
                 Agregar nueva empresa
             </button>
@@ -132,67 +123,32 @@ const EmpresaContainer = () => {
             {loading ? (
                 <p>Cargando empresas...</p>
             ) : (
-                <ul
-                    style={{
-                        display: "grid",
-                        gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-                        gap: "20px",
-                        listStyle: "none",
-                        padding: 0,
-                    }}>
+                <ul className="empresa-list">
                     {empresas.map((empresa) => (
                         <li
                             key={empresa.id}
-                            style={{
-                                border: "1px solid #ccc",
-                                borderRadius: "0px",
-                                padding: "15px",
-                                boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-                                backgroundColor: "#fff",
-                                display: "flex",
-                                flexDirection: "column",
-                                justifyContent: "space-between",
-                                cursor: "pointer"
-                            }}
+                            className="empresa-item"
                             onClick={(e) => {
                                 if ((e.target as HTMLElement).tagName === "BUTTON") return;
                                 navigate(`/empresa/${empresa.id}`);
                             }}
                         >
-                            <div>
+                            <div className="empresa-info">
                                 <h3>{empresa.nombre}</h3>
                                 <p><strong>Razón Social:</strong> {empresa.razonSocial}</p>
                                 <p><strong>CUIL:</strong> {empresa.cuil}</p>
                                 <p><strong>Sitio Web:</strong> <a href={empresa.sitioWeb} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()}>{empresa.sitioWeb}</a></p>
                             </div>
-                            <div style={{ marginTop: "15px", display: "flex", gap: "10px" }}>
+                            <div className="empresa-actions">
                                 <button
                                     onClick={e => { e.stopPropagation(); handleEditEmpresa(empresa); }}
-                                    className="custom-styled"
-                                    style={{
-                                        flex: 1,
-                                        padding: "8px 12px",
-                                        backgroundColor: "#6a5d4d",
-                                        color: "white",
-                                        border: "none",
-                                        borderRadius: "4px",
-                                        cursor: "pointer"
-                                    }}
+                                    className="empresa-btn empresa-btn-edit"
                                 >
                                     Editar
                                 </button>
                                 <button
                                     onClick={e => { e.stopPropagation(); handleDeleteEmpresa(empresa); }}
-                                    className="custom-styled"
-                                    style={{
-                                        flex: 1,
-                                        padding: "8px 12px",
-                                        backgroundColor: "#6a5d4d",
-                                        color: "white",
-                                        border: "none",
-                                        borderRadius: "4px",
-                                        cursor: "pointer"
-                                    }}
+                                    className="empresa-btn empresa-btn-delete"
                                 >
                                     Eliminar
                                 </button>
@@ -204,70 +160,47 @@ const EmpresaContainer = () => {
 
             {/* Modal para agregar/editar empresa */}
             <Modal isOpen={isModalOpen} onClose={closeModal}>
-                <div style={{ padding: "20px" }}>
+                <div className="empresa-modal">
                     <h2>{editingEmpresa ? "Editar Empresa" : "Agregar Empresa"}</h2>
-                    <div style={{
-                        display: "grid",
-                        gap: "15px",
-                        marginTop: "20px"
-                    }}>
+                    <div className="empresa-modal-form">
                         <input
                             type="text"
                             placeholder="Nombre"
                             value={editingEmpresa ? editingEmpresa.nombre : newEmpresa.nombre}
                             onChange={(e) => editingEmpresa ? setEditingEmpresa({ ...editingEmpresa, nombre: e.target.value }) : setNewEmpresa({ ...newEmpresa, nombre: e.target.value })}
-                            style={{ padding: "10px", borderRadius: "4px", border: "1px solid #ccc" }}
+                            className="empresa-input"
                         />
                         <input
                             type="text"
                             placeholder="Razón Social"
                             value={editingEmpresa ? editingEmpresa.razonSocial : newEmpresa.razonSocial}
                             onChange={(e) => editingEmpresa ? setEditingEmpresa({ ...editingEmpresa, razonSocial: e.target.value }) : setNewEmpresa({ ...newEmpresa, razonSocial: e.target.value })}
-                            style={{ padding: "10px", borderRadius: "4px", border: "1px solid #ccc" }}
+                            className="empresa-input"
                         />
                         <input
                             type="text"
                             placeholder="CUIL"
                             value={editingEmpresa ? editingEmpresa.cuil : newEmpresa.cuil}
                             onChange={(e) => editingEmpresa ? setEditingEmpresa({ ...editingEmpresa, cuil: e.target.value }) : setNewEmpresa({ ...newEmpresa, cuil: e.target.value })}
-                            style={{ padding: "10px", borderRadius: "4px", border: "1px solid #ccc" }}
+                            className="empresa-input"
                         />
                         <input
                             type="text"
                             placeholder="Sitio Web"
                             value={editingEmpresa ? editingEmpresa.sitioWeb : newEmpresa.sitioWeb}
                             onChange={(e) => editingEmpresa ? setEditingEmpresa({ ...editingEmpresa, sitioWeb: e.target.value }) : setNewEmpresa({ ...newEmpresa, sitioWeb: e.target.value })}
-                            style={{ padding: "10px", borderRadius: "4px", border: "1px solid #ccc" }}
+                            className="empresa-input"
                         />
-                        <div style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
+                        <div className="empresa-modal-actions">
                             <button
                                 onClick={editingEmpresa ? () => updateEmpresa(editingEmpresa.id) : createEmpresa}
-                                className="custom-styled"
-                                style={{
-                                    flex: 1,
-                                    padding: "12px",
-                                    backgroundColor: "#6a5d4d",
-                                    color: "white",
-                                    border: "none",
-                                    borderRadius: "4px",
-                                    cursor: "pointer",
-                                    fontWeight: "bold"
-                                }}
+                                className="empresa-btn empresa-btn-add"
                             >
                                 {editingEmpresa ? "Actualizar" : "Agregar"}
                             </button>
                             <button
                                 onClick={closeModal}
-                                className="custom-styled"
-                                style={{
-                                    flex: 1,
-                                    padding: "12px",
-                                    backgroundColor: "#6a5d4d",
-                                    color: "white",
-                                    border: "none",
-                                    borderRadius: "4px",
-                                    cursor: "pointer"
-                                }}
+                                className="empresa-btn"
                             >
                                 Cancelar
                             </button>
@@ -278,40 +211,24 @@ const EmpresaContainer = () => {
 
             {/* Modal para confirmar eliminación */}
             <Modal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)}>
-                <div style={{ padding: "20px", textAlign: "center" }}>
+                <div className="empresa-modal empresa-modal-delete">
                     <h2>Confirmar Eliminación</h2>
-                    <p style={{ margin: "20px 0" }}>
+                    <p>
                         ¿Estás seguro de que deseas eliminar la empresa{" "}
                         <strong>
                             {empresaAEliminar?.nombre}
                         </strong>?
                     </p>
-                    <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
+                    <div className="empresa-modal-actions">
                         <button
                             onClick={() => empresaAEliminar && deleteEmpresa(empresaAEliminar.id)}
-                            className="custom-styled"
-                            style={{
-                                padding: "10px 20px",
-                                backgroundColor: "#dc3545",
-                                color: "white",
-                                border: "none",
-                                borderRadius: "4px",
-                                cursor: "pointer"
-                            }}
+                            className="empresa-btn empresa-btn-delete"
                         >
                             Eliminar
                         </button>
                         <button
                             onClick={() => setIsDeleteModalOpen(false)}
-                            className="custom-styled"
-                            style={{
-                                padding: "10px 20px",
-                                backgroundColor: "#6c757d",
-                                color: "white",
-                                border: "none",
-                                borderRadius: "4px",
-                                cursor: "pointer"
-                            }}
+                            className="empresa-btn"
                         >
                             Cancelar
                         </button>

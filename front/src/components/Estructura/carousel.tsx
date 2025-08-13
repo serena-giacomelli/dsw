@@ -1,4 +1,4 @@
-import "../styles/carousel.css";
+import "../../styles/Estructura/carousel.css";
 
 import React from "react";
 import Slider from "react-slick";

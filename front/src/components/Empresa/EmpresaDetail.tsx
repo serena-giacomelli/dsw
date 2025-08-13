@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import Modal from "../Modal.tsx";
+import Modal from "../Estructura/modal.tsx";
+import "../../styles/Empresa/empresaDetail.css";
 
 interface Empresa {
     id: number;
@@ -202,74 +203,67 @@ const EmpresaDetail: React.FC = () => {
         fetchEmpresaYMarcas();
     };
 
-    if (loading) return <div style={{ padding: 40, textAlign: "center" }}>Cargando empresa...</div>;
-    if (error) return <div style={{ padding: 40, textAlign: "center", color: "red" }}>{error}</div>;
-    if (!empresa) return <div style={{ padding: 40, textAlign: "center" }}>Empresa no encontrada</div>;
+    if (loading) return <div className="empresa-detail-container" style={{ textAlign: "center" }}>Cargando empresa...</div>;
+    if (error) return <div className="empresa-detail-container" style={{ textAlign: "center", color: "red" }}>{error}</div>;
+    if (!empresa) return <div className="empresa-detail-container" style={{ textAlign: "center" }}>Empresa no encontrada</div>;
 
     return (
-        <div style={{ maxWidth: 900, margin: "0 auto", padding: 24 }}>
+        <div className="empresa-detail-container">
             <button
                 onClick={() => navigate(-1)}
-                style={{
-                    marginBottom: 20,
-                    background: "#6a5d4d",
-                    color: "white",
-                    border: "none",
-                    borderRadius: 4,
-                    padding: "8px 18px",
-                    cursor: "pointer"
-                }}
+                className="empresa-detail-volver-btn"
             >
                 Volver
             </button>
-            <h1 style={{ color: "#6a5d4d" }}>{empresa.nombre}</h1>
-            <p><strong>Razón Social:</strong> {empresa.razonSocial}</p>
-            <p><strong>CUIL:</strong> {empresa.cuil}</p>
-            <p><strong>Sitio Web:</strong> <a href={empresa.sitioWeb} target="_blank" rel="noopener noreferrer">{empresa.sitioWeb}</a></p>
-            <hr style={{ margin: "24px 0" }} />
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <h1 className="empresa-detail-title">{empresa.nombre}</h1>
+            <hr className="empresa-detail-hr" />
+            <div className="empresa-detail-marcas-header">
                 <h2>Marcas de la empresa</h2>
-                <button onClick={openAddMarcaModal} style={{ background: "#6a5d4d", color: "white", border: "none", borderRadius: 4, padding: "8px 18px", cursor: "pointer" }}>Agregar Marca</button>
+            </div>
+            <div className="empresa-detail-marcas-btn-row">
+                <button onClick={openAddMarcaModal} className="empresa-detail-marcas-btn">Agregar Marca</button>
             </div>
             {marcas.length === 0 ? (
                 <p>No hay marcas asociadas a esta empresa.</p>
             ) : (
-                <ul style={{ listStyle: "none", padding: 0 }}>
+                <div className="empresa-detail-grid">
                     {marcas.map(marca => (
-                        <li key={marca.id} style={{ marginBottom: 24, border: "1px solid #e5d7c1", borderRadius: 5, padding: 16 }}>
-                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <div key={marca.id} className="empresa-detail-marca-card">
+                            <div className="empresa-detail-marca-header">
                                 <h3 style={{ margin: 0 }}>{marca.nombre}</h3>
-                                <div style={{ display: "flex", gap: 8 }}>
-                                    <button onClick={() => openEditMarcaModal(marca)} style={{ background: "#6a5d4d", color: "white", border: "none", borderRadius: 4, padding: "4px 12px", cursor: "pointer" }}>Editar</button>
-                                    <button onClick={() => confirmDeleteMarca(marca)} style={{ background: "#dc3545", color: "white", border: "none", borderRadius: 4, padding: "4px 12px", cursor: "pointer" }}>Eliminar</button>
-                                </div>
+                            </div>
+                            <div className="empresa-detail-marca-btn-row">
+                                <button onClick={() => openEditMarcaModal(marca)} className="empresa-detail-marca-btn">Editar</button>
+                                <button onClick={() => confirmDeleteMarca(marca)} className="empresa-detail-marca-btn empresa-detail-marca-btn-delete">Eliminar</button>
                             </div>
                             <p><strong>CUIL:</strong> {marca.cuil}</p>
                             <p><strong>Teléfono:</strong> {marca.telefono}</p>
-                            <div>
-                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                            <div className="empresa-detail-sucursales-section">
+                                <div className="empresa-detail-sucursales-header">
                                     <strong>Sucursales:</strong>
-                                    <button onClick={() => openAddSucursalModal(marca.id)} style={{ background: "#6a5d4d", color: "white", border: "none", borderRadius: 4, padding: "4px 12px", cursor: "pointer" }}>Agregar Sucursal</button>
+                                </div>
+                                <div className="empresa-detail-sucursales-btn-row">
+                                    <button onClick={() => openAddSucursalModal(marca.id)} className="empresa-detail-sucursales-btn">Agregar Sucursal</button>
                                 </div>
                                 {marca.sucursales && marca.sucursales.length > 0 ? (
-                                    <ul style={{ marginTop: 8 }}>
+                                    <div className="empresa-detail-sucursal-grid">
                                         {marca.sucursales.map(suc => (
-                                            <li key={suc.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                                            <div key={suc.id} className="empresa-detail-sucursal-card">
                                                 <span>{suc.direccion} ({suc.contacto})</span>
-                                                <span>
-                                                    <button onClick={() => openEditSucursalModal(marca.id, suc)} style={{ background: "#6a5d4d", color: "white", border: "none", borderRadius: 4, padding: "2px 10px", cursor: "pointer", marginRight: 6 }}>Editar</button>
-                                                    <button onClick={() => confirmDeleteSucursal(marca.id, suc)} style={{ background: "#dc3545", color: "white", border: "none", borderRadius: 4, padding: "2px 10px", cursor: "pointer" }}>Eliminar</button>
-                                                </span>
-                                            </li>
+                                                <div className="empresa-detail-sucursal-btn-row">
+                                                    <button onClick={() => openEditSucursalModal(marca.id, suc)} className="empresa-detail-sucursal-btn">Editar</button>
+                                                    <button onClick={() => confirmDeleteSucursal(marca.id, suc)} className="empresa-detail-sucursal-btn empresa-detail-sucursal-btn-delete">Eliminar</button>
+                                                </div>
+                                            </div>
                                         ))}
-                                    </ul>
+                                    </div>
                                 ) : (
                                     <span> No tiene sucursales.</span>
                                 )}
                             </div>
-                        </li>
+                        </div>
                     ))}
-                </ul>
+                </div>
             )}
 
             {/* Modal Marca */}

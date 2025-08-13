@@ -1,5 +1,5 @@
 import React from 'react';
-import "./Transport.css";
+import "../../styles/Usuario/transportistaContainer.css";
 
 interface TransportProps {
     nombre: string;

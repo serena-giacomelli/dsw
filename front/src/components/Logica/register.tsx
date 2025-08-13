@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../styles/Register.css';
+import '../../styles/register.css';
 
 const Register: React.FC = () => {
     const [nombre, setNombre] = useState('');
@@ -117,7 +117,7 @@ const Register: React.FC = () => {
         <div className="form-session">
             <div className="left-side">
                 <div className="title-login">
-                    <h2>Registro de Usuario</h2>
+                    <h2 style={{ color: '#6a5d4d', fontFamily: 'Times New Roman, Times, serif' }}>Registro de Usuario</h2>
                 </div>
                 <form onSubmit={handleRegister} className="login-form">
                     <div className="input-group">

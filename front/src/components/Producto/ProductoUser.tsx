@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import '../../styles/productContainer.css';
+import '../../styles/Usuario/productContainer.css';
 import { useLocation, useNavigate } from "react-router-dom";
-import { useCart } from "../../Context/CartContext.tsx";
 import { useParams } from "react-router-dom";
 
 

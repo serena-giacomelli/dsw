@@ -40,25 +40,25 @@ interface ProductoEmail {
 export class EmailService {
   static async verificarConfiguracion(): Promise<boolean> {
     try {
-      console.log('🔍 Verificando configuración de email...');
-      console.log('📧 Usuario Gmail:', process.env.GMAIL_USER || 'NO CONFIGURADO');
-      console.log('🔑 Contraseña:', process.env.GMAIL_APP_PASSWORD ? 'CONFIGURADA (longitud: ' + process.env.GMAIL_APP_PASSWORD.length + ')' : 'NO CONFIGURADA');
+      console.log('Verificando configuración de email...');
+      console.log('Usuario Gmail:', process.env.GMAIL_USER || 'NO CONFIGURADO');
+      console.log('Contraseña:', process.env.GMAIL_APP_PASSWORD ? 'CONFIGURADA (longitud: ' + process.env.GMAIL_APP_PASSWORD.length + ')' : 'NO CONFIGURADA');
       
       await transporter.verify();
-      console.log('✅ Configuración de email verificada correctamente');
+      console.log('Configuración de email verificada correctamente');
       return true;
     } catch (error) {
-      console.error('❌ Error en configuración de email:', error);
+      console.error('Error en configuración de email:', error);
       
       // Dar más información específica del error
       if (error instanceof Error) {
         if (error.message.includes('Invalid login')) {
-          console.error('🚨 ERROR: Credenciales inválidas. Verifica:');
+          console.error('ERROR: Credenciales inválidas. Verifica:');
           console.error('  - Email correcto');
           console.error('  - Contraseña de aplicación (no la contraseña normal)');
           console.error('  - Verificación en 2 pasos habilitada');
         } else if (error.message.includes('Missing credentials')) {
-          console.error('🚨 ERROR: Faltan credenciales en .env');
+          console.error('ERROR: Faltan credenciales en .env');
         }
       }
       
@@ -188,7 +188,7 @@ export class EmailService {
           <p style="margin: 0; font-size: 16px;">Gracias por confiar en nosotros</p>
           <p style="margin: 10px 0 0 0; font-size: 14px; opacity: 0.8;">
             Si tienes alguna duda, contáctanos: 
-            <a href="mailto:ventas@lusechi.com" style="color: #3498db;">ventas@lusechi.com</a> | 
+            <a href="mailto:lusechi3@gmail.com" style="color: #3498db;">lusechi3@gmail.com</a> | 
             📱 WhatsApp: +54 9 11 1234-5678
           </p>
         </div>
@@ -206,12 +206,12 @@ export class EmailService {
     datosEnvio: DatosEnvio
   ): Promise<boolean> {
     try {
-      console.log('📧 === INICIO ENVÍO EMAIL CONFIRMACIÓN ===');
-      console.log('📧 Destinatario:', datosEnvio.email);
-      console.log('📧 Pedido ID:', pedido.id);
-      console.log('📧 Nombre cliente:', datosEnvio.nombre, datosEnvio.apellido);
-      console.log('📧 Tipo entrega:', datosEnvio.tipoEntrega);
-      console.log('📧 Total productos:', productos.length);
+      console.log('=== INICIO ENVÍO EMAIL CONFIRMACIÓN ===');
+      console.log('Destinatario:', datosEnvio.email);
+      console.log('Pedido ID:', pedido.id);
+      console.log('Nombre cliente:', datosEnvio.nombre, datosEnvio.apellido);
+      console.log('Tipo entrega:', datosEnvio.tipoEntrega);
+      console.log('Total productos:', productos.length);
       
       // Verificar configuración antes de enviar
       const configuracionOK = await this.verificarConfiguracion();
@@ -220,14 +220,14 @@ export class EmailService {
         return false;
       }
 
-      console.log('📧 Generando HTML del email...');
+      console.log(' Generando HTML del email...');
       const htmlContent = this.generarHTMLPedido(usuario, pedido, productos, datosEnvio);
-      console.log('📧 HTML generado, longitud:', htmlContent.length, 'caracteres');
+      console.log('HTML generado, longitud:', htmlContent.length, 'caracteres');
 
       const mailOptions = {
         from: {
           name: 'Lusechi - Tienda Online',
-          address: process.env.GMAIL_USER || 'noreply@lusechi.com'
+          address: process.env.GMAIL_USER || 'lusechi3@gmail.com'
         },
         to: datosEnvio.email,
         subject: `✅ Confirmación de Pedido #${pedido.id} - Lusechi`,
@@ -235,21 +235,21 @@ export class EmailService {
         text: `Hola ${datosEnvio.nombre}!\n\nTu pedido #${pedido.id} ha sido confirmado exitosamente.\n\nTotal: $${pedido.total.toFixed(2)}\n\nDatos para transferencia:\nBanco: ${DATOS_TRANSFERENCIA.banco}\nCBU: ${DATOS_TRANSFERENCIA.cbu}\nAlias: ${DATOS_TRANSFERENCIA.alias}\nTitular: ${DATOS_TRANSFERENCIA.titular}\n\nGracias por tu compra!\n\nEquipo Lusechi`
       };
 
-      console.log('📤 Enviando email...');
-      console.log('📧 De:', mailOptions.from);
-      console.log('📧 Para:', mailOptions.to);
-      console.log('📧 Asunto:', mailOptions.subject);
+      console.log(' Enviando email...');
+      console.log(' De:', mailOptions.from);
+      console.log(' Para:', mailOptions.to);
+      console.log(' Asunto:', mailOptions.subject);
 
       const info = await transporter.sendMail(mailOptions);
-      console.log('✅ === EMAIL ENVIADO EXITOSAMENTE ===');
-      console.log('📧 Message ID:', info.messageId);
-      console.log('📧 Destinatario confirmado:', datosEnvio.email);
-      console.log('📧 Response:', info.response);
+      console.log(' === EMAIL ENVIADO EXITOSAMENTE ===');
+      console.log(' Message ID:', info.messageId);
+      console.log(' Destinatario confirmado:', datosEnvio.email);
+      console.log(' Response:', info.response);
       
       return true;
     } catch (error) {
-      console.error('❌ === ERROR AL ENVIAR EMAIL ===');
-      console.error('❌ Error completo:', error);
+      console.error(' === ERROR AL ENVIAR EMAIL ===');
+      console.error(' Error completo:', error);
       
       // Información más detallada del error
       if (error instanceof Error) {
@@ -257,11 +257,11 @@ export class EmailService {
         console.error('❌ Error stack:', error.stack);
         
         if (error.message.includes('Invalid login')) {
-          console.error('🚨 Problema de autenticación - revisa credenciales Gmail');
+          console.error(' Problema de autenticación - revisa credenciales Gmail');
         } else if (error.message.includes('Recipient address rejected')) {
-          console.error('🚨 Email destinatario inválido:', datosEnvio.email);
+          console.error(' Email destinatario inválido:', datosEnvio.email);
         } else if (error.message.includes('Connection timeout')) {
-          console.error('🚨 Problema de conexión a internet');
+          console.error(' Problema de conexión a internet');
         }
       }
       
@@ -323,7 +323,7 @@ export class EmailService {
                 <p style="color: #721c24;">Si consideras que esto es un error, por favor contáctanos.</p>
                 <div style="background-color: #d1ecf1; border: 1px solid #bee5eb; padding: 15px; border-radius: 5px; margin: 15px 0;">
                   <p style="color: #0c5460; margin: 0;">
-                    📞 Contáctanos: <a href="mailto:ventas@lusechi.com" style="color: #0c5460;">ventas@lusechi.com</a><br>
+                    📞 Contáctanos: <a href="mailto:lusechi3@gmail.com" style="color: #0c5460;">lusechi3@gmail.com</a><br>
                     📱 WhatsApp: +54 9 11 1234-5678
                   </p>
                 </div>
@@ -338,7 +338,7 @@ export class EmailService {
       const mailOptions = {
         from: {
           name: 'Lusechi - Tienda Online',
-          address: process.env.GMAIL_USER || 'noreply@lusechi.com'
+          address: process.env.GMAIL_USER || 'lusechi3@gmail.com'
         },
         to: email,
         subject: asunto,
@@ -393,7 +393,7 @@ export class EmailService {
       const mailOptions = {
         from: {
           name: 'Lusechi - Tienda Online',
-          address: process.env.GMAIL_USER || 'noreply@lusechi.com'
+          address: process.env.GMAIL_USER || 'lusechi3@gmail.com'
         },
         to: email,
         subject: asunto,
@@ -443,7 +443,7 @@ export class EmailService {
             <p style="color: #721c24;">Si tienes dudas, contáctanos.</p>
             <div style="background-color: #d1ecf1; border: 1px solid #bee5eb; padding: 15px; border-radius: 5px; margin: 15px 0;">
               <p style="color: #0c5460; margin: 0;">
-                📞 Contáctanos: <a href="mailto:ventas@lusechi.com" style="color: #0c5460;">ventas@lusechi.com</a><br>
+                📞 Contáctanos: <a href="mailto:lusechi3@gmail.com" style="color: #0c5460;">lusechi3@gmail.com</a><br>
                 📱 WhatsApp: +54 9 11 1234-5678
               </p>
             </div>
@@ -454,12 +454,12 @@ export class EmailService {
       if (requiereReembolso) {
         mensaje += `\n\nSe iniciará el proceso de reembolso correspondiente.`;
       }
-      mensaje += `\n\nSi tienes dudas, contáctanos: ventas@lusechi.com`;
+      mensaje += `\n\nSi tienes dudas, contáctanos: lusechi3@gmail.com`;
 
       const mailOptions = {
         from: {
           name: 'Lusechi - Tienda Online',
-          address: process.env.GMAIL_USER || 'noreply@lusechi.com'
+          address: process.env.GMAIL_USER || 'lusechi3@gmail.com'
         },
         to: email,
         subject: asunto,
@@ -489,7 +489,7 @@ export class EmailService {
       const mailOptions = {
         from: {
           name: 'Lusechi - Test',
-          address: process.env.GMAIL_USER || 'noreply@lusechi.com'
+          address: process.env.GMAIL_USER || 'lusechi3@gmail.com'
         },
         to: destinatario,
         subject: '🧪 Test de Email - Lusechi',

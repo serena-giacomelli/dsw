@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import "../../styles/usuarioContainer.css";
-import Modal from "../Modal.tsx";
+import "../../styles/Usuario/usuarioContainer.css";
+import Modal from "../Estructura/modal.tsx";
 
 interface Usuario {
     id: string;

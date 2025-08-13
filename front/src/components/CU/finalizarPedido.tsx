@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useCart } from "../Context/CartContext.tsx";
+import { useCart } from "../../Context/cartContext.tsx";
 import { useNavigate } from "react-router-dom";
-import { pedidoService } from "../services/pedidoService.ts";
-import { sucursalService, Sucursal } from "../services/sucursalService.ts";
-import "../styles/FinalizarPedido.css";
+import { pedidoService } from "../../services/pedidoService.ts";
+import { sucursalService, Sucursal } from "../../services/sucursalService.ts";
+import "../../styles/Usuario/finalizarPedido.css";
 
 interface DatosEnvio {
   nombre: string;

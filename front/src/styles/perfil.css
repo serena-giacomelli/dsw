@@ -9,7 +9,8 @@
 
 .perfil-container h2 {
   text-align: center;
-  color: #2c3e50;
+  color: #6a5d4d;
+  font-family: 'Times New Roman', Times, serif;
   margin-bottom: 1.5rem;
   font-size: 1.3rem; /* Mobile-first */
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import '../../styles/productContainer.css';
+import '../../styles/Usuario/productContainer.css';
 import { useLocation, useNavigate } from "react-router-dom";
-import Modal from "../Modal.tsx";
+import Modal from "../Estructura/modal.tsx";
 
 interface ProductoType {
     id: number;

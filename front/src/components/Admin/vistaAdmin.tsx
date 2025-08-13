@@ -1,9 +1,9 @@
 
 import React from "react";
-import UsuarioContainer from "../Usuario/Usuariocontainer.tsx";
-import ProductListContainer from "../Producto/Productocontainer.tsx";
+import UsuarioContainer from "../Usuario/usuariocontainer.tsx";
+import ProductListContainer from "../Producto/productocontainer.tsx";
 import TipoProductoContainer from "../TipoProducto/tipoProductocontainer.tsx";
-import '../../styles/vistaAdmin.css';
+import '../../styles/Admin/vistaAdmin.css';
 
 const VistaAdmin: React.FC = () => {
     return (

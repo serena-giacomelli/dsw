@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
-import "../styles/floatingButton.css";
+import "../../styles/Estructura/floatingButton.css";
 
 const FloatingButton = () => {
   const location = useLocation();

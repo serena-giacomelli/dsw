@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "../styles/ProductosDestacadosAdmin.css";
+import "../../styles/Admin/productosDestacadosAdmin.css";
 
          
 interface ProductoDestacado {

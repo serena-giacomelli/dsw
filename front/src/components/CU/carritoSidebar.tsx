@@ -1,8 +1,8 @@
 // components/CarritoSidebar.tsx
 import React from "react";
-import { useCart } from "../Context/CartContext.tsx";
+import { useCart } from "../../Context/cartContext.tsx";
 import { useNavigate } from "react-router-dom";
-import "../styles/CarritoSidebar.css"; // Asegúrate de tener un archivo CSS para los estilos
+import "../../styles/Usuario/carritoSidebar.css"; 
 
 interface CarritoSidebarProps {
   visible: boolean;

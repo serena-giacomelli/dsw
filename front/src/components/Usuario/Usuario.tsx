@@ -1,5 +1,5 @@
 import React from 'react';
-import "./Usuario.css";
+import "../../styles/Usuario/usuario.css";
 
 interface UsuarioProps {
     nombre: string;

@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import TextH2 from "./TextH2";
+import TextH2 from "../Logica/textH2.tsx";
 
 const Text: React.FC = () => {
     const [show, setShow] = useState<boolean>(true);

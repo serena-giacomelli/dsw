@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { pedidoService } from "../../services/pedidoService";
-import "../../styles/misPedidos.css";
-import "../../styles/placeholder.css";
+import "../../styles/Usuario/misPedidos.css";
+import "../../styles/Estructura/placeholder.css";
 
 interface LineaPedido {
   id: number;
@@ -105,6 +105,11 @@ const MisPedidos: React.FC = () => {
   };
 
   const cancelarPedido = async (pedidoId: number) => {
+    const motivo = prompt('¿Por qué deseas cancelar este pedido?');
+    if (!motivo) {
+      return;
+    }
+
     if (!window.confirm('¿Estás seguro de que quieres cancelar este pedido?')) {
       return;
     }
@@ -114,7 +119,7 @@ const MisPedidos: React.FC = () => {
       const token = localStorage.getItem('token');
       if (!token) return;
 
-      await pedidoService.cancelarPedido(pedidoId, token);
+      await pedidoService.cancelarPedido(pedidoId, motivo, token);
       
       // Actualizar el estado local
       setPedidos(prev => prev.map(pedido => 
