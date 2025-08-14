@@ -50,7 +50,28 @@ const PORT = process.env.PORT || 3000;
 
 console.log(`Iniciando el servidor en el puerto ${PORT}`);
 await syncSchema();
-app.listen(3000, () => {
+
+// Manejo de cierre graceful
+const server = app.listen(PORT, () => {
     const url = `http://localhost:${PORT}`;
     console.log(`Puedes abrir el servidor en: ${url}`);
+});
+
+// Cerrar conexiones de base de datos cuando se cierra el servidor
+process.on('SIGINT', async () => {
+    console.log('Cerrando servidor...');
+    await orm.close();
+    server.close(() => {
+        console.log('Servidor cerrado correctamente');
+        process.exit(0);
+    });
+});
+
+process.on('SIGTERM', async () => {
+    console.log('Cerrando servidor...');
+    await orm.close();
+    server.close(() => {
+        console.log('Servidor cerrado correctamente');
+        process.exit(0);
+    });
 });
