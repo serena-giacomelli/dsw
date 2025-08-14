@@ -43,7 +43,7 @@ const Perfil: React.FC = () => {
         
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('/api/usuario/update-profile', {
+            const response = await fetch('https://dswback.onrender.com/api/usuario/update-profile', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

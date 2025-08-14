@@ -15,7 +15,7 @@ const TipoProductoUser = () => {
 
     const fetchTiposProductoUser = async () => {
         try {
-            const response = await fetch("/api/tipoP");
+            const response = await fetch("https://dswback.onrender.com/api/tipoP");
             const data = await response.json();
             setTiposProductoUser(data.data);
         } catch (error) {

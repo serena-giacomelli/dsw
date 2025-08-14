@@ -13,7 +13,7 @@ const transportistaListContainer = () => {
     const [editingTransport, setEditingTransport] = useState<Transportista | null>(null);
     const fetchTransport = async () => {
         try {
-            const response = await fetch("/api/transportista");
+            const response = await fetch("https://dswback.onrender.com/api/transportista");
             const data = await response.json();
             setTransportista(data);
         } catch (error) {
@@ -25,7 +25,7 @@ const transportistaListContainer = () => {
 
     const createTransport = async () => {
         try {
-            const response = await fetch("/api/transportista", {
+            const response = await fetch("https://dswback.onrender.com/api/transportista", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -43,7 +43,7 @@ const transportistaListContainer = () => {
     const updateTransport = async (id: number) => {
         try {
             if (!editingTransport) return;
-            const response = await fetch(`/api/transportista/${id}`, {
+            const response = await fetch(`https://dswback.onrender.com/api/transportista/${id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -61,7 +61,7 @@ const transportistaListContainer = () => {
 
     const deleteTransport = async (id: number) => {
         try {
-            await fetch(`/api/transportista/${id}`, {
+            await fetch(`https://dswback.onrender.com/api/transportista/${id}`, {
                 method: "DELETE",
             });
             setTransportista(transportista.filter((transportistas) => transportistas.id !== id));

@@ -14,7 +14,7 @@ const Login: React.FC = () => {
   async function handleLogin(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     try {
-      const response = await fetch('/api/usuario/login', {
+      const response = await fetch('https://dswback.onrender.com/api/usuario/login', {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

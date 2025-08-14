@@ -54,7 +54,7 @@ const Register: React.FC = () => {
                 dni,
                 fechaNacimiento: fechaNacimiento || ''
             });
-            const response = await fetch('/api/usuario/register', {
+            const response = await fetch('https://dswback.onrender.com/api/usuario/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -96,7 +96,7 @@ const Register: React.FC = () => {
         e.preventDefault();
         setOtpError('');
         try {
-            const response = await fetch('/api/usuario/verify-otp', {
+            const response = await fetch('https://dswback.onrender.com/api/usuario/verify-otp', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ mail, otp })

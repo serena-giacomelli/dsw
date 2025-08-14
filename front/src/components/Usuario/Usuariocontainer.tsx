@@ -22,7 +22,7 @@ const UserListContainer = () => {
 
     const fetchUsuarios = async () => {
         try {
-            const response = await fetch("/api/usuario");
+            const response = await fetch("https://dswback.onrender.com/api/usuario");
             const data = await response.json();
             setUsuarios(data.data);
         } catch (error) {
@@ -35,7 +35,7 @@ const UserListContainer = () => {
     const createUsuario = async () => {
         try {
             newUser.id = "0";
-            const response = await fetch("/api/usuario", {
+            const response = await fetch("https://dswback.onrender.com/api/usuario", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -55,7 +55,7 @@ const UserListContainer = () => {
     const updateUsuario = async (id: string) => {
         try {
             if (!editingUser) return;
-            const response = await fetch(`/api/usuario/${id}`, {
+            const response = await fetch(`https://dswback.onrender.com/api/usuario/${id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -74,7 +74,7 @@ const UserListContainer = () => {
 
     const deleteUsuario = async (id: string) => {
         try {
-            await fetch(`/api/usuario/${id}`, {
+            await fetch(`https://dswback.onrender.com/api/usuario/${id}`, {
                 method: "DELETE",
             });
             setUsuarios(usuarios.filter((usuario) => usuario.id !== id));

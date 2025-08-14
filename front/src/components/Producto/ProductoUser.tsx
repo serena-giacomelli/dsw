@@ -33,7 +33,7 @@ const fetchProductosUser = async () => {
     setLoading(true);
     setError(null);
     try {
-        const response = await fetch("/api/producto");
+        const response = await fetch("https://dswback.onrender.com/api/producto");
         if (!response.ok) throw new Error("Error al cargar productos");
         const data = await response.json();
         setProductos(data.data);
@@ -49,7 +49,7 @@ const fetchProductosUserPorStock = async () => {
     setLoading(true);
     setError(null);
     try {
-        const response = await fetch(`/api/producto/cantidad/${cantidadFiltro}`);
+        const response = await fetch(`https://dswback.onrender.com/api/producto/cantidad/${cantidadFiltro}`);
         if (!response.ok) throw new Error("No se encontraron productos con el stock especificado");
         const data = await response.json();
         setProductos(data.data);
@@ -64,7 +64,7 @@ const fetchProductosUserPorTipo = async (tipoId: number) => {
     setLoading(true);
     setError(null);
     try {
-        const response = await fetch(`/api/producto/categoria/${tipoId}`);
+        const response = await fetch(`https://dswback.onrender.com/api/producto/categoria/${tipoId}`);
         if (!response.ok) throw new Error("No se encontraron productos para el tipo especificado");
         const data = await response.json();
         setProductos(data.data);

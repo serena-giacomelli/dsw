@@ -62,10 +62,10 @@ export const pedidoService = {
   // Crear un nuevo pedido
   async crearPedido(pedidoData: PedidoData, token: string) {
     try {
-      console.log('Enviando pedido a:', `https://dswback.onrender.com/api/pedido`);
+      console.log('Enviando pedido a:', `https://dswback.onrender.comhttps://dswback.onrender.com/api/pedido`);
       console.log('Datos del pedido:', pedidoData);
       
-      const response = await fetch(`https://dswback.onrender.com/api/pedido`, {
+      const response = await fetch(`https://dswback.onrender.comhttps://dswback.onrender.com/api/pedido`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -103,10 +103,10 @@ export const pedidoService = {
   // Crear línea de pedido
   async crearLineaPedido(lineaPedidoData: LineaPedidoData, token: string) {
     try {
-      console.log('Enviando línea de pedido a:', `https://dswback.onrender.com/api/lineaPed`);
+      console.log('Enviando línea de pedido a:', `https://dswback.onrender.comhttps://dswback.onrender.com/api/lineaPed`);
       console.log('Datos de la línea:', lineaPedidoData);
       
-      const response = await fetch(`https://dswback.onrender.com/api/lineaPed`, {
+      const response = await fetch(`https://dswback.onrender.comhttps://dswback.onrender.com/api/lineaPed`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -144,10 +144,10 @@ export const pedidoService = {
   // Crear pago
   async crearPago(pagoData: PagoData, token: string) {
     try {
-      console.log('Enviando pago a:', `https://dswback.onrender.com/api/pago`);
+      console.log('Enviando pago a:', `https://dswback.onrender.comhttps://dswback.onrender.com/api/pago`);
       console.log('Datos del pago:', pagoData);
       
-      const response = await fetch(`https://dswback.onrender.com/api/pago`, {
+      const response = await fetch(`https://dswback.onrender.comhttps://dswback.onrender.com/api/pago`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -197,7 +197,7 @@ export const pedidoService = {
         sucursalId: compraData.sucursalId || compraData.datosEnvio.sucursalSeleccionada
       };
       
-      const response = await fetch(`https://dswback.onrender.com/api/pedido/finalizar`, {
+      const response = await fetch(`https://dswback.onrender.comhttps://dswback.onrender.com/api/pedido/finalizar`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -235,7 +235,7 @@ export const pedidoService = {
   // Obtener pedidos del usuario
   async obtenerPedidosUsuario(token: string) {
     try {
-      const response = await fetch(`https://dswback.onrender.com/api/pedido`, {
+      const response = await fetch(`https://dswback.onrender.comhttps://dswback.onrender.com/api/pedido`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -257,7 +257,7 @@ export const pedidoService = {
   // Cancelar un pedido (solo usuarios)
   async cancelarPedido(pedidoId: number, motivo: string, token: string) {
     try {
-      const response = await fetch(`https://dswback.onrender.com/api/pedido/${pedidoId}`, {
+      const response = await fetch(`https://dswback.onrender.comhttps://dswback.onrender.com/api/pedido/${pedidoId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -280,7 +280,7 @@ export const pedidoService = {
   // Marcar pedido como recibido (solo usuarios)
   async marcarComoRecibido(pedidoId: number, token: string) {
     try {
-      const response = await fetch(`https://dswback.onrender.com/api/pedido/${pedidoId}`, {
+      const response = await fetch(`https://dswback.onrender.comhttps://dswback.onrender.com/api/pedido/${pedidoId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

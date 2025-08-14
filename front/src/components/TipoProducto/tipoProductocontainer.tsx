@@ -22,7 +22,7 @@ const TipoProductocontainer = () => {
 
     const fetchTiposProducto = async () => {
         try {
-            const response = await fetch("/api/tipoP");
+            const response = await fetch("https://dswback.onrender.com/api/tipoP");
             const data = await response.json();
             setTiposProducto(data.data);
         } catch (error) {
@@ -34,7 +34,7 @@ const TipoProductocontainer = () => {
 
     const createTipoProducto = async () => {
         try {
-            const response = await fetch("/api/tipoP", {
+            const response = await fetch("https://dswback.onrender.com/api/tipoP", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -52,7 +52,7 @@ const TipoProductocontainer = () => {
     const updateTipoProducto = async (id: number) => {
         try {
             if (!editingTipoProducto) return;
-            const response = await fetch(`/api/tipoP/${id}`, {
+            const response = await fetch(`https://dswback.onrender.com/api/tipoP/${id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -70,7 +70,7 @@ const TipoProductocontainer = () => {
 
     const deleteTipoProducto = async (id: number) => {
         try {
-            await fetch(`/api/tipoP/${id}`, {
+            await fetch(`https://dswback.onrender.com/api/tipoP/${id}`, {
                 method: "DELETE",
             });
             setTiposProducto(tiposProducto.filter((tipo) => tipo.id !== id));

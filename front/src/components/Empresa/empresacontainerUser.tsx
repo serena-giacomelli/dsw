@@ -34,11 +34,11 @@ const EmpresaContainerUser = () => {
     useEffect(() => {
         const fetchEmpresasYMarcas = async () => {
             try {
-                const resEmp = await fetch("/api/empresa");
+                const resEmp = await fetch("https://dswback.onrender.comhttps://dswback.onrender.com/api/empresa");
                 const dataEmp = await resEmp.json();
                 setEmpresas(dataEmp.data);
 
-                const resMarcas = await fetch("/api/marca");
+                const resMarcas = await fetch("https://dswback.onrender.comhttps://dswback.onrender.com/api/marca");
                 const dataMarcas = await resMarcas.json();
                 const marcas: Marca[] = dataMarcas.data;
 
@@ -53,7 +53,7 @@ const EmpresaContainerUser = () => {
                 await Promise.all(
                     marcas.map(async (marca) => {
                         if (!marca.sucursales || !Array.isArray(marca.sucursales)) {
-                            const resMarca = await fetch(`/api/marca/${marca.id}`);
+                            const resMarca = await fetch(`https://dswback.onrender.comhttps://dswback.onrender.com/api/marca/${marca.id}`);
                             const dataMarca = await resMarca.json();
                             marca.sucursales = dataMarca.data.sucursales || [];
                         }

@@ -68,12 +68,12 @@ const ProductosDestacados: React.FC<ProductosDestacadosProps> = ({
   const cargarProductosDestacados = async () => {
     try {
       // Obtener todos los productos
-      const productosResponse = await fetch('/api/producto');
+      const productosResponse = await fetch('https://dswback.onrender.com/api/producto');
       const productosData = await productosResponse.json();
       const todosLosProductos = productosData.data || [];
 
       // Obtener estadísticas públicas de productos destacados (sin autenticación)
-      const estadisticasResponse = await fetch('/api/pedido/estadisticas-publicas');
+      const estadisticasResponse = await fetch('https://dswback.onrender.com/api/pedido/estadisticas-publicas');
       
       if (estadisticasResponse.ok) {
         const estadisticasData = await estadisticasResponse.json();

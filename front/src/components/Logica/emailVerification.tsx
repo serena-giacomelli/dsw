@@ -9,7 +9,7 @@ const EmailVerification: React.FC = () => {
     useEffect(() => {
         const verifyEmail = async () => {
             try {
-                const response = await fetch(`/api/usuario/verify-email/${token}`, {
+                const response = await fetch(`https://dswback.onrender.com/api/usuario/verify-email/${token}`, {
                     method: 'GET'
                 });
                 const data = await response.json();

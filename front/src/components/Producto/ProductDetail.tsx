@@ -37,14 +37,14 @@ const ProductDetail: React.FC = () => {
             setLoading(true);
             setError(null);
             try {
-                const response = await fetch(`/api/producto/${id}`);
+                const response = await fetch(`https://dswback.onrender.com/api/producto/${id}`);
                 if (!response.ok) throw new Error("Producto no encontrado");
                 const data = await response.json();
                 setProducto(data.data);
                 
                 // Fetch tipo nombre
                 if (data.data.tipo) {
-                    const tipoResponse = await fetch(`/api/tipoP/${data.data.tipo}`);
+                    const tipoResponse = await fetch(`https://dswback.onrender.com/api/tipoP/${data.data.tipo}`);
                     if (tipoResponse.ok) {
                         const tipoData = await tipoResponse.json();
                         setTipoNombre(tipoData.data.nombre);

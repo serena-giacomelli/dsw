@@ -17,9 +17,9 @@ export const sucursalService = {
   async obtenerSucursales(): Promise<Sucursal[]> {
     try {
       console.log('🔍 Iniciando obtención de sucursales...');
-      console.log('🌐 URL del API:', '/api/sucursal (proxy -> https://dswback.onrender.com/api/sucursal)');
+      console.log('🌐 URL del API:', 'https://dswback.onrender.com/api/sucursal (proxy -> https://dswback.onrender.com/api/sucursal)');
       
-      const response = await fetch('/api/sucursal', {
+      const response = await fetch('https://dswback.onrender.com/api/sucursal', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'

@@ -35,7 +35,7 @@ const Productocontainer: React.FC = () => {
         setLoading(true);
         setError(null);
         try {
-            const response = await fetch("/api/producto");
+            const response = await fetch("https://dswback.onrender.com/api/producto");
             if (!response.ok) throw new Error("Error al cargar productos");
             const data = await response.json();
             setProductos(data.data);
@@ -51,7 +51,7 @@ const Productocontainer: React.FC = () => {
         setLoading(true);
         setError(null);
         try {
-            const response = await fetch(`/api/producto/cantidad/${cantidadFiltro}`);
+            const response = await fetch(`https://dswback.onrender.com/api/producto/cantidad/${cantidadFiltro}`);
             if (!response.ok) throw new Error("No se encontraron productos con el stock especificado");
             const data = await response.json();
             setProductos(data.data);
@@ -67,7 +67,7 @@ const Productocontainer: React.FC = () => {
         setLoading(true);
         setError(null);
         try {
-            const response = await fetch(`/api/producto/categoria/${tipoProductoFiltro}`);
+            const response = await fetch(`https://dswback.onrender.com/api/producto/categoria/${tipoProductoFiltro}`);
             if (!response.ok) throw new Error("No se encontraron productos para el tipo de producto especificado");
             const data = await response.json();
             setProductos(data.data);
@@ -92,7 +92,7 @@ const Productocontainer: React.FC = () => {
         const productoConOferta = { ...producto, precio_oferta: nuevoPrecio };
 
         try {
-            const response = await fetch(`/api/producto/${id}`, {
+            const response = await fetch(`https://dswback.onrender.com/api/producto/${id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(productoConOferta),
@@ -106,7 +106,7 @@ const Productocontainer: React.FC = () => {
 
     const handleDeleteOferta = async (id: number) => {
         try {
-            const response = await fetch(`/api/producto/${id}/eliminar-oferta`, {
+            const response = await fetch(`https://dswback.onrender.com/api/producto/${id}/eliminar-oferta`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ precio_oferta: null }),
@@ -129,7 +129,7 @@ const Productocontainer: React.FC = () => {
             return;
         }
         try {
-            const response = await fetch("/api/producto", {
+            const response = await fetch("https://dswback.onrender.com/api/producto", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(newProduct),
@@ -155,7 +155,7 @@ const Productocontainer: React.FC = () => {
     const updateProducto = async (id: number) => {
         if (!editingProduct) return;
         try {
-            const response = await fetch(`/api/producto/${id}`, {
+            const response = await fetch(`https://dswback.onrender.com/api/producto/${id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(editingProduct),
@@ -174,7 +174,7 @@ const Productocontainer: React.FC = () => {
             return;
         }
         try {
-            const response = await fetch(`/api/producto/${id}`, { method: "DELETE" });
+            const response = await fetch(`https://dswback.onrender.com/api/producto/${id}`, { method: "DELETE" });
             if (!response.ok) throw new Error("Error al eliminar el producto");
             setProductos(prevProductos => prevProductos.filter(producto => producto.id !== id));
         } catch (error: any) {
@@ -311,7 +311,7 @@ const Productocontainer: React.FC = () => {
                         formData.append("upload_preset", "muebles");
 
                         try {
-                            const response = await fetch("https://api.cloudinary.com/v1_1/dsbcv1htw/image/upload", {
+                            const response = await fetch("https:/https://dswback.onrender.com/api.cloudinary.com/v1_1/dsbcv1htw/image/upload", {
                             method: "POST",
                             body: formData,
                             });
@@ -522,7 +522,7 @@ const Productocontainer: React.FC = () => {
                     formData.append("upload_preset", "muebles");
 
                     try {
-                        const response = await fetch("https://api.cloudinary.com/v1_1/dsbcv1htw/image/upload", {
+                        const response = await fetch("https:/https://dswback.onrender.com/api.cloudinary.com/v1_1/dsbcv1htw/image/upload", {
                         method: "POST",
                         body: formData,
                         });

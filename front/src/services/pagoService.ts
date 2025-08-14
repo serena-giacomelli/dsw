@@ -22,7 +22,7 @@ export const pagoService = {
   // Obtener todos los pagos (solo admin)
   async obtenerTodosLosPagos(token: string) {
     try {
-      const response = await fetch(`https://dswback.onrender.com/api/pago`, {
+      const response = await fetch(`https://dswback.onrender.comhttps://dswback.onrender.com/api/pago`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -47,7 +47,7 @@ export const pagoService = {
   // Obtener pagos pendientes (solo admin)
   async obtenerPagosPendientes(token: string) {
     try {
-      const response = await fetch(`https://dswback.onrender.com/api/pago/pendientes`, {
+      const response = await fetch(`https://dswback.onrender.comhttps://dswback.onrender.com/api/pago/pendientes`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -72,7 +72,7 @@ export const pagoService = {
   // Aprobar un pago (solo admin)
   async aprobarPago(pagoId: number, comentarios: string, token: string) {
     try {
-      const response = await fetch(`https://dswback.onrender.com/api/pago/${pagoId}/aprobar`, {
+      const response = await fetch(`https://dswback.onrender.comhttps://dswback.onrender.com/api/pago/${pagoId}/aprobar`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -99,7 +99,7 @@ export const pagoService = {
   // Rechazar un pago (solo admin)
   async rechazarPago(pagoId: number, comentarios: string, token: string) {
     try {
-      const response = await fetch(`https://dswback.onrender.com/api/pago/${pagoId}/rechazar`, {
+      const response = await fetch(`https://dswback.onrender.comhttps://dswback.onrender.com/api/pago/${pagoId}/rechazar`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -126,7 +126,7 @@ export const pagoService = {
   // Obtener detalles de un pago específico
   async obtenerPago(pagoId: number, token: string) {
     try {
-      const response = await fetch(`https://dswback.onrender.com/api/pago/${pagoId}`, {
+      const response = await fetch(`https://dswback.onrender.comhttps://dswback.onrender.com/api/pago/${pagoId}`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`
