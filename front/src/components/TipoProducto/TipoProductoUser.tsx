@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../../styles/Usuario/tipoProducto.css";
 
-import TipoProducto from "../TipoProducto/TipoProducto.tsx";
+import TipoProducto from "./TipoProducto.tsx";
 
 interface TipoProducto {
     id: number;

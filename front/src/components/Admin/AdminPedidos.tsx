@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { pedidoService } from "../../services/pedidoService";
-import { pagoService, Pago } from "../../services/pagoService";
-import { transportistaService } from "../../../services/transportistaService";
+import { pedidoService } from "../../services/pedidoService.ts";
+import { pagoService, Pago } from "../../services/pagoService.ts";
+import { transportistaService } from "../../../services/transportistaService.js";
 import "../../styles/Admin/adminPedidos.css";
 import "../../styles/Estructura/placeholder.css";
 import ProductosDestacados from "../CU/productosDestacados.tsx";

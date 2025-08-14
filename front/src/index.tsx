@@ -6,7 +6,7 @@ import { CartProvider } from './Context/cartContext.tsx';
 
 const rootElement = document.getElementById('root');
 if (rootElement) {
-  const root = ReactDOM.createRoot(rootElement); // Usa createRoot en lugar de render
+  const root = ReactDOM.createRoot(rootElement);
   root.render(
     <React.StrictMode>
       <BrowserRouter>

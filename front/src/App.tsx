@@ -18,7 +18,7 @@ import ProductoListContainerUser from './components/Producto/productoUser.tsx';
 import Carrito from './components/CU/carrito.tsx';
 import FinalizarPedido from './components/CU/finalizarPedido.tsx';
 import MisPedidos from './components/Usuario/misPedidos.tsx';
-import AdminPedidos from './components/Admin/adminPedidos.tsx';
+import AdminPedidos from './components/Admin/AdminPedidos.tsx';
 import TestCheckout from './components/Logica/testCheckout.tsx';
 import ProductDetail from './components/Producto/productDetail.tsx';
 import Register from './components/Logica/register.tsx';
