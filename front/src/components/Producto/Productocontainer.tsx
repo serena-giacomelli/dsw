@@ -311,7 +311,7 @@ const Productocontainer: React.FC = () => {
                         formData.append("upload_preset", "muebles");
 
                         try {
-                            const response = await fetch("https:/https://dswback.onrender.com/api.cloudinary.com/v1_1/dsbcv1htw/image/upload", {
+                            const response = await fetch("https://api.cloudinary.com/v1_1/dsbcv1htw/image/upload", {
                             method: "POST",
                             body: formData,
                             });
@@ -522,7 +522,7 @@ const Productocontainer: React.FC = () => {
                     formData.append("upload_preset", "muebles");
 
                     try {
-                        const response = await fetch("https:/https://dswback.onrender.com/api.cloudinary.com/v1_1/dsbcv1htw/image/upload", {
+                        const response = await fetch("https://api.cloudinary.com/v1_1/dsbcv1htw/image/upload", {
                         method: "POST",
                         body: formData,
                         });
