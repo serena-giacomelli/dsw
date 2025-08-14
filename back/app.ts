@@ -21,7 +21,7 @@ import { RequestContext } from '@mikro-orm/core';
 
 const app = express();
 app.use(cors({
-    origin: 'http://localhost:9000',
+    origin: 'https://lusechi.infinityfree.me',
     credentials: true
 }));
 

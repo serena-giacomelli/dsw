@@ -61,7 +61,7 @@ module.exports = {
         proxy: [
             {
                 context: ['/api'],
-                target: 'http://localhost:3000',
+                target: 'https://dswback.onrender.com',
                 changeOrigin: true,
                 pathRewrite: { '^/api': '/api' },
             },
