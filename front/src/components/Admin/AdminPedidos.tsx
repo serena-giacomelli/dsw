@@ -88,7 +88,7 @@ const AdminPedidos: React.FC = () => {
       setProcesando(pedidoId);
       const token = localStorage.getItem('token');
       
-      const response = await fetch(`https://dswback.onrender.comhttps://dswback.onrender.com/api/pedido/${pedidoId}`, {
+      const response = await fetch(`https://dswback.onrender.com/api/pedido/${pedidoId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

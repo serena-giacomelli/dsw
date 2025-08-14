@@ -30,7 +30,7 @@ export const authUtils = {
       const token = this.getToken();
       if (!token) return false;
 
-      const response = await fetch('https://dswback.onrender.comhttps://dswback.onrender.com/api/usuario', {
+      const response = await fetch('https://dswback.onrender.com/api/usuario', {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`

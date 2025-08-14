@@ -56,13 +56,13 @@ const EmpresaDetail: React.FC = () => {
         setError(null);
         try {
             // Obtener datos de la empresa
-            const resEmp = await fetch(`https://dswback.onrender.comhttps://dswback.onrender.com/api/empresa/${id}`);
+            const resEmp = await fetch(`https://dswback.onrender.com/api/empresa/${id}`);
             if (!resEmp.ok) throw new Error("Empresa no encontrada");
             const dataEmp = await resEmp.json();
             setEmpresa(dataEmp.data);
 
             // Obtener marcas de la empresa
-            const resMarcas = await fetch(`https://dswback.onrender.comhttps://dswback.onrender.com/api/marca`);
+            const resMarcas = await fetch(`https://dswback.onrender.com/api/marca`);
             const dataMarcas = await resMarcas.json();
             // Filtrar marcas por empresa
             const marcasEmpresa = (dataMarcas.data as Marca[]).filter(m => m.empresa?.id === Number(id));
@@ -72,7 +72,7 @@ const EmpresaDetail: React.FC = () => {
                     if (marca.sucursales && Array.isArray(marca.sucursales)) {
                         return marca;
                     }
-                    const resMarca = await fetch(`https://dswback.onrender.comhttps://dswback.onrender.com/api/marca/${marca.id}`);
+                    const resMarca = await fetch(`https://dswback.onrender.com/api/marca/${marca.id}`);
                     const dataMarca = await resMarca.json();
                     return { ...marca, sucursales: dataMarca.data.sucursales || [] };
                 })
@@ -108,14 +108,14 @@ const EmpresaDetail: React.FC = () => {
         if (!marcaForm.nombre || !marcaForm.cuil || !marcaForm.telefono) return;
         if (editingMarca) {
             // Update
-            await fetch(`https://dswback.onrender.comhttps://dswback.onrender.com/api/marca/${editingMarca.id}`, {
+            await fetch(`https://dswback.onrender.com/api/marca/${editingMarca.id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ ...editingMarca, ...marcaForm, empresa: empresa?.id }),
             });
         } else {
             // Create
-            await fetch(`https://dswback.onrender.comhttps://dswback.onrender.com/api/marca`, {
+            await fetch(`https://dswback.onrender.com/api/marca`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ ...marcaForm, empresa: empresa?.id }),
@@ -127,7 +127,7 @@ const EmpresaDetail: React.FC = () => {
     const confirmDeleteMarca = (marca: Marca) => setMarcaToDelete(marca);
     const deleteMarca = async () => {
         if (!marcaToDelete) return;
-        await fetch(`https://dswback.onrender.comhttps://dswback.onrender.com/api/marca/${marcaToDelete.id}`, { method: "DELETE" });
+        await fetch(`https://dswback.onrender.com/api/marca/${marcaToDelete.id}`, { method: "DELETE" });
         setMarcaToDelete(null);
         fetchEmpresaYMarcas();
     };
@@ -155,7 +155,7 @@ const EmpresaDetail: React.FC = () => {
         if (!sucursalForm.direccion || !sucursalForm.contacto || !editingSucursal) return;
         if (editingSucursal.sucursal) {
             // Update
-            await fetch(`https://dswback.onrender.comhttps://dswback.onrender.com/api/sucursal/${editingSucursal.sucursal.id}`, {
+            await fetch(`https://dswback.onrender.com/api/sucursal/${editingSucursal.sucursal.id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ ...editingSucursal.sucursal, ...sucursalForm }),
@@ -163,14 +163,14 @@ const EmpresaDetail: React.FC = () => {
         } else {
             // Create
             // Primero crear sucursal
-            const res = await fetch(`https://dswback.onrender.comhttps://dswback.onrender.com/api/sucursal`, {
+            const res = await fetch(`https://dswback.onrender.com/api/sucursal`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ ...sucursalForm }),
             });
             const data = await res.json();
             // Luego asociar a la marca
-            await fetch(`https://dswback.onrender.comhttps://dswback.onrender.com/api/marca/${editingSucursal.marcaId}`, {
+            await fetch(`https://dswback.onrender.com/api/marca/${editingSucursal.marcaId}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -191,14 +191,14 @@ const EmpresaDetail: React.FC = () => {
         const marca = marcas.find(m => m.id === sucursalToDelete.marcaId);
         if (marca) {
             const nuevasSucursales = marca.sucursales.filter(s => s.id !== sucursalToDelete.sucursal.id).map(s => s.id);
-            await fetch(`https://dswback.onrender.comhttps://dswback.onrender.com/api/marca/${marca.id}`, {
+            await fetch(`https://dswback.onrender.com/api/marca/${marca.id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ sucursales: nuevasSucursales }),
             });
         }
         // Opcional: eliminar sucursal completamente
-        // await fetch(`https://dswback.onrender.comhttps://dswback.onrender.com/api/sucursal/${sucursalToDelete.sucursal.id}`, { method: "DELETE" });
+        // await fetch(`https://dswback.onrender.com/api/sucursal/${sucursalToDelete.sucursal.id}`, { method: "DELETE" });
         setSucursalToDelete(null);
         fetchEmpresaYMarcas();
     };

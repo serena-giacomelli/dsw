@@ -31,7 +31,7 @@ const Breadcrumb = () => {
     setNombreProducto(null);
 
     if (secondLast === "tipo" && !isNaN(Number(last))) {
-      fetch(`https://dswback.onrender.comhttps://dswback.onrender.com/api/tipoP/${last}`)
+      fetch(`https://dswback.onrender.com/api/tipoP/${last}`)
         .then((res) => res.json())
         .then((data) => {
           setNombreTipoProducto(data.data?.nombre?.toUpperCase() || `ID ${last}`);
@@ -40,7 +40,7 @@ const Breadcrumb = () => {
           setNombreTipoProducto(`ID ${last}`);
         });
     } else if (secondLast === "productos" && !isNaN(Number(last))) {
-      fetch(`https://dswback.onrender.comhttps://dswback.onrender.com/api/producto/${last}`)
+      fetch(`https://dswback.onrender.com/api/producto/${last}`)
         .then((res) => {
           if (!res.ok) throw new Error('Product not found');
           return res.json();

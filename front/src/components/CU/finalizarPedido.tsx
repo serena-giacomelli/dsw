@@ -365,7 +365,7 @@ const FinalizarPedido: React.FC = () => {
         return false;
       }
 
-      const response = await fetch('api/usuario', {
+      const response = await fetch('https://dswback.onrender.com/api/usuario', {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -381,7 +381,7 @@ const FinalizarPedido: React.FC = () => {
 
   const testServerConnection = async (): Promise<boolean> => {
     try {
-      const response = await fetch('api/usuario', {
+      const response = await fetch('https://dswback.onrender.com/api/usuario', {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`

@@ -14,7 +14,7 @@ const EmailTest: React.FC<EmailTestProps> = ({ token }) => {
   const testEmailConfig = async () => {
     setLoading(true);
     try {
-      const response = await fetch('https://dswback.onrender.comhttps://dswback.onrender.com/api/pedido/test-email', {
+      const response = await fetch('https://dswback.onrender.com/api/pedido/test-email', {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -44,7 +44,7 @@ const EmailTest: React.FC<EmailTestProps> = ({ token }) => {
 
     setSendingTest(true);
     try {
-      const response = await fetch('https://dswback.onrender.comhttps://dswback.onrender.com/api/pedido/test-email-send', {
+      const response = await fetch('https://dswback.onrender.com/api/pedido/test-email-send', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

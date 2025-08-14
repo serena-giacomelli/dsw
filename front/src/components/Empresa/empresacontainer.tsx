@@ -23,7 +23,7 @@ const EmpresaContainer = () => {
 
     const fetchEmpresas = async () => {
         try {
-            const response = await fetch("https://dswback.onrender.comhttps://dswback.onrender.com/api/empresa");
+            const response = await fetch("https://dswback.onrender.com/api/empresa");
             const data = await response.json();
             setEmpresas(data.data);
         } catch (error) {
@@ -36,7 +36,7 @@ const EmpresaContainer = () => {
     const createEmpresa = async () => {
         try {
             newEmpresa.id = 0;
-            const response = await fetch("https://dswback.onrender.comhttps://dswback.onrender.com/api/empresa", {
+            const response = await fetch("https://dswback.onrender.com/api/empresa", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -55,7 +55,7 @@ const EmpresaContainer = () => {
     const updateEmpresa = async (id: number) => {
         try {
             if (!editingEmpresa) return;
-            const response = await fetch(`https://dswback.onrender.comhttps://dswback.onrender.com/api/empresa/${id}`, {
+            const response = await fetch(`https://dswback.onrender.com/api/empresa/${id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",

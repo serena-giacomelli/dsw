@@ -30,7 +30,7 @@ const TestCheckout: React.FC = () => {
 
       // Test 1: Verificar conectividad general del backend
       try {
-        const response = await fetch('https://dswback.onrender.comhttps://dswback.onrender.com/api/test-backend', {
+        const response = await fetch('https://dswback.onrender.com/api/test-backend', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         addResult('Test Backend', { status: response.status, ok: response.ok });
