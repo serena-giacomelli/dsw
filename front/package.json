@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "startFront": "webpack serve --mode development",
+    "startFront": "webpack serve --mode development --open false",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
