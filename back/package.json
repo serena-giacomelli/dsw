@@ -31,6 +31,9 @@
     "react-dom": "^18.3.1",
     "reflect-metadata": "0.2.2"
   },
+  "engines": {
+    "node": "20.x"
+  },
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.25.3",
