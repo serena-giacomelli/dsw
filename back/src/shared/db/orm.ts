@@ -13,23 +13,8 @@ export const orm = await MikroORM.init({
     debug: false, // Cambiar a false en producción
     pool: {
         min: 2,
-        max: 10,
-        idleTimeoutMillis: 30000,
-        createTimeoutMillis: 3000,
-        acquireTimeoutMillis: 30000,
-        reapIntervalMillis: 1000,
-        createRetryIntervalMillis: 100,
-    },
-    driverOptions: {
-        connectionTimeoutMillis: 5000,
-        commandTimeoutMillis: 30000,
-        requestTimeoutMillis: 30000
-    },
-    schemaGenerator: {
-        disableForeignKeys: true,
-        createForeignKeyConstraints: true,
-        ignoreSchema: []
-    }, })
+        max: 5,
+    },})
 
     export const syncSchema = async () => {
         const generator = orm.getSchemaGenerator()
@@ -38,4 +23,7 @@ export const orm = await MikroORM.init({
         await generator.createSchema()
         */
         await generator.updateSchema()
-      }
+        if (process.env.NODE_ENV === "migration" || process.env.NODE_ENV === "seed") {
+            await orm.close();
+        }
+    }
