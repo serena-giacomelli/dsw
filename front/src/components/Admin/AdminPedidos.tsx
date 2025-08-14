@@ -88,7 +88,7 @@ const AdminPedidos: React.FC = () => {
       setProcesando(pedidoId);
       const token = localStorage.getItem('token');
       
-      const response = await fetch(`http://localhost:3000/api/pedido/${pedidoId}`, {
+      const response = await fetch(`https://dswback.onrender.com/api/pedido/${pedidoId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -121,7 +121,7 @@ const AdminPedidos: React.FC = () => {
       setProcesando(pedidoId);
       const token = localStorage.getItem('token');
       
-      const response = await fetch(`http://localhost:3000/api/pedido/${pedidoId}`, {
+      const response = await fetch(`https://dswback.onrender.com/api/pedido/${pedidoId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

@@ -442,7 +442,7 @@ const FinalizarPedido: React.FC = () => {
 
       console.log('Iniciando proceso de pedido...', { usuario, carrito });
       console.log('Token disponible:', !!token);
-      console.log('URL del API:', 'http://localhost:3000');
+      console.log('URL del API:', 'https://dswback.onrender.com');
 
       const compraCompleta = {
         datosEnvio: datosEnvio,

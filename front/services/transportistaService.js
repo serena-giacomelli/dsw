@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:3000/api/transportista';
+const API_BASE_URL = 'https://dswback.onrender.com/api/transportista';
 
 export const transportistaService = {
   async obtenerTransportistas() {

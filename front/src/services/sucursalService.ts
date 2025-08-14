@@ -17,7 +17,7 @@ export const sucursalService = {
   async obtenerSucursales(): Promise<Sucursal[]> {
     try {
       console.log('🔍 Iniciando obtención de sucursales...');
-      console.log('🌐 URL del API:', '/api/sucursal (proxy -> http://localhost:3000/api/sucursal)');
+      console.log('🌐 URL del API:', '/api/sucursal (proxy -> https://dswback.onrender.com/api/sucursal)');
       
       const response = await fetch('/api/sucursal', {
         method: 'GET',
@@ -82,7 +82,7 @@ export const sucursalService = {
       // Mostrar información adicional del error
       if (error instanceof TypeError && error.message === 'Failed to fetch') {
         console.error('🔌 Error de conectividad: No se puede conectar al servidor');
-        console.error('💡 Verifica que el servidor backend esté ejecutándose en http://localhost:3000');
+        console.error('💡 Verifica que el servidor backend esté ejecutándose en https://dswback.onrender.com');
       }
       
       // Retornar array vacío en caso de error para evitar crashes
