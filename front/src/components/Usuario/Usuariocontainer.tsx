@@ -34,13 +34,14 @@ const UserListContainer = () => {
 
     const createUsuario = async () => {
         try {
-            newUser.id = "0";
+            // No enviar el campo 'id' al crear usuario
+            const { id, ...userData } = newUser;
             const response = await fetch("https://dswback.onrender.com/api/usuario", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(newUser),
+                body: JSON.stringify(userData),
             });
             const data = await response.json();
             console.log(data.data);
@@ -55,12 +56,14 @@ const UserListContainer = () => {
     const updateUsuario = async (id: string) => {
         try {
             if (!editingUser) return;
+            // No enviar el campo 'id' al actualizar usuario
+            const { id, ...userData } = editingUser;
             const response = await fetch(`https://dswback.onrender.com/api/usuario/${id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(editingUser),
+                body: JSON.stringify(userData),
             });
             if (response.ok) {
                 fetchUsuarios(); 
