@@ -40,18 +40,21 @@ const Perfil: React.FC = () => {
 
     const handleSave = async () => {
         if (!editData) return;
-        
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('https://dswback.onrender.com/api/usuario/update-profile', {
+            const storedUser = localStorage.getItem('user');
+            const userId = storedUser ? JSON.parse(storedUser).id : null;
+            if (!userId) return;
+            // Excluir campos innecesarios y enviar el id
+            const { tipoUsuario, ...userData } = editData;
+            const response = await fetch(`https://dswback.onrender.com/api/usuario/${userId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify(editData)
+                body: JSON.stringify(userData)
             });
-
             if (response.ok) {
                 const updatedUser = await response.json();
                 setUser(updatedUser.data);

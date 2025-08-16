@@ -36,10 +36,12 @@ const UserListContainer = () => {
         try {
             // No enviar el campo 'id' al crear usuario
             const { id, ...userData } = newUser;
+            const token = localStorage.getItem('token');
             const response = await fetch("https://dswback.onrender.com/api/usuario", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
                 },
                 body: JSON.stringify(userData),
             });
