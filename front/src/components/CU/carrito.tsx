@@ -1,5 +1,5 @@
 import React from "react";
-import { useCart } from "../../Context/cartContext.tsx";
+import { useCart } from "../../Context/CartContext.tsx";
 import { Link, useNavigate } from "react-router-dom";
 import "../../styles/Usuario/carrito.css";
 

@@ -29,6 +29,24 @@ const navigate = useNavigate();
 
 const location = useLocation();
 
+// Escuchar eventos del carrito para actualizar stock en la UI cuando se agrega un producto desde otra parte
+useEffect(() => {
+    const handler = (e: any) => {
+        try {
+            const { id, cantidad } = e.detail || {};
+            if (!id || !cantidad) return;
+            setProductos((prev) => {
+                return prev.map((p) => p.id === id ? { ...p, cantidad: Math.max(p.cantidad - cantidad, 0) } : p);
+            });
+        } catch (err) {
+            // ignore
+        }
+    };
+
+    window.addEventListener('cart:added', handler as EventListener);
+    return () => window.removeEventListener('cart:added', handler as EventListener);
+}, []);
+
 const fetchProductosUser = async () => {
     setLoading(true);
     setError(null);

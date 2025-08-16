@@ -34,7 +34,6 @@ const UserListContainer = () => {
 
     const createUsuario = async () => {
         try {
-            // No enviar el campo 'id' al crear usuario
             const { id, ...userData } = newUser;
             const token = localStorage.getItem('token');
             const response = await fetch("https://dswback.onrender.com/api/usuario", {
@@ -58,19 +57,21 @@ const UserListContainer = () => {
     const updateUsuario = async (id: string) => {
         try {
             if (!editingUser) return;
-            // No enviar el campo 'id' al actualizar usuario
-            const { id, ...userData } = editingUser;
-            const response = await fetch(`https://dswback.onrender.com/api/usuario/${id}`, {
+            // avoid redeclaring the identifier `id` (parameter) when destructuring
+            const { id: editingId, ...userData } = editingUser;
+            const token = localStorage.getItem('token');
+            const response = await fetch(`https://dswback.onrender.com/api/usuario/${editingId}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
+                    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
                 },
                 body: JSON.stringify(userData),
             });
             if (response.ok) {
                 fetchUsuarios(); 
                 setEditingUser(null);
-                setIsModalOpen(false); // Cerrar modal después de actualizar
+                setIsModalOpen(false); 
             }
         } catch (error) {
             console.error("Error al actualizar el usuario:", error);
@@ -79,8 +80,12 @@ const UserListContainer = () => {
 
     const deleteUsuario = async (id: string) => {
         try {
+            const token = localStorage.getItem('token');
             await fetch(`https://dswback.onrender.com/api/usuario/${id}`, {
                 method: "DELETE",
+                headers: {
+                    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+                }
             });
             setUsuarios(usuarios.filter((usuario) => usuario.id !== id));
             setIsDeleteModalOpen(false);

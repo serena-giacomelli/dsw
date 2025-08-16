@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useCart } from "../../Context/cartContext.tsx";
+import { useCart } from "../../Context/CartContext.tsx";
 import '../../styles/Usuario/productContainer.css';
 import '../../styles/Usuario/productDetail.css';
 
@@ -74,6 +74,18 @@ const ProductDetail: React.FC = () => {
 
         if (exito) {
             setMensajeAgregado(`Se agregó "${producto.nombre}" (${cantidad}) al carrito.`);
+            // Reducir el stock localmente para reflejar el cambio en la UI
+            setProducto((prev) => {
+                if (!prev) return prev;
+                const nuevaCantidad = Math.max(prev.cantidad - cantidad, 0);
+                return { ...prev, cantidad: nuevaCantidad };
+            });
+
+            // Opcional: resetear la cantidad solicitada a 1 si ya no hay stock suficiente
+            setCantidad((c) => {
+                const nuevo = producto.cantidad - c;
+                return nuevo > 0 ? 1 : 1;
+            });
             setTimeout(() => {
                 setMensajeAgregado(null);
             }, 2500);

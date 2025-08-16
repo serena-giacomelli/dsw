@@ -111,6 +111,14 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       
       // Guardar inmediatamente en localStorage
       saveCartToStorage(nuevoCarrito);
+      // Emitir evento para que otros componentes (listas) actualicen su stock en la UI
+      try {
+        const event = new CustomEvent('cart:added', { detail: { id: producto.id, cantidad: producto.cantidad } as any });
+        window.dispatchEvent(event);
+      } catch (e) {
+        // si CustomEvent no está disponible por algún motivo, ignorar
+        // console.warn('No se pudo emitir evento cart:added', e);
+      }
       return nuevoCarrito;
     });
 
