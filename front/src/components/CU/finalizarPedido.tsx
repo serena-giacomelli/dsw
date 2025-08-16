@@ -959,13 +959,14 @@ const FinalizarPedido: React.FC = () => {
             <button onClick={() => setPaso(2)} className="btn-anterior">
               Anterior
             </button>
-            <button
-              onClick={procesarCompra}
-              disabled={loading}
-              className="btn-finalizar"
-            >
-              {loading ? 'Procesando...' : 'Confirmar pedido'}
-            </button>
+              <button
+                onClick={() => {
+                  if (!loading) procesarCompra();
+                }}
+                className="btn-finalizar"
+              >
+                {loading ? 'Procesando...' : 'Confirmar pedido'}
+              </button>
           </div>
         </div>
       )}

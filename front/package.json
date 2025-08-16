@@ -7,7 +7,12 @@
     "build": "webpack --mode production",
     "start": "serve -s dist",
     "test": "vitest",
-    "test:run": "vitest run"
+    "test:run": "vitest run",
+    "e2e": "playwright test",
+    "e2e:ui": "playwright test --ui",
+    "e2e:headed": "playwright test --headed",
+    "e2e:report": "playwright show-report",
+    "dev": "webpack serve --mode development"
   },
   "author": "",
   "license": "ISC",
@@ -24,6 +29,7 @@
     "@babel/preset-env": "^7.25.8",
     "@babel/preset-react": "^7.25.7",
     "@babel/preset-typescript": "^7.25.7",
+    "@playwright/test": "^1.54.2",
     "@testing-library/jest-dom": "^6.7.0",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
