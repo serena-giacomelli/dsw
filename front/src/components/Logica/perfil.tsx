@@ -44,9 +44,27 @@ const Perfil: React.FC = () => {
             const token = localStorage.getItem('token');
             const storedUser = localStorage.getItem('user');
             const userId = storedUser ? JSON.parse(storedUser).id : null;
-            if (!userId) return;
-            // Excluir campos innecesarios y enviar el id
+            
+            if (!userId) {
+                console.error('No se encontró el ID del usuario');
+                alert('Error: No se encontró la información del usuario');
+                return;
+            }
+
+            if (!token) {
+                console.error('No se encontró el token');
+                alert('Error: Sesión expirada, por favor inicia sesión nuevamente');
+                navigate('/login');
+                return;
+            }
+
+            console.log('Datos a enviar:', editData);
+            console.log('ID del usuario:', userId);
+            console.log('Token:', token ? 'Presente' : 'Ausente');
+            
+            // Excluir campos innecesarios
             const { tipoUsuario, ...userData } = editData;
+            
             const response = await fetch(`https://dswback.onrender.com/api/usuario/${userId}`, {
                 method: 'PUT',
                 headers: {
@@ -55,14 +73,24 @@ const Perfil: React.FC = () => {
                 },
                 body: JSON.stringify(userData)
             });
+            
+            console.log('Response status:', response.status);
+            
             if (response.ok) {
                 const updatedUser = await response.json();
+                console.log('Usuario actualizado:', updatedUser);
                 setUser(updatedUser.data);
                 localStorage.setItem('user', JSON.stringify(updatedUser.data));
                 setIsEditing(false);
+                alert('Perfil actualizado exitosamente');
+            } else {
+                const errorData = await response.json();
+                console.error('Error del servidor:', errorData);
+                alert(`Error al actualizar perfil: ${errorData.message || response.statusText}`);
             }
         } catch (error) {
             console.error('Error updating profile:', error);
+            alert('Error de conexión al actualizar perfil');
         }
     };
 

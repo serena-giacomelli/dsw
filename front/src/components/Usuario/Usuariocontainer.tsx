@@ -3,7 +3,7 @@ import "../../styles/Usuario/usuarioContainer.css";
 import Modal from "../Estructura/modal.tsx";
 
 interface Usuario {
-    id: string;
+    id: number;
     nombre: string;
     apellido: string;
     dni: string;
@@ -15,7 +15,7 @@ interface Usuario {
 const UserListContainer = () => {
     const [usuarios, setUsuarios] = useState<Usuario[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    const [newUser, setNewUser] = useState<Usuario>({ id: "", nombre: "", apellido: "", dni: "", fechaNacimiento: "", mail: "", password: "" });
+    const [newUser, setNewUser] = useState<Usuario>({ id: 0, nombre: "", apellido: "", dni: "", fechaNacimiento: "", mail: "", password: "" });
     const [editingUser, setEditingUser] = useState<Usuario | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -47,6 +47,12 @@ const UserListContainer = () => {
             const { id, ...userData } = newUser;
             const token = localStorage.getItem('token');
             
+            // Asegurarse de que password está incluido
+            if (!userData.password) {
+                alert("La contraseña es obligatoria");
+                return;
+            }
+            
             console.log("Datos a enviar:", userData);
             
             const response = await fetch("https://dswback.onrender.com/api/usuario", {
@@ -67,14 +73,14 @@ const UserListContainer = () => {
                 // Verificar que la respuesta tiene la estructura esperada
                 if (data && data.data && data.data.id) {
                     setUsuarios([...usuarios, data.data]);
-                    setNewUser({ id: "", nombre: "", apellido: "", dni: "", fechaNacimiento: "", mail: "", password: "" });
+                    setNewUser({ id: 0, nombre: "", apellido: "", dni: "", fechaNacimiento: "", mail: "", password: "" });
                     setIsModalOpen(false);
                     alert("Usuario creado exitosamente");
                 } else {
                     // Si no tiene la estructura esperada, refrescar la lista
                     console.warn("Estructura de respuesta inesperada:", data);
                     await fetchUsuarios();
-                    setNewUser({ id: "", nombre: "", apellido: "", dni: "", fechaNacimiento: "", mail: "", password: "" });
+                    setNewUser({ id: 0, nombre: "", apellido: "", dni: "", fechaNacimiento: "", mail: "", password: "" });
                     setIsModalOpen(false);
                     alert("Usuario creado exitosamente");
                 }
@@ -118,7 +124,7 @@ const UserListContainer = () => {
         }
     };
 
-    const deleteUsuario = async (id: string) => {
+    const deleteUsuario = async (id: number) => {
         try {
             const token = localStorage.getItem('token');
             const response = await fetch(`https://dswback.onrender.com/api/usuario/${id}`, {
@@ -155,14 +161,14 @@ const UserListContainer = () => {
 
     const handleNewUser = () => {
         setEditingUser(null);
-        setNewUser({ id: "", nombre: "", apellido: "", dni: "", fechaNacimiento: "", mail: "", password: "" });
+        setNewUser({ id: 0, nombre: "", apellido: "", dni: "", fechaNacimiento: "", mail: "", password: "" });
         setIsModalOpen(true);
     };
 
     const closeModal = () => {
         setIsModalOpen(false);
         setEditingUser(null);
-        setNewUser({ id: "", nombre: "", apellido: "", dni: "", fechaNacimiento: "", mail: "", password: "" });
+        setNewUser({ id: 0, nombre: "", apellido: "", dni: "", fechaNacimiento: "", mail: "", password: "" });
     };
 
     useEffect(() => {

@@ -59,11 +59,24 @@ async function findOne(req: Request, res: Response) {
 async function update(req: Request, res: Response) {
     try {
         const id = Number.parseInt(req.params.id)
+        
+        if (isNaN(id)) {
+            return res.status(400).json({message: 'ID de usuario inválido'});
+        }
+        
+        console.log('Actualizando usuario ID:', id);
+        console.log('Datos recibidos:', req.body);
+        
         const usuario = em.getReference(Usuario, id )
         em.assign(usuario, req.body)
         await em.flush()
-        res.status(200).json({message: 'usuario updated', data: usuario})
+        
+        // Obtener el usuario actualizado para devolver datos completos
+        const usuarioActualizado = await em.findOne(Usuario, { id });
+        
+        res.status(200).json({message: 'usuario updated', data: usuarioActualizado})
     }  catch(error:any) {
+        console.error('Error en update usuario:', error);
         res.status(500).json({message: error.message})
     }
 }
