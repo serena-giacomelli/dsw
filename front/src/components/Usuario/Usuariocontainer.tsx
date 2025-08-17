@@ -9,12 +9,13 @@ interface Usuario {
     dni: string;
     fechaNacimiento: string;
     mail: string;
+    password?: string; // Opcional para edición
 }
 
 const UserListContainer = () => {
     const [usuarios, setUsuarios] = useState<Usuario[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    const [newUser, setNewUser] = useState<Usuario>({ id: "", nombre: "", apellido: "", dni: "", fechaNacimiento: "", mail: "" });
+    const [newUser, setNewUser] = useState<Usuario>({ id: "", nombre: "", apellido: "", dni: "", fechaNacimiento: "", mail: "", password: "" });
     const [editingUser, setEditingUser] = useState<Usuario | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -24,9 +25,18 @@ const UserListContainer = () => {
         try {
             const response = await fetch("https://dswback.onrender.com/api/usuario");
             const data = await response.json();
-            setUsuarios(data.data);
+            console.log("Respuesta de fetchUsuarios:", data);
+            
+            // Verificar que la respuesta tenga la estructura esperada
+            if (data && data.data && Array.isArray(data.data)) {
+                setUsuarios(data.data);
+            } else {
+                console.error("Estructura de respuesta inesperada:", data);
+                setUsuarios([]);
+            }
         } catch (error) {
             console.error("Error al traer los usuarios:", error);
+            setUsuarios([]);
         } finally {
             setLoading(false);
         }
@@ -36,6 +46,9 @@ const UserListContainer = () => {
         try {
             const { id, ...userData } = newUser;
             const token = localStorage.getItem('token');
+            
+            console.log("Datos a enviar:", userData);
+            
             const response = await fetch("https://dswback.onrender.com/api/usuario", {
                 method: "POST",
                 headers: {
@@ -44,23 +57,44 @@ const UserListContainer = () => {
                 },
                 body: JSON.stringify(userData),
             });
-            const data = await response.json();
-            console.log(data.data);
-            setUsuarios([...usuarios, data.data]);
-            setNewUser({ id: "", nombre: "", apellido: "", dni: "", fechaNacimiento: "", mail: "" });
-            setIsModalOpen(false); // Cerrar modal después de crear
+            
+            console.log("Response status:", response.status);
+            
+            if (response.ok) {
+                const data = await response.json();
+                console.log("Respuesta del servidor:", data);
+                
+                // Verificar que la respuesta tiene la estructura esperada
+                if (data && data.data && data.data.id) {
+                    setUsuarios([...usuarios, data.data]);
+                    setNewUser({ id: "", nombre: "", apellido: "", dni: "", fechaNacimiento: "", mail: "", password: "" });
+                    setIsModalOpen(false);
+                    alert("Usuario creado exitosamente");
+                } else {
+                    // Si no tiene la estructura esperada, refrescar la lista
+                    console.warn("Estructura de respuesta inesperada:", data);
+                    await fetchUsuarios();
+                    setNewUser({ id: "", nombre: "", apellido: "", dni: "", fechaNacimiento: "", mail: "", password: "" });
+                    setIsModalOpen(false);
+                    alert("Usuario creado exitosamente");
+                }
+            } else {
+                const errorData = await response.json();
+                console.error("Error al crear usuario:", response.status, errorData);
+                alert(`Error al crear usuario: ${errorData.message || response.statusText}`);
+            }
         } catch (error) {
             console.error("Error al crear el usuario:", error);
+            alert("Error de conexión al crear usuario");
         }
     };
 
-    const updateUsuario = async (id: string) => {
+    const updateUsuario = async () => {
         try {
             if (!editingUser) return;
-            // avoid redeclaring the identifier `id` (parameter) when destructuring
-            const { id: editingId, ...userData } = editingUser;
+            const { id, ...userData } = editingUser;
             const token = localStorage.getItem('token');
-            const response = await fetch(`https://dswback.onrender.com/api/usuario/${editingId}`, {
+            const response = await fetch(`https://dswback.onrender.com/api/usuario/${id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -68,30 +102,44 @@ const UserListContainer = () => {
                 },
                 body: JSON.stringify(userData),
             });
+            
             if (response.ok) {
                 fetchUsuarios(); 
                 setEditingUser(null);
                 setIsModalOpen(false); 
+            } else {
+                const errorData = await response.json();
+                console.error("Error al actualizar usuario:", response.status, errorData);
+                alert(`Error al actualizar usuario: ${errorData.message || response.statusText}`);
             }
         } catch (error) {
             console.error("Error al actualizar el usuario:", error);
+            alert("Error de conexión al actualizar usuario");
         }
     };
 
     const deleteUsuario = async (id: string) => {
         try {
             const token = localStorage.getItem('token');
-            await fetch(`https://dswback.onrender.com/api/usuario/${id}`, {
+            const response = await fetch(`https://dswback.onrender.com/api/usuario/${id}`, {
                 method: "DELETE",
                 headers: {
                     ...(token ? { 'Authorization': `Bearer ${token}` } : {})
                 }
             });
-            setUsuarios(usuarios.filter((usuario) => usuario.id !== id));
-            setIsDeleteModalOpen(false);
-            setUsuarioAEliminar(null);
+            
+            if (response.ok) {
+                setUsuarios(usuarios.filter((usuario) => usuario.id !== id));
+                setIsDeleteModalOpen(false);
+                setUsuarioAEliminar(null);
+            } else {
+                const errorData = await response.json();
+                console.error("Error al eliminar usuario:", response.status, errorData);
+                alert(`Error al eliminar usuario: ${errorData.message || response.statusText}`);
+            }
         } catch (error) {
             console.error("Error al eliminar el usuario:", error);
+            alert("Error de conexión al eliminar usuario");
         }
     };
 
@@ -107,14 +155,14 @@ const UserListContainer = () => {
 
     const handleNewUser = () => {
         setEditingUser(null);
-        setNewUser({ id: "", nombre: "", apellido: "", dni: "", fechaNacimiento: "", mail: "" });
+        setNewUser({ id: "", nombre: "", apellido: "", dni: "", fechaNacimiento: "", mail: "", password: "" });
         setIsModalOpen(true);
     };
 
     const closeModal = () => {
         setIsModalOpen(false);
         setEditingUser(null);
-        setNewUser({ id: "", nombre: "", apellido: "", dni: "", fechaNacimiento: "", mail: "" });
+        setNewUser({ id: "", nombre: "", apellido: "", dni: "", fechaNacimiento: "", mail: "", password: "" });
     };
 
     useEffect(() => {
@@ -151,7 +199,7 @@ const UserListContainer = () => {
                     listStyle: "none",
                     padding: 0,
                 }}>
-                    {usuarios.map((usuario) => (
+                    {usuarios.filter(usuario => usuario && usuario.id).map((usuario) => (
                         <li key={usuario.id}
                         style={{
                             border: "1px solid #ccc",
@@ -250,9 +298,18 @@ const UserListContainer = () => {
                             onChange={(e) => editingUser ? setEditingUser({ ...editingUser, mail: e.target.value }) : setNewUser({ ...newUser, mail: e.target.value })}
                             style={{ padding: "10px", borderRadius: "4px", border: "1px solid #ccc" }}
                         />
+                        {!editingUser && (
+                            <input
+                                type="password"
+                                placeholder="Contraseña"
+                                value={newUser.password || ""}
+                                onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+                                style={{ padding: "10px", borderRadius: "4px", border: "1px solid #ccc" }}
+                            />
+                        )}
                         <div style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
                             <button 
-                                onClick={editingUser ? () => updateUsuario(editingUser.id) : createUsuario}
+                                onClick={editingUser ? updateUsuario : createUsuario}
                                 className="custom-styled"
                                 style={{
                                     flex: 1,
