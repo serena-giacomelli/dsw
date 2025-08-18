@@ -93,31 +93,26 @@ async function remove(req: Request, res: Response) {
 
 async function login(req: Request, res: Response) {
     try {
-      const { mail, password } = req.body;
-      const usuario = await em.findOneOrFail(Usuario, { mail });
-  
-      if (usuario) {
+        const { mail, password } = req.body;
+        const usuario = await em.findOne(Usuario, { mail });
+        if (!usuario) {
+            return res.status(401).json({ message: 'Usuario o contraseña incorrecto' });
+        }
         const isMatch = await bcrypt.compare(password, usuario.password);
-  
-        if (isMatch) {
-          const token = jwt.sign(
+        if (!isMatch) {
+            return res.status(401).json({ message: 'Usuario o contraseña incorrecto' });
+        }
+        const token = jwt.sign(
             { id: usuario.id, mail: usuario.mail, tipoUsuario: usuario.tipoUsuario },
             JWT_SECRET,
-            { expiresIn: '24h' } // Extendido a 24 horas
-          );
-          res
-            .status(200)
-            .json({ message: 'Usuario logueado', data: { usuario, token } });
-        } else {
-          res.status(401).json({ message: 'Contraseña incorrecta' });
-        }
-      } else {
-        res.status(404).json({ message: 'Usuario no encontrado' });
-      }
+            { expiresIn: '24h' }
+        );
+        res.status(200).json({ message: 'Usuario logueado', data: { usuario, token } });
     } catch (error: any) {
-      res.status(500).json({ message: error.message });
+        res.status(500).json({ message: 'Error interno del servidor.' });
     }
-  }
+}
+
 
 // Almacén temporal de códigos OTP (en producción usar base de datos o cache)
 const emailOtps = new Map<string, { otp: string, usuarioData: any, expires: number }>();
