@@ -32,52 +32,62 @@ async function findOne(req: Request, res: Response) {
 
     async function add(req: Request, res: Response) {
         try {
-          const { password, ...data } = req.body;
-      
-          if (!password) {
-            return res.status(400).json({ message: 'La contraseña es obligatoria' });
-          }
-      
-          const saltRounds = 10;
-          const hashedPassword = await bcrypt.hash(password, saltRounds);
-      
-      
-          const usuario = em.create(Usuario, {
-            ...data,
-            password: hashedPassword
-          });
-      
-          await em.flush();
-      
-          res.status(201).json({ message: 'Usuario creado', data: usuario });
+            const { password, tipoUsuario, ...data } = req.body;
+
+            if (!password) {
+                return res.status(400).json({ message: 'La contraseña es obligatoria' });
+            }
+
+            const saltRounds = 10;
+            const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+            // Si no se envía tipoUsuario, asignar 'user' por defecto
+            const usuario = em.create(Usuario, {
+                ...data,
+                password: hashedPassword,
+                tipoUsuario: tipoUsuario || 'user'
+            });
+
+            await em.flush();
+
+            res.status(201).json({ message: 'Usuario creado', data: usuario });
         } catch (error: any) {
-          res.status(500).json({ message: error.message });
+            res.status(500).json({ message: error.message });
         }
       }
 
  
 async function update(req: Request, res: Response) {
     try {
-        const id = Number.parseInt(req.params.id)
-        
+        const id = Number.parseInt(req.params.id);
         if (isNaN(id)) {
-            return res.status(400).json({message: 'ID de usuario inválido'});
+            return res.status(400).json({ message: 'ID de usuario inválido' });
         }
-        
+
         console.log('Actualizando usuario ID:', id);
         console.log('Datos recibidos:', req.body);
-        
-        const usuario = em.getReference(Usuario, id )
-        em.assign(usuario, req.body)
-        await em.flush()
-        
+
+        const usuario = await em.findOneOrFail(Usuario, { id });
+        const { password, ...rest } = req.body;
+
+        if (password) {
+            // Si se envía una nueva contraseña, hashearla
+            const saltRounds = 10;
+            const hashedPassword = await bcrypt.hash(password, saltRounds);
+            em.assign(usuario, { ...rest, password: hashedPassword });
+        } else {
+            // Si no se envía contraseña, actualizar solo los demás campos
+            em.assign(usuario, rest);
+        }
+        await em.flush();
+
         // Obtener el usuario actualizado para devolver datos completos
         const usuarioActualizado = await em.findOne(Usuario, { id });
-        
-        res.status(200).json({message: 'usuario updated', data: usuarioActualizado})
-    }  catch(error:any) {
+
+        res.status(200).json({ message: 'usuario updated', data: usuarioActualizado });
+    } catch (error: any) {
         console.error('Error en update usuario:', error);
-        res.status(500).json({message: error.message})
+        res.status(500).json({ message: error.message });
     }
 }
 
