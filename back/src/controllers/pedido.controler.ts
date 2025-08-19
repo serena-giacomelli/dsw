@@ -52,7 +52,7 @@ async function add(req: Request, res: Response) {
         res.status(500).json({ message: error.message })
     }}
 
- async function update(req: AuthRequest, res: Response) {
+ async function update(req: AuthRequest, res: Response) { //con esta funcion se actualizan los estados de los pedidos
     try {
         const id = Number.parseInt(req.params.id)
         const pedido = await em.findOneOrFail(Pedido, { id }, { 

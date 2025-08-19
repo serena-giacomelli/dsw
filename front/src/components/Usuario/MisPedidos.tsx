@@ -105,29 +105,29 @@ const MisPedidos: React.FC = () => {
   };
 
   const cancelarPedido = async (pedidoId: number) => {
-    const motivo = prompt('¿Por qué deseas cancelar este pedido?');
+    const motivo = prompt('¿Por qué deseas cancelar este pedido?'); //solicita al usuario el motivo
     if (!motivo) {
       return;
     }
 
-    if (!window.confirm('¿Estás seguro de que quieres cancelar este pedido?')) {
+    if (!window.confirm('¿Estás seguro de que quieres cancelar este pedido?')) { //window es para confirmacion
       return;
     }
 
     try {
       setProcesando(pedidoId);
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('token'); //asi obtiene el token
       if (!token) return;
 
-      await pedidoService.cancelarPedido(pedidoId, motivo, token);
+      await pedidoService.cancelarPedido(pedidoId, motivo, token); //hace llamada
       
-      // Actualizar el estado local
+      // Actualizar el estado local si la cancelacion es exitosa
       setPedidos(prev => prev.map(pedido => 
         pedido.id === pedidoId 
           ? { ...pedido, estado: 'cancelado' }
           : pedido
       ));
-      
+
       alert('Pedido cancelado exitosamente');
     } catch (error) {
       console.error('Error al cancelar pedido:', error);
@@ -166,7 +166,7 @@ const MisPedidos: React.FC = () => {
   };
 
   const puedeSerCancelado = (pedido: Pedido) => {
-    return pedido.estado.toLowerCase() === 'pendiente';
+    return pedido.estado.toLowerCase() === 'pendiente'; //verifica si el pedido puede ser cancelado de acuerdo a su estado, si se puede devuelve true
   };
 
   const puedeSerMarcadoComoRecibido = (pedido: Pedido) => {

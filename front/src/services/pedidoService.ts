@@ -258,7 +258,7 @@ export const pedidoService = {
   async cancelarPedido(pedidoId: number, motivo: string, token: string) {
     try {
       const response = await fetch(`https://dswback.onrender.com/api/pedido/${pedidoId}`, {
-        method: 'PUT',
+        method: 'PUT', //peticion http
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
